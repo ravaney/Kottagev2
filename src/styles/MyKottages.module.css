@@ -1,0 +1,30 @@
+.container{
+background-color: Colors;
+padding: 10px;
+}
+
+/* //create a nav llink style for navbar and change color when hover  */
+.navLink{
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 10px ;
+    &:hover{
+        background-color: #1a88ff;
+    }
+    &:active{
+        background-color: #1a88ff;
+    }
+}
+
+/* navlink for active link */
+.active{
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 10px ;
+    background-color: #1a88ff;
+    &:hover{
+        background-color: #1a88ff;
+    }
+    
+}
+

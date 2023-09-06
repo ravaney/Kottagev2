@@ -1,0 +1,61 @@
+.container{
+    border-radius: 0px;
+    padding: 0px 40px;
+}
+
+
+.label{
+    font-size: 32px;
+}
+.cardContainer{
+    overflow-x: scroll;
+    max-width: 100%;
+}
+.cardContainer::-webkit-scrollbar {
+    width: 10px;
+}
+
+.cardContainer::-webkit-scrollbar-thumb {
+    background-color: #e4289d;
+    border-radius: 10px;
+}
+
+.card{
+    width:210px;
+    border-radius: 10px;
+    margin:5px;
+    height: 320px;
+    position: relative;
+}
+
+.cardImage{
+    width: 200px;
+    /* border-radius: 10px; */
+    position: relative;
+    object-fit: cover;
+    padding: 5px;
+}
+
+.price{
+    background-color:  #10aff0;
+       
+}
+.cardActions{
+    /* /* padding: 10px 10px !important; */
+    position: absolute;
+    bottom: 0px;
+}
+
+.cardHeader{
+    font-size: 8px !important;
+    padding:0px 10px !important;
+    color: #10aff0;
+}
+
+.cardContent{
+    padding: 0px 10px !important;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    height: 50px;
+    
+}

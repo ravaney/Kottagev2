@@ -1,0 +1,13 @@
+.favourite{
+    color:grey;
+    color: #e4289d;
+    z-index: 1;
+}
+
+.favourite:hover{
+    color :#e4289d;
+    cursor: pointer;
+}
+.share{
+    color:green;
+}

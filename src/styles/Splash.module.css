@@ -1,0 +1,37 @@
+.bg{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+
+}
+.commandBar{
+    color: black;
+    background-color: transparent;       
+}
+
+
+/* on mouse over change color  */
+.commandBar:hover{
+    background-color: transparent;
+        color: #d155b6;
+
+}
+.commandBar:target{
+    background-color: transparent;
+    color: #d155b6;
+}
+
+.activeRoute{
+    background-color: transparent;
+    color: #d155b6;
+}
+
+.activeRoute:hover{
+    background-color: transparent;
+    color: #d155b6;
+}
+.activeRoute:target{
+    background-color: transparent;
+    color: #d155b6;
+    
+}
