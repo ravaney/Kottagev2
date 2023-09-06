@@ -48,7 +48,11 @@ const StyledRating = styled(Rating)({
 });
 function Reviews() {
   return (
-    <Stack style={{ backgroundColor: "white", padding: "20px" }} tokens={gap10}>
+    <Stack
+      id="reviews"
+      style={{ backgroundColor: "white", padding: "20px" }}
+      tokens={gap10}
+    >
       <Label>Reviews</Label>
       {reviews.reviews.map((review) => {
         return (

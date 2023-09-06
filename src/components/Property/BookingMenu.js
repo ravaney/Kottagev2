@@ -90,7 +90,9 @@ export default function BookingMenu() {
               }
               emptyIcon={<FavoriteIcon fontSize="inherit" />}
             />
-            <a style={{ color: "blue" }}>(14 reviews)</a>
+            <a style={{ color: "blue" }} href="#reviews">
+              (14 reviews)
+            </a>
           </Stack>
 
           <div style={{ display: "flex", marginTop: "32px" }}>
