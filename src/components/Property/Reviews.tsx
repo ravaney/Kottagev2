@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { Reviews as ReviewsIcon } from "@mui/icons-material";
 import { Colors } from "../constants";
-import { gap10 } from "../MyAccount/AllMyKottages";
+import { gap10 } from "./AllMyKottages";
 import { Rating, styled } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";

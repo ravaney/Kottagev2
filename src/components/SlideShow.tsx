@@ -41,18 +41,22 @@ function SlideShow({ images }: Props) {
   return (
     <div style={{ position: "relative" }}>
       <img
-        src={images[currentIndex]}
+        src={images?.[currentIndex]}
         style={{ objectFit: "cover" }}
         alt="cabin"
         width="100%"
         height="200px"
       />
-      <button onClick={prevSlide} className={style.prev}>
-        <FcPrevious />
-      </button>
-      <button onClick={nextSlide} className={style.next}>
-        <FcNext />
-      </button>
+      {images.length > 1 && (
+        <>
+          <button onClick={prevSlide} className={style.prev}>
+            <FcPrevious />
+          </button>
+          <button onClick={nextSlide} className={style.next}>
+            <FcNext />
+          </button>
+        </>
+      )}
     </div>
   );
 }

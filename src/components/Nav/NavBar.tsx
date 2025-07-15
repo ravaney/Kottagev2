@@ -1,16 +1,18 @@
 import { Stack } from "@fluentui/react";
-import { useUserState } from "../../state/userSlice";
 import CommandMenu from "./CommandMenu";
 import Menu from "./Menu";
-import { Badge } from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import { Link } from "react-router-dom";
-import { Colors } from "../constants";
-import { transcode } from "buffer";
-import { IUser } from "../../../public/QuickType";
+import { useAuth } from "../../hooks";
+import { AnimatedBadge } from '../common/AnimatedBadge';
+
 const NavBar = () => {
-  const { user } = useUserState();
+  const { firebaseUser,loading } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
   const gap = { childrenGap: 10 };
   return (
     <Stack
@@ -19,35 +21,61 @@ const NavBar = () => {
       horizontalAlign="space-between"
       style={{
         top: 0,
-        width: "100%",
+        width: "100vw",
+        marginLeft: "calc(-50vw + 50%)",
         zIndex: 1000,
-        padding: "5px 10px",
-        backgroundColor: "rgba(249,241,240,0.8)",
-        backdropFilter: "blur(5px)",
-        minWidth: "350px",
+        height: "60px",
+        padding: "0 20px",
+        backgroundColor: "rgba(255,255,255,0.95)",
+        backdropFilter: "blur(10px)",
+        boxSizing: "border-box",
+        alignItems: 'center',
+        borderBottom: "2px solid rgba(102, 126, 234, 0.1)",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        position: "sticky"
       }}
     >
-      <div style={{ width: "250px", padding: "5px 0px 5px 5px" }}>
+      <div style={{ 
+        flex: "0 0 auto",
+        maxWidth: isMobile ? "100px" : isTablet ? "140px" : "180px", 
+        flexShrink: 0,
+        height: "100%",
+        display: "flex",
+        alignItems: "center"
+      }}>
         <Link to="/">
-          <img src="/blue logo.png" alt="logo" height={40} />
+          <img 
+            src="/blue logo.png" 
+            alt="Kottage Logo" 
+            style={{ maxWidth: '100%', maxHeight: '40px', height: 'auto' }}
+          />
         </Link>
       </div>
       <CommandMenu />
-      <div style={{ width: "250px", paddingRight: "5px" }}>
-        {(user as IUser) ? (
+      <div style={{ 
+        flex: "0 0 auto",
+        maxWidth: isMobile ? "120px" : isTablet ? "180px" : "200px", 
+        padding: isMobile ? "4px 12px" : "6px 16px",
+        flexShrink: 0,
+        display: "flex",
+        justifyContent: "flex-end",
+        alignItems: "center"
+
+      }}>
+        {loading ? null : (firebaseUser) ? (
           <Stack
             horizontal
             tokens={gap}
             horizontalAlign="end"
             verticalAlign="center"
           >
-            <Badge badgeContent={1} color="primary">
+            <AnimatedBadge badgeContent={1} color="primary" animate>
               <MailIcon color="action" />
-            </Badge>
-            <Badge badgeContent={6} color="secondary">
+            </AnimatedBadge>
+            <AnimatedBadge badgeContent={6} color="secondary" animate>
               <AnnouncementIcon color="action" />
-            </Badge>
-            <Menu />
+            </AnimatedBadge>
+            
           </Stack>
         ) : (
           <Stack
@@ -57,9 +85,16 @@ const NavBar = () => {
             verticalAlign="center"
           >
             <Link to="/Login">Login</Link>
-            <Link to="/CreateAccount">Create Account</Link>
           </Stack>
         )}
+         <Stack
+            horizontal
+            tokens={gap}
+            horizontalAlign="end"
+            verticalAlign="center"
+          >
+           <Menu />
+          </Stack>
       </div>
     </Stack>
   );

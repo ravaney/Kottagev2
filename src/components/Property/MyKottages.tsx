@@ -18,7 +18,7 @@ export default function MyKottages() {
       style={{
         borderRadius: "10px",
         backgroundColor: Colors.offWhite,
-        width: "100%",
+        // width: "100%",
       }}
     >
       <Stack
@@ -32,7 +32,7 @@ export default function MyKottages() {
             className={({ isActive }) =>
               isActive ? styles.active : styles.navLink
             }
-            to="/MyAccount/MyKottages/Home"
+            to="/MyAccount/MyKottages"
           >
             <MdOutlineVilla /> My Kottages
           </NavLink>

@@ -8,13 +8,17 @@ export interface IUser {
     email?:           string;
     emailVerified?:   boolean;
     isAnonymous?:     boolean;
-    uid?:             string;
+    uid:             string;
     phoneNumber?: string;
     photoURL?:    string;
     firstName?:   string;
     lastName?:    string;
-    address?:      string;
+    address?:      IAddress;
     dob?: string;
+    bio?: string;
+    occupation?: string;
+    company?: string;
+    website?: string;
 }
 export interface IInitUser {
     email:           string;

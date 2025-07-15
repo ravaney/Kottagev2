@@ -14,11 +14,12 @@ export default function BottomNav({}: Props) {
       style={{
         // bottom: 0,
         width: "100%",
-        zIndex: 1000,
+        zIndex: 1001,
         padding: "20px 40px",
         backgroundColor: "white",
         minWidth: "350px",
         color: "black",
+        position: "relative",
       }}
       tokens={gap20}
     >

@@ -4,11 +4,11 @@ import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 
 export default function MyAccount() {
-  const gap = { childrenGap: 50 };
+  const gap = { childrenGap: 5 };
   return (
     <>
       <Stack
-        style={{ height: "100%", padding: "50px 15px" }}
+        style={{ height: "100%", padding: "0px 15px", paddingLeft: "285px" }}
         horizontal
         horizontalAlign="start"
         tokens={gap}

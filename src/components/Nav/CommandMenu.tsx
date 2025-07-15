@@ -9,9 +9,14 @@ import { GiPartyFlags } from "react-icons/gi";
 import { IoIosRestaurant as EatDrink } from "react-icons/io";
 import { AiOutlineCar as Car } from "react-icons/ai";
 import { PiBackpackThin as Backpackers } from "react-icons/pi";
+import { useMediaQuery, useTheme } from "@mui/material";
 import style from "../../styles/Splash.module.css";
 
 export default function CommandMenu() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
+  
   registerIcons({
     icons: {
       MdHolidayVillage: <MdHolidayVillage />,
@@ -22,11 +27,6 @@ export default function CommandMenu() {
       Backpackers: <Backpackers />,
     },
   });
-
-  useEffect(() => {
-    const path = window.location.pathname;
-    console.log(path);
-  }, []);
 
   const checkRoute = (route: string) => {
     const path = window.location.pathname;
@@ -40,6 +40,14 @@ export default function CommandMenu() {
   //create a function to navigate to the route
   const navigateToRoute = useNavigate();
   const gap = { childrenGap: 10 };
+  
+  const getItemStyle = () => ({
+    fontSize: isMobile ? "14px" : isTablet ? "16px" : "18px",
+    fontWeight: "bold",
+    padding: isMobile ? "8px 12px" : "12px 16px",
+  });
+  
+  const getIconSize = () => isMobile ? "16px" : "20px";
   return (
     <Stack
       verticalAlign="center"
@@ -51,22 +59,21 @@ export default function CommandMenu() {
           root: {
             backgroundColor: "transparent",
             boxShadow: "none",
+            height: 60,
           },
         }}
         //shrink as the screen size shrinks
-        farItems={[
+        farItems={isMobile ? [] : [
           {
             key: "Restaurants",
-            text: "Restaurants",
-            style: {
-              fontSize: "16px",
-              fontWeight: "bold",
-            },
+            text: isTablet ? "Eat" : "Restaurants",
+            style: getItemStyle(),
             iconProps: {
               iconName: "EatDrink",
               styles: {
                 root: {
                   color: Colors.blue,
+                  fontSize: getIconSize(),
                 },
               },
             },
@@ -75,59 +82,35 @@ export default function CommandMenu() {
           },
           {
             key: "Car Rentals",
-            text: "Car Rentals",
-            style: {
-              fontSize: "16px",
-              fontWeight: "bold",
-            },
+            text: isTablet ? "Cars" : "Car Rentals",
+            style: getItemStyle(),
             iconProps: {
               iconName: "Car",
               styles: {
                 root: {
                   color: Colors.blue,
+                  fontSize: getIconSize(),
                 },
               },
             },
             onClick: () => navigateToRoute("/CarRentals"),
             className: checkRoute("/CarRentals"),
           },
-          {
-            key: "Backpackers",
-            text: "Backpackers",
-            style: {
-              fontSize: "16px",
-              fontWeight: "bold",
-            },
-            iconProps: {
-              iconName: "Backpackers",
-              styles: {
-                root: {
-                  color: Colors.blue,
-                },
-              },
-            },
-            className: checkRoute("/Backpackers"),
-            onClick: () => navigateToRoute("/Backpackers"),
-          },
         ]}
         items={[
           {
             key: "Kottages",
             text: "Kottages",
-            style: {
-              fontSize: "16px",
-              fontWeight: "bold",
-            },
-
+            style: getItemStyle(),
             iconProps: {
               iconName: "MdHolidayVillage",
               styles: {
                 root: {
                   color: Colors.blue,
+                  fontSize: getIconSize(),
                 },
               },
             },
-
             onClick: () => {
               navigateToRoute("/Kottages");
             },
@@ -135,16 +118,14 @@ export default function CommandMenu() {
           },
           {
             key: "Excursions",
-            text: "Excursions ",
-            style: {
-              fontSize: "16px",
-              fontWeight: "bold",
-            },
+            text: isMobile ? "Tours" : "Excursions",
+            style: getItemStyle(),
             iconProps: {
               iconName: "MdModeOfTravel",
               styles: {
                 root: {
                   color: Colors.blue,
+                  fontSize: getIconSize(),
                 },
               },
             },
@@ -154,15 +135,13 @@ export default function CommandMenu() {
           {
             key: "Events",
             text: "Events",
-            style: {
-              fontSize: "16px",
-              fontWeight: "bold",
-            },
+            style: getItemStyle(),
             iconProps: {
               iconName: "GiPartyFlags",
               styles: {
                 root: {
                   color: Colors.blue,
+                  fontSize: getIconSize(),
                 },
               },
             },
