@@ -12,16 +12,19 @@ import CreateAccount from "./components/Auth/CreateAccount";
 import MyAccount from "./components/MyAccount/MyAccount";
 import Profile from "./components/MyAccount/Profile";
 import Settings from "./components/MyAccount/Settings";
-import MyKottages from "./components/MyAccount/MyKottages";
-import MyBookings from "./components/MyAccount/MyBookings";
+import MyKottages from "./components/Property/MyKottages";
+import MyBookings from "./components/Property/Reservations/MyBookings";
 import Favourites from "./components/MyAccount/Favourites";
 import { Kottages } from "./components/Kottages";
 import PageNotFound from "./components/Nav/PageNotFound";
 import ProtectedRoute from "./ProtectedRoute";
 import ViewKottages from "./components/Property/ViewKottages";
-import AddKottage from "./components/MyAccount/AddKottage";
-import AllMyKottages from "./components/MyAccount/AllMyKottages";
+import AddKottage from "./components/Property/AddKottage";
+import AllMyKottages from "./components/Property/AllMyKottages";
 import { setIconOptions } from "@fluentui/react";
+import { QueryProvider } from "./providers/QueryProvider";
+import ManageProperty from "./components/Property/ManageProperty";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 function App() {
   setIconOptions({ disableWarnings: true });
@@ -59,13 +62,16 @@ function App() {
 
           children: [
             {
-              element: <Navigate to="/MyAccount/Profile" />,
+              element: <Navigate to="/MyAccount/Dashboard" />,
               index: true,
+            },
+            {
+              path: "/MyAccount/Dashboard",
+              element: <Dashboard />,
             },
             {
               path: "/MyAccount/Profile",
               element: <Profile />,
-              index: true,
             },
             {
               path: "/MyAccount/MyKottages",
@@ -84,6 +90,10 @@ function App() {
                   path: "/MyAccount/MyKottages/AddKottage",
                   element: <AddKottage />,
                 },
+                {
+                  path: "/MyAccount/MyKottages/ManageProperty/:propertyName",
+                  element: <ManageProperty />,
+                },
               ],
             },
             {
@@ -98,15 +108,17 @@ function App() {
               path: "/MyAccount/Settings",
               element: <Settings />,
             },
+            
           ],
         },
       ],
     },
   ]);
   return (
-    <>
-      <RouterProvider router={router} />
-    </>
+    <QueryProvider>
+      
+        <RouterProvider router={router} />
+    </QueryProvider>
   );
 }
 

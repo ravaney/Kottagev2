@@ -1,14 +1,20 @@
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, Divider, ListItemIcon, ListItemText, Typography, Box } from "@mui/material";
 import React from "react";
-import { Button } from "react-bootstrap";
-import { useAppDispatch } from "../../state/hooks";
-import { signOutAsync } from "../../state/thunks";
 import { auth } from "../../firebase";
 import Avatar from "@mui/material/Avatar";
-import { useUserState } from "../../state/userSlice";
 import { Stack } from "@fluentui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineManageAccounts } from "react-icons/md";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
+import SettingsIcon from '@mui/icons-material/Settings';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import HistoryIcon from '@mui/icons-material/History';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useFirebaseUser } from "../../hooks/useFirebaseUser";
+import { useSignOut } from "../../hooks/useSignOut";
+import { useAuth } from "../../hooks";
+
 export default function CommandMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -19,14 +25,14 @@ export default function CommandMenu() {
     setAnchorEl(null);
   };
 
-  const dispatch = useAppDispatch();
+  const signOutMutation = useSignOut();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    dispatch(signOutAsync());
+  const handleLogout = async () => {
+    await signOutMutation.mutateAsync();
     navigate("/");
   };
 
-  const { user } = useUserState();
+  const { appUser } = useAuth();
   return (
     <>
       <IconButton
@@ -49,25 +55,75 @@ export default function CommandMenu() {
         onClose={handleClose}
         transformOrigin={{
           vertical: "top",
-          horizontal: "left",
+          horizontal: "right",
         }}
-        //close menu after clicking on an item
-        onClick={handleClose}
+        PaperProps={{
+          sx: {
+            minWidth: 220,
+            borderRadius: 2,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+            border: '1px solid rgba(0,0,0,0.08)'
+          }
+        }}
       >
-        <Stack
-          verticalAlign="center"
-          horizontalAlign="center"
-          style={{ borderBottom: "1px solid black" }}
-        >
-          <MenuItem>
-            <Avatar src={auth?.currentUser?.photoURL as string} />{" "}
-          </MenuItem>
-          <MenuItem>{user?.firstName}</MenuItem>
-        </Stack>
-        <MenuItem>
-          <Link to="/MyAccount">My Account</Link>
+        <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Avatar 
+            src={auth?.currentUser?.photoURL as string} 
+            sx={{ width: 56, height: 56, mx: 'auto', mb: 1 }}
+          />
+          <Typography variant="subtitle1" fontWeight={600}>
+            {appUser?.firstName} {appUser?.lastName}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {auth?.currentUser?.email}
+          </Typography>
+        </Box>
+        
+        <Divider />
+        
+        <MenuItem component={Link} to="/MyAccount" onClick={handleClose}>
+          <ListItemIcon>
+            <AccountCircleIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>My Account</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <BookmarkIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>My Bookings</ListItemText>
+        </MenuItem>
+        
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <HistoryIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Booking History</ListItemText>
+        </MenuItem>
+        
+        <MenuItem component={Link} onClick={handleClose} to='/MyAccount/Settings'>
+          <ListItemIcon>
+            <SettingsIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Settings</ListItemText>
+        </MenuItem>
+        
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <HelpCenterIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Help Center</ListItemText>
+        </MenuItem>
+        
+        <Divider />
+        
+        <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" sx={{ color: 'error.main' }} />
+          </ListItemIcon>
+          <ListItemText>Logout</ListItemText>
+        </MenuItem>
       </Menu>
     </>
   );

@@ -1,12 +1,12 @@
 import React from "react";
-import { useUserState } from "../../state/userSlice";
 import { Label, Modal, PrimaryButton, Stack, TextField } from "@fluentui/react";
 import { Colors } from "../constants";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import { IconButton } from "@mui/material";
+import { useAuth } from "../../hooks";
 
 export default function Address() {
-  const { user } = useUserState();
+  const { firebaseUser } = useAuth();
   const [show, setShow] = React.useState(false);
 
   const handleClose = () => setShow(false);

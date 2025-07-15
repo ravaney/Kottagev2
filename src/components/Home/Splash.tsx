@@ -23,7 +23,6 @@ export const Splash = () => {
             objectFit: "cover",
             width: "100%",
             height: "100%",
-            //darken the image
             filter: "brightness(80%)",
           }}
         />
@@ -34,8 +33,6 @@ export const Splash = () => {
               position: "absolute",
               top: "60%",
               marginLeft: "20px",
-              // left: "30%",
-              // transform: "translate(-50%,-50%)",
               color: "white",
             }}
           >
@@ -46,8 +43,6 @@ export const Splash = () => {
               position: "absolute",
               top: "70%",
               marginLeft: "20px",
-              // left: "30%",
-              // transform: "translate(-50%,-50%)",
               color: "white",
             }}
           >
