@@ -24,7 +24,11 @@ import AllMyKottages from "./components/Property/AllMyKottages";
 import { setIconOptions } from "@fluentui/react";
 import { QueryProvider } from "./providers/QueryProvider";
 import ManageProperty from "./components/Property/ManageProperty";
+import DashboardMenu from "./components/Dashboard/DashboardMenu";
 import Dashboard from "./components/Dashboard/Dashboard";
+import ActionCenter from "./components/Dashboard/ActionCenter";
+import Messages from "./components/Dashboard/Messages";
+import ManageReservations from "./components/Dashboard/ManageReservations";
 
 function App() {
   setIconOptions({ disableWarnings: true });
@@ -67,7 +71,25 @@ function App() {
             },
             {
               path: "/MyAccount/Dashboard",
-              element: <Dashboard />,
+              element: <DashboardMenu />,
+              children: [
+                {
+                  index: true,
+                  element: <Dashboard />,
+                },
+                {
+                  path: "action-center",
+                  element: <ActionCenter />,
+                },
+                {
+                  path: "messages",
+                  element: <Messages />,
+                },
+                {
+                  path: "reservations",
+                  element: <ManageReservations />,
+                },
+              ],
             },
             {
               path: "/MyAccount/Profile",

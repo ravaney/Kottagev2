@@ -92,7 +92,7 @@ export default function Sidebar() {
       <List sx={{ px: 2, pb: 2, flex: 1 }}>
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname === item.path;
+          const isActive = location.pathname.startsWith(item.path);
           
           return (
             <ListItem

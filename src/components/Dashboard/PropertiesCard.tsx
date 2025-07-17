@@ -16,60 +16,66 @@ interface PropertiesCardProps {
 }
 
 export default function PropertiesCard({ totalProperties, status }: PropertiesCardProps) {
+  const occupancyRate = Math.round((status.occupied / totalProperties) * 100);
+  
   return (
-    <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-      <CardContent sx={{ p: 0 }}>
-        <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-          <Box display="flex" alignItems="center" gap={2}>
-            <RiHotelLine style={{ color: Colors.blue, fontSize: 36 }} />
-            <Box display="flex" flexDirection="column" justifyContent="center">
-              <Typography variant="h4" fontWeight={700} color={Colors.blue} sx={{ lineHeight: 1 }}>
-                {totalProperties}
-              </Typography>
-              <Typography variant="body2" color="black" sx={{ fontWeight: 400, lineHeight: 1.2 }}>
-                Properties
-              </Typography>
-            </Box>
-          </Box>
-          <Link to="/MyAccount/MyKottages" style={{ textDecoration: 'none' }}>
-            <Typography variant="body2" color={Colors.raspberry} sx={{ cursor: 'pointer', fontWeight: 600 }}>
-              View All
+    <Paper elevation={3} sx={{ p: 1.5, borderRadius: '4px' }}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <RiHotelLine style={{ color: Colors.blue, fontSize: 20 }} />
+          <Box>
+            <Typography variant="h6" fontWeight={700} color={Colors.blue} sx={{ lineHeight: 1 }}>
+              {totalProperties}
             </Typography>
-          </Link>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+              Properties
+            </Typography>
+          </Box>
         </Box>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h6" fontWeight={600} color="green">
-                {status.vacant}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Vacant
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h6" fontWeight={600} color={Colors.raspberry}>
-                {status.occupied}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Occupied
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h6" fontWeight={600} color="orange">
-                {status.unlisted}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Unlisted
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </CardContent>
+        <Link to="/MyAccount/MyKottages" style={{ textDecoration: 'none' }}>
+          <Typography variant="caption" color={Colors.raspberry} sx={{ cursor: 'pointer', fontWeight: 600, fontSize: '0.7rem' }}>
+            View →
+          </Typography>
+        </Link>
+      </Box>
+      
+      <Box sx={{ backgroundColor: '#f8f9fa', borderRadius: 1, p: 1 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
+          <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ fontSize: '0.65rem' }}>
+            OCCUPANCY
+          </Typography>
+          <Typography variant="caption" fontWeight={700} color={Colors.blue}>
+            {occupancyRate}%
+          </Typography>
+        </Box>
+        
+        <Box display="flex" justifyContent="space-around">
+          <Box textAlign="center">
+            <Typography variant="caption" fontWeight={700} color="#28a745">
+              {status.vacant}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', display: 'block' }}>
+              Vacant
+            </Typography>
+          </Box>
+          <Box textAlign="center">
+            <Typography variant="caption" fontWeight={700} color={Colors.raspberry}>
+              {status.occupied}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', display: 'block' }}>
+              Busy
+            </Typography>
+          </Box>
+          <Box textAlign="center">
+            <Typography variant="caption" fontWeight={700} color="#ffc107">
+              {status.unlisted}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', display: 'block' }}>
+              Unlisted
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
     </Paper>
   );
 }

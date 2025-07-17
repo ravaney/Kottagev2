@@ -27,9 +27,8 @@ function AddKottage({}: Props) {
       kottage.address?.city?.trim() &&
       kottage.address?.state?.trim() &&
       kottage.address?.country?.trim() &&
-      kottage.guests > 0 &&
-      kottage.rooms > 0 &&
-      kottage.phone?.trim()
+      kottage.phone?.trim()&&
+      kottage.amenities 
     );
   };
 
@@ -196,55 +195,34 @@ function AddKottage({}: Props) {
           Property Details
         </Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Bedrooms *"
-              type="number"
-              value={kottage.rooms || ''}
+              label="Contact Phone *"
+              value={kottage.phone || ''}
               onChange={(e) =>
-                setKottage((prev) => ({
-                  ...prev,
-                  rooms: parseInt(e.target.value) || 0,
-                }))
+                setKottage((prev) => ({ ...prev, phone: e.target.value }))
               }
-              inputProps={{ min: 1 }}
+              placeholder="Your contact number for guests"
               required
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Bathrooms"
-              type="number"
-              value={kottage.bathrooms || ''}
+              label="Amenities (comma separated)"
+              value={kottage.amenities?.join(', ') || ''}
               onChange={(e) =>
-                setKottage((prev) => ({
-                  ...prev,
-                  bathrooms: parseInt(e.target.value) || 0,
+                setKottage((prev) => ({ 
+                  ...prev, 
+                  amenities: e.target.value.split(',').map(item => item.trim())
                 }))
               }
-              inputProps={{ min: 0 }}
+              placeholder="e.g., Wi-Fi, Pool, Parking"
             />
           </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Max Guests *"
-              type="number"
-              value={kottage.guests || ''}
-              onChange={(e) =>
-                setKottage((prev) => ({
-                  ...prev,
-                  guests: parseInt(e.target.value) || 0,
-                }))
-              }
-              inputProps={{ min: 1 }}
-              required
-            />
-          </Grid>
-        </Grid>
 
+        </Grid>
         <Typography variant="h6" sx={{ mb: 2, color: Colors.blue, fontWeight: 600 }}>
           Contact Information
         </Typography>

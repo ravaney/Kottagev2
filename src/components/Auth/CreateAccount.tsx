@@ -6,6 +6,7 @@ import { IAddress, IInitUser } from "../../../public/QuickType";
 import { Link, useNavigate } from "react-router-dom";
 import { useCreateAccount } from "../../hooks";
 import { Box, Card, CardContent } from "@mui/material";
+import MuiPhoneNumber from "mui-phone-number";
 
 export default function CreateAccount() {
   const [email, setEmail] = useState<string>("");
@@ -14,8 +15,9 @@ export default function CreateAccount() {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [image, setImage] = useState<File[]>();
-  const [phoneNumber, setPhoneNumber] = useState<number>();
+  const [phoneNumber, setPhoneNumber] = useState<string>();
   const [address, setAddress] = useState<IAddress>();
+  const [dob, setDob] = useState<string>("");
   const navigate = useNavigate();
   const {mutateAsync: createAccountMutation, error, isPending} = useCreateAccount();
 
@@ -37,6 +39,7 @@ export default function CreateAccount() {
         phoneNumber,
         address,
         image,
+        dob
       } as IInitUser);
       navigate("/");
     } catch (error) {
@@ -158,6 +161,22 @@ export default function CreateAccount() {
                   }
                 }}
               />
+              <TextField
+                type="date"
+                label="Date of Birth"
+                value={dob}
+                placeholder="Select your date of birth"
+                onChange={(e, v) => setDob(v as string)}
+                disabled={isPending}
+                styles={{
+                  root: { width: '100%' },
+                  fieldGroup: { 
+                    borderRadius: 8,
+                    border: '2px solid #e1e8ed',
+                    ':hover': { borderColor: '#667eea' }
+                  }
+                }}
+              />
             </Stack>
 
             <TextField
@@ -175,24 +194,14 @@ export default function CreateAccount() {
                   ':hover': { borderColor: '#667eea' }
                 }
               }}
+            />          
+              <MuiPhoneNumber
+              defaultCountry={'us'}
+              value={phoneNumber}
+              onChange={(value) => setPhoneNumber(value as string)}
+              placeholder="Enter your new phone number"
+              style={{ width: '100%' }}
             />
-
-            <TextField
-              type="tel"
-              label="Phone Number"
-              placeholder="Enter your phone number"
-              onChange={(e, v) => setPhoneNumber((v as unknown) as number)}
-              disabled={isPending}
-              styles={{
-                root: { width: '100%' },
-                fieldGroup: { 
-                  borderRadius: 8,
-                  border: '2px solid #e1e8ed',
-                  ':hover': { borderColor: '#667eea' }
-                }
-              }}
-            />
-
             <TextField
               type="text"
               label="Address"

@@ -9,7 +9,8 @@ import {getAuth, createUserWithEmailAndPassword,
     signOut} from 'firebase/auth'
     
 import { getStorage } from "firebase/storage";
-import { getDatabase } from "firebase/database"
+import { getDatabase } from "firebase/database";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -28,10 +29,16 @@ const app =initializeApp(firebaseConfig);
 const storage = getStorage(app);
 const auth = getAuth(app);
 const database = getDatabase(app);
+const functions = getFunctions(app);
 //const firestore = getFirestore(app);
+
+// Connect to functions emulator in development
+if (process.env.NODE_ENV === 'development') {
+  connectFunctionsEmulator(functions, 'localhost', 5001);
+}
 
 export {getAuth,  createUserWithEmailAndPassword, 
     updateProfile, 
     onAuthStateChanged, 
     signInWithEmailAndPassword, 
-    signOut, auth,database,storage}
+    signOut, auth,database,storage,functions}

@@ -5,30 +5,29 @@
 //   "Set quicktype target language"
 
 export interface IUser {
-    email?:           string;
+    email:           string;
+    uid:             string;
+    firstName:   string;
+    lastName:    string;
+    address:      IAddress | null;
+    phoneNumber: string;
+    dob?: string;
     emailVerified?:   boolean;
     isAnonymous?:     boolean;
-    uid:             string;
-    phoneNumber?: string;
     photoURL?:    string;
-    firstName?:   string;
-    lastName?:    string;
-    address?:      IAddress;
-    dob?: string;
     bio?: string;
     occupation?: string;
     company?: string;
-    website?: string;
 }
 export interface IInitUser {
     email:           string;
-    phoneNumber: number;
-    image?:    File[];
+    phoneNumber: string;
     firstName:   string;
     lastName:    string;
-    address?:     string;
+    address:     IAddress | null;
     password:string;
-    dob?: string;
+    dob: string;
+    image?:    File[];
 }
 
 //create an interface for address

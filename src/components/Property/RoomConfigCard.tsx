@@ -1,15 +1,15 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box, IconButton } from '@mui/material';
-import { Room } from '../../hooks/propertyHooks';
 import { Colors } from '../constants';
 import RoomIcon from '@mui/icons-material/Room';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
+import { RoomType } from '../../hooks';
 
 interface RoomConfigCardProps {
-  room: Room;
-  onEdit: (room: Room) => void;
+  room: RoomType;
+  onEdit: (room: RoomType) => void;
   onDelete: (roomId: string) => void;
 }
 
@@ -53,10 +53,10 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
             </Box>
             <Box>
               <Typography variant="h6" fontWeight={600} color={Colors.blue}>
-                {room.type}
+                {room.name}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {room.count} room{room.count > 1 ? 's' : ''} available
+                {room.quantityAvailable} room{room.quantityAvailable > 1 ? 's' : ''} available
               </Typography>
             </Box>
           </Box>
@@ -108,7 +108,7 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
               textShadow: '0 1px 2px rgba(0,0,0,0.1)'
             }}
           >
-            ${room.price}
+            ${room.pricePerNight.toFixed(2)}
             <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 0.5 }}>
               /night
             </Typography>

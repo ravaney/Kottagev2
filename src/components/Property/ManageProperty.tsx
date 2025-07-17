@@ -14,7 +14,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Kottage, Room, useMyProperties, useDeleteProperty, useUpdateProperty } from '../../hooks/propertyHooks';
+import { Kottage, RoomType, useMyProperties, useDeleteProperty, useUpdateProperty } from '../../hooks/propertyHooks';
 import { Colors } from '../constants';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -40,7 +40,7 @@ export default function ManageProperty() {
   const updateProperty = useUpdateProperty();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [roomDialogOpen, setRoomDialogOpen] = useState(false);
-  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+  const [editingRoom, setEditingRoom] = useState<RoomType | null>(null);
   const [isAddingRoom, setIsAddingRoom] = useState(false);
   const [editPropertyOpen, setEditPropertyOpen] = useState(false);
 
@@ -69,9 +69,9 @@ export default function ManageProperty() {
     }
   };
 
-  const handleSaveRoom = async (roomData: Partial<Room>) => {
-    if (!property || !roomData.type || !roomData.count || !roomData.price) return;
-    
+  const handleSaveRoom = async (roomData: Partial<RoomType>) => {
+    if (!property || !roomData.name || !roomData.quantityAvailable || !roomData.pricePerNight) return;
+
     setIsAddingRoom(true);
     
     try {
@@ -79,27 +79,29 @@ export default function ManageProperty() {
       
       if (editingRoom) {
         // Update existing room
-        updatedRooms = property.roomConfigurations?.map(room => 
+        updatedRooms = property.roomTypes?.map(room => 
           room.id === editingRoom.id 
             ? { ...room, ...roomData }
             : room
         ) || [];
       } else {
         // Add new room
-        const roomToAdd: Room = {
+        const roomToAdd: RoomType = {
           id: Date.now().toString(),
-          type: roomData.type,
-          count: roomData.count,
-          price: roomData.price,
-          description: roomData.description,
-          images: []
+          name: roomData.name,
+          quantityAvailable: roomData.quantityAvailable,
+          pricePerNight: roomData.pricePerNight,
+          description: roomData.description || '',
+          amenities: roomData.amenities || [],
+          images: [],
+          maxGuests: roomData.maxGuests || 1,
         };
-        updatedRooms = [...(property.roomConfigurations || []), roomToAdd];
+        updatedRooms = [...(property.roomTypes || []), roomToAdd];
       }
       
       await updateProperty.mutateAsync({
         ...property,
-        roomConfigurations: updatedRooms
+        roomTypes: updatedRooms
       });
       
       setRoomDialogOpen(false);
@@ -111,7 +113,7 @@ export default function ManageProperty() {
     }
   };
   
-  const handleEditRoom = (room: Room) => {
+  const handleEditRoom = (room: RoomType) => {
     setEditingRoom(room);
     setRoomDialogOpen(true);
   };
@@ -125,24 +127,17 @@ export default function ManageProperty() {
     if (!property) return;
     
     try {
-      const updatedRooms = property.roomConfigurations?.filter(room => room.id !== roomId) || [];
+      const updatedRooms = property.roomTypes?.filter(room => room.id !== roomId) || [];
       await updateProperty.mutateAsync({
         ...property,
-        roomConfigurations: updatedRooms
+        roomTypes: updatedRooms
       });
     } catch (error) {
       console.error('Failed to delete room:', error);
     }
   };
   
-  const handleEditProperty = async (updatedProperty: Kottage) => {
-    try {
-      await updateProperty.mutateAsync(updatedProperty);
-      setEditPropertyOpen(false);
-    } catch (error) {
-      console.error('Failed to update property:', error);
-    }
-  };
+ 
 
   if (!property) {
     return (
@@ -256,20 +251,16 @@ export default function ManageProperty() {
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={6}>
            
-            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-              <BedIcon sx={{ color: Colors.blue }} />
-              <Typography>{property.rooms} Bedrooms</Typography>
-            </Box>
+            
             <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
               <BathtubIcon sx={{ color: Colors.blue }} />
-              <Typography>{property.bathrooms} Bathrooms</Typography>
+              <Typography>{property.roomTypes?.reduce((total, room) => total + (room.quantityAvailable || 0), 0)} Bathrooms</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
             <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
               <PeopleIcon sx={{ color: Colors.blue }} />
-              <Typography>Max {property.guests} Guests</Typography>
-            </Box>
+              <Typography>Max {property.roomTypes?.reduce((total, room) => total + (room.maxGuests || 0), 0)} Guests</Typography>            </Box>
             <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
               <PhoneIcon sx={{ color: Colors.blue }} />
               <Typography>{property.phone}</Typography>
@@ -319,9 +310,9 @@ export default function ManageProperty() {
             </Button>
           </Box>
           
-          {property.roomConfigurations && property.roomConfigurations.length > 0 ? (
+          {property.roomTypes && property.roomTypes.length > 0 ? (
             <Grid container spacing={2}>
-              {property.roomConfigurations.map((room) => (
+              {property.roomTypes.map((room) => (
                 <Grid item xs={12} md={6} key={room.id}>
                   <RoomConfigCard 
                     room={room}
@@ -372,8 +363,6 @@ export default function ManageProperty() {
         open={editPropertyOpen}
         property={property}
         onClose={() => setEditPropertyOpen(false)}
-        onSave={handleEditProperty}
-        isLoading={updateProperty.isPending}
       />
     </Box>
   );
