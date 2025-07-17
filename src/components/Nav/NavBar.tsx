@@ -4,16 +4,26 @@ import Menu from "./Menu";
 import { useMediaQuery, useTheme } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks";
 import { AnimatedBadge } from '../common/AnimatedBadge';
+import { IconButton } from '@mui/material';
 
 const NavBar = () => {
   const { firebaseUser,loading } = useAuth();
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
   const gap = { childrenGap: 10 };
+  
+  const handleMessageClick = () => {
+    navigate('/MyAccount/Dashboard/messages');
+  };
+  
+  const handleActionCenterClick = () => {
+    navigate('/MyAccount/Dashboard/action-center');
+  };
   return (
     <Stack
       horizontal
@@ -70,10 +80,14 @@ const NavBar = () => {
             verticalAlign="center"
           >
             <AnimatedBadge badgeContent={1} color="primary" animate>
-              <MailIcon color="action" />
+              <IconButton onClick={handleMessageClick} size="small">
+                <MailIcon color="action" />
+              </IconButton>
             </AnimatedBadge>
             <AnimatedBadge badgeContent={6} color="secondary" animate>
-              <AnnouncementIcon color="action" />
+              <IconButton onClick={handleActionCenterClick} size="small">
+                <AnnouncementIcon color="action" />
+              </IconButton>
             </AnimatedBadge>
             
           </Stack>

@@ -13,7 +13,7 @@ import {
   Paper,
   Divider
 } from '@mui/material';
-import { Room, useAddPropertyImages } from '../../hooks/propertyHooks';
+import { RoomType, useAddPropertyImages } from '../../hooks/propertyHooks';
 import { Colors } from '../constants';
 import RoomIcon from '@mui/icons-material/Room';
 import NumbersIcon from '@mui/icons-material/Numbers';
@@ -25,9 +25,9 @@ import ImagePicker from '../ImagePicker';
 
 interface RoomConfigDialogProps {
   open: boolean;
-  editingRoom: Room | null;
+  editingRoom: RoomType | null;
   onClose: () => void;
-  onSave: (room: Partial<Room>) => Promise<void>;
+  onSave: (room: Partial<RoomType>) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -39,24 +39,29 @@ export default function RoomConfigDialog({
   isLoading 
 }: RoomConfigDialogProps) {
   const addPropertyImages = useAddPropertyImages();
-  const [roomData, setRoomData] = useState<Partial<Room>>({
-    type: editingRoom?.type || '',
-    count: editingRoom?.count || 1,
-    price: editingRoom?.price || 0,
-    description: editingRoom?.description || ''
+  const [roomData, setRoomData] = useState<Partial<RoomType>>({
+    name: editingRoom?.name || '',
+    quantityAvailable: editingRoom?.quantityAvailable || 1,
+    pricePerNight: editingRoom?.pricePerNight || 0,
+    description: editingRoom?.description || '',
+    images: editingRoom?.images || [],
+    maxGuests: editingRoom?.maxGuests || 1
   });
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   React.useEffect(() => {
     if (editingRoom) {
       setRoomData({
-        type: editingRoom.type,
-        count: editingRoom.count,
-        price: editingRoom.price,
-        description: editingRoom.description
+        name: editingRoom.name,
+        quantityAvailable: editingRoom.quantityAvailable,
+        pricePerNight: editingRoom.pricePerNight,
+        description: editingRoom.description,
+        images: editingRoom.images || [],
+        maxGuests: editingRoom.maxGuests || 1
+        
       });
     } else {
-      setRoomData({ type: '', count: 1, price: 0, description: '' });
+      setRoomData({ name: '', quantityAvailable: 1, pricePerNight: 0, description: '', images: [], maxGuests: 1 });
     }
     setSelectedImages([]);
   }, [editingRoom, open]);
@@ -69,7 +74,7 @@ export default function RoomConfigDialog({
       if (selectedImages.length > 0) {
         imageUrls = await addPropertyImages.mutateAsync({
           images: selectedImages,
-          propertyId: `room_${roomData.type || 'temp'}_${Date.now()}`
+          propertyId: `room_${roomData.name || 'temp'}_${Date.now()}`
         });
       }
       
@@ -88,12 +93,12 @@ export default function RoomConfigDialog({
   };
 
   const handleClose = () => {
-    setRoomData({ type: '', count: 1, price: 0, description: '' });
+    setRoomData({ name: '', quantityAvailable: 1, pricePerNight: 0, description: '', images: [], maxGuests: 1 });
     setSelectedImages([]);
     onClose();
   };
 
-  const isValid = roomData.type && roomData.count && roomData.price;
+  const isValid = roomData.name && roomData.quantityAvailable && roomData.pricePerNight;
 
   return (
     <Dialog 
@@ -159,9 +164,9 @@ export default function RoomConfigDialog({
               </Box>
               <TextField
                 fullWidth
-                label="Room Type"
-                value={roomData.type || ''}
-                onChange={(e) => setRoomData(prev => ({ ...prev, type: e.target.value }))}
+                label="Room Name"
+                value={roomData.name || ''}
+                onChange={(e) => setRoomData(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g., Master Bedroom, Guest Room, Studio"
                 variant="outlined"
                 sx={{
@@ -194,8 +199,8 @@ export default function RoomConfigDialog({
                     fullWidth
                     label="Number of Rooms"
                     type="number"
-                    value={roomData.count || 1}
-                    onChange={(e) => setRoomData(prev => ({ ...prev, count: parseInt(e.target.value) || 1 }))}
+                    value={roomData.quantityAvailable || 1}
+                    onChange={(e) => setRoomData(prev => ({ ...prev, quantityAvailable: parseInt(e.target.value) || 1 }))}
                     inputProps={{ min: 1 }}
                     sx={{
                       '& .MuiOutlinedInput-root': {
@@ -209,8 +214,8 @@ export default function RoomConfigDialog({
                     fullWidth
                     label="Price per Night"
                     type="number"
-                    value={roomData.price || 0}
-                    onChange={(e) => setRoomData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                    value={roomData.pricePerNight || 0}
+                    onChange={(e) => setRoomData(prev => ({ ...prev, pricePerNight: parseFloat(e.target.value) || 0 }))}
                     InputProps={{
                       startAdornment: <AttachMoneyIcon sx={{ color: Colors.raspberry, mr: 1 }} />
                     }}

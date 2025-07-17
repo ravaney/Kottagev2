@@ -221,7 +221,7 @@ export default function PropertyCard({ property }: Props) {
               fontWeight={700}
               sx={{ color: Colors.blue, mb: 1 }}
             >
-              ${property.price}.00 <Typography component="span" variant="body2" color="text.secondary">per night</Typography>
+              $tbd <Typography component="span" variant="body2" color="text.secondary">per night</Typography>
             </Typography>
             
             {isMyProperty ? (

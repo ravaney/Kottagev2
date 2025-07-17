@@ -12,22 +12,26 @@ interface MonthlyIncomeCardProps {
 
 export default function MonthlyIncomeCard({ amount, percentage, isPositive }: MonthlyIncomeCardProps) {
   return (
-    <Card elevation={2} sx={{ borderRadius: 2 }}>
-      <CardContent sx={{ p: 2 }}>
-        <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
-          <AttachMoneyIcon sx={{ color: Colors.blue, fontSize: 20 }} />
-          <Typography variant="body2" color="text.secondary">
-            This Month
-          </Typography>
-        </Box>
-        <Typography variant="h5" fontWeight={700} color={Colors.blue}>
-          {amount}
-        </Typography>
-        <Box display="flex" alignItems="center" gap={0.5} sx={{ mt: 1 }}>
-          <ArrowUpwardIcon sx={{ color: isPositive ? 'green' : 'red', fontSize: 16 }} />
-          <Typography variant="caption" color={isPositive ? 'green' : 'red'} fontWeight={600}>
-            {percentage}
-          </Typography>
+    <Card elevation={2} sx={{ borderRadius: '4px', height: 80 }}>
+      <CardContent sx={{ p: 1.5 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box>
+            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 0.5 }}>
+              <AttachMoneyIcon sx={{ color: Colors.blue, fontSize: 18 }} />
+              <Typography variant="caption" color="text.secondary">
+                This Month
+              </Typography>
+            </Box>
+            <Typography variant='subtitle1' fontWeight={700} color={Colors.blue}>
+              {amount}
+            </Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap={0.5} sx={{ mt: 0.5 }}>
+            <ArrowUpwardIcon sx={{ color: isPositive ? 'green' : 'red', fontSize: 14 }} />
+            <Typography variant="caption" color={isPositive ? 'green' : 'red'} fontWeight={600}>
+              {percentage}
+            </Typography>
+          </Box>
         </Box>
       </CardContent>
     </Card>
