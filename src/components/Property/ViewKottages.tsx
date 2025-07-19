@@ -4,10 +4,10 @@ import BigGallery from "./BigGallery";
 import PropertyNav from "./PropertyNav";
 import AboutProperty from "./AboutProperty";
 import Policy from "./Policy";
-import BookingMenu from "./BookingMenu";
 import Reviews from "./Reviews";
 import { Kottage } from "../../hooks";
 import { useLocation } from "react-router-dom";
+import CreateReservation from "./CreateReservation";
 
 
 
@@ -15,6 +15,7 @@ import { useLocation } from "react-router-dom";
 function ViewKottages() {
   //get the kottage from the useLocation hook or props
   const kottage = useLocation().state?.kottage as Kottage;
+  console.log("Kottage in ViewKottages:", kottage);
   const gap = { childrenGap: 10 };
   return (
     <Stack
@@ -30,7 +31,7 @@ function ViewKottages() {
         <Policy />
         <Reviews />
       </Stack>
-      <BookingMenu kottage={kottage} />
+      <CreateReservation kottage={kottage} />
     </Stack>
   );
 }

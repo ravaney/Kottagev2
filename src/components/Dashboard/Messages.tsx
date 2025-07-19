@@ -33,7 +33,7 @@ export default function Messages() {
 
   return (
     <Box>
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+      <Paper elevation={3} sx={{ p: 2 }}>
         <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
           <MessageIcon sx={{ color: Colors.blue, fontSize: 28 }} />
           <Typography variant="h5" fontWeight={600} color={Colors.blue}>

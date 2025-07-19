@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IAddress } from "../../public/QuickType";
-import { push, ref, set, update } from "firebase/database";
+import { push, getDatabase, ref, query, orderByChild, equalTo, get, set, update } from "firebase/database";
 import { auth, database } from "../firebase";
-
+import { getAuth } from "firebase/auth";
 export interface Guest {
   name: string;
   email?: string;
@@ -32,7 +32,7 @@ export interface PaymentDetails {
   paidAt?: string;
 }
 export interface Reservation {
-  id: string;
+  reservationId: string;
   userId: string;
   checkIn: string; // ISO 8601 format: e.g., "2025-07-20T15:00:00Z"
   checkOut: string;
@@ -46,6 +46,11 @@ export interface Reservation {
   notes?: string; // optional user message
   payment?: PaymentDetails;
   property: KottageStump;
+  edits?: Array<{
+    userId: string;
+    timestamp: string;
+    changes: Partial<Reservation>;
+  }>;
 }
 
 
@@ -58,10 +63,8 @@ export const useCreateReservation = () => {
       if (!user) throw new Error('Not authenticated');
 
       const newReservationRef = push(ref(database, 'reservations'));
-      const reservationId = newReservationRef.key!;
-      
+      const reservationId = `BK-${newReservationRef.key!}-RES`;      
       const fullReservation: Reservation = {
-        id: reservationId,
         ...reservation,
         userId: user.uid,
         createdAt: Date.now().toString(),
@@ -123,5 +126,31 @@ export const useDeleteReservation = () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
     },
+  });
+};
+
+export const useGetMyReservations = () => {
+  return useQuery({
+    queryKey: ['userReservations'],
+    queryFn: async () => {
+      const db = getDatabase();
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+
+      if (!currentUser) return [];
+
+      const reservationsRef = ref(db, "reservations");
+      const q = query(reservationsRef, orderByChild("userId"), equalTo(currentUser.uid));
+
+      const snapshot = await get(q);
+
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        return Object.entries(data).map(([id, res]) => ({ id, ...(res as any) }));
+      } else {
+        return [];
+      }
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

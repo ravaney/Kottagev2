@@ -12,16 +12,16 @@ interface UpcomingReservationsProps {
 
 export default function UpcomingReservations({ reservations }: UpcomingReservationsProps) {
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
+    <Paper elevation={3} sx={{ p: 2 ,mb:1}}>
       <Box display="flex" alignItems="center" gap={1} sx={{ mb: 3 }}>
         <BookmarkIcon sx={{ color: Colors.raspberry, fontSize: 28 }} />
         <Typography variant="h6" fontWeight={600} color={Colors.blue}>
           Upcoming Reservations
         </Typography>
       </Box>
-      <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+      <List sx={{  overflow: 'auto' }}>
         {reservations.map((reservation) => (
-          <ListItem key={reservation.id} sx={{ px: 0, py: 1 }}>
+          <ListItem key={reservation.reservationId} sx={{ px: 0, py: 1 }}>
             <Card sx={{ width: '100%', mb: 1 }}>
               <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
                 <Typography variant="subtitle2" fontWeight={600} color={Colors.blue}>
