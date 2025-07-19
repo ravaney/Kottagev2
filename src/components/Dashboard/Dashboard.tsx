@@ -1,54 +1,24 @@
 import React from 'react';
 import {
   Box,
-  Paper,
-  Typography,
   Grid,
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  Chip,
 } from '@mui/material';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay } from 'date-fns';
-import { enUS } from 'date-fns/locale';
-import { Colors } from '../constants';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
-import MonthlyIncomeCard from './MonthlyIncomeCard';
-import ReservationsCard from './ReservationsCard';
-import PropertiesCard from './PropertiesCard';
+import { enUS } from 'date-fns/locale';
+
+import IncomeChartCard from './IncomeChartCard';
+import ReservationStatusCard from './ReservationStatusCard';
+import EarningsBreakdownCard from './EarningsBreakdownCard';
 import BookingCalendar from './BookingCalendar';
 import UpcomingReservations from './UpcomingReservations';
 import { Reservation, ReservationStatus } from '../../hooks/reservationHooks';
 
-const locales = {
-  'en-US': enUS,
-};
 
 // Mock data
-const monthlyIncomeData = [
-  { month: 'Jan', income: 2400 },
-  { month: 'Feb', income: 1398 },
-  { month: 'Mar', income: 9800 },
-  { month: 'Apr', income: 3908 },
-  { month: 'May', income: 4800 },
-  { month: 'Jun', income: 3800 },
-];
 
 const upcomingReservations: Reservation[] = [
   {
-    id: '1',
+    reservationId: '1',
     guests: [
       { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
     ],
@@ -71,7 +41,7 @@ const upcomingReservations: Reservation[] = [
     userId: '',
   },
   {
-    id: '2',
+    reservationId: '2',
     guests: [
       { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
     ],
@@ -94,7 +64,7 @@ const upcomingReservations: Reservation[] = [
     userId: '',
   },
   {
-    id: '3',
+    reservationId: '3',
     guests: [
       {
         name: 'Mike Johnson',
@@ -126,7 +96,7 @@ const upcomingReservations: Reservation[] = [
     userId: '',
   },
   {
-    id: '4',
+    reservationId: '4',
     guests: [
       {
         name: 'Jessicca Alba',
@@ -159,71 +129,23 @@ export default function Dashboard() {
     <Grid container spacing={1} >
       {/* Monthly Income Section */}
       <Grid item xs={12} lg={8} >
-        <Paper elevation={3} sx={{ p: 2, height: 400 }}>
-          <Box display="flex" alignItems="center" gap={1} sx={{ mb: 3 }}>
-            <TrendingUpIcon sx={{ color: Colors.blue, fontSize: 28 }} />
-            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
-              Monthly Income
-            </Typography>
-          </Box>
-          <Grid container spacing={2}>
-            {/* Chart - 2/3 width */}
-            <Grid item xs={8}>
-              <ResponsiveContainer width="100%">
-                <BarChart data={monthlyIncomeData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis
-                    tickFormatter={(value) => `$${value.toLocaleString()}`}
-                  />
-                  <Tooltip
-                    formatter={(value) => [
-                      `$${value.toLocaleString()}`,
-                      'Income',
-                    ]}
-                  />
-                  <Bar
-                    dataKey="income"
-                    fill={Colors.blue}
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </Grid>
-
-            {/* Stats Cards - 1/3 width */}
-            <Grid item xs={4}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                gap={1}
-                height={300}
-                justifyContent="space-between"
-              >
-                <MonthlyIncomeCard
-                  amount="$4,200"
-                  percentage="+12.5%"
-                  isPositive={true}
-                />
-                <ReservationsCard
-                  count={24}
-                  description="Unique guests this month"
-                  percentage="+8.3%"
-                  isPositive={true}
-                />
-                <PropertiesCard
-                  totalProperties={8}
-                  status={{ vacant: 5, occupied: 2, unlisted: 1 }}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </Paper>
+        <IncomeChartCard />
+        <ReservationStatusCard
+          statusCounts={{
+            confirmed: 12,
+            pending: 5,
+            cancelled: 3,
+            completed: 18
+          }}
+        />
+        <EarningsBreakdownCard />
       </Grid>
 
       {/* Right Column - Properties, Calendar, and Reservations */}
       <Grid item xs={12} lg={4}>
-        <Box display="flex" flexDirection="column" gap={3}>
+        <Box display="flex" flexDirection="column" gap={1}>
+
+
           <BookingCalendar events={upcomingReservations} />
 
           <UpcomingReservations reservations={upcomingReservations} />

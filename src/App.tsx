@@ -29,6 +29,8 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import ActionCenter from "./components/Dashboard/ActionCenter";
 import Messages from "./components/Dashboard/Messages";
 import ManageReservations from "./components/Dashboard/ManageReservations";
+import PropertyManagement from "./components/Dashboard/PropertyManagement";
+import Explore from "./components/Property/Explore";
 
 function App() {
   setIconOptions({ disableWarnings: true });
@@ -54,6 +56,10 @@ function App() {
         {
           path: "/Kottages",
           element: <Kottages />,
+        },
+        {
+          path: "/explore",
+          element: <Explore />,
         },
         {
           path: "/Kottages/:id",
@@ -88,6 +94,10 @@ function App() {
                 {
                   path: "reservations",
                   element: <ManageReservations />,
+                },
+                {
+                  path: "properties",
+                  element: <PropertyManagement />,
                 },
               ],
             },

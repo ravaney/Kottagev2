@@ -14,6 +14,7 @@ import {
 import { Kottage, useUpdateProperty } from '../../hooks/propertyHooks';
 import { Colors } from '../constants';
 import { IAddress } from '../../../public/QuickType';
+import MuiPhoneNumber from 'mui-phone-number';
 
 interface EditPropertyDialogProps {
   open: boolean;
@@ -92,14 +93,15 @@ export default function EditPropertyDialog({
             </Grid>
 
             <Grid item xs={12}>
-              <TextField
-                fullWidth
+              <MuiPhoneNumber
                 label="Phone"
                 value={propertyData.phone || ''}
-                onChange={(e) =>
+                 defaultCountry={'us'}
+                onChange={(value) =>
+
                   setPropertyData((prev) => ({
                     ...prev,
-                    phone: e.target.value,
+                    phone: value as string,
                   }))
                 }
               />

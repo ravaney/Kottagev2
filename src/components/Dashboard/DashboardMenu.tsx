@@ -6,6 +6,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MessageIcon from '@mui/icons-material/Message';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
 import { Colors } from '../constants';
 import { useAuth } from '../../hooks';
 
@@ -26,6 +27,7 @@ export default function DashboardMenu() {
     if (path.includes('action-center')) return 1;
     if (path.includes('messages')) return 2;
     if (path.includes('reservations')) return 3;
+    if (path.includes('properties')) return 4;
     return 0; // Default to Home
   };
   
@@ -34,7 +36,8 @@ export default function DashboardMenu() {
       '/MyAccount/Dashboard',
       '/MyAccount/Dashboard/action-center',
       '/MyAccount/Dashboard/messages',
-      '/MyAccount/Dashboard/reservations'
+      '/MyAccount/Dashboard/reservations',
+      '/MyAccount/Dashboard/properties'
     ];
     navigate(routes[newValue]);
   };
@@ -44,6 +47,7 @@ export default function DashboardMenu() {
       <Box sx={{ 
         p: 3, 
         mb: 0, 
+        pb:0,
         position: 'sticky', 
         top: 60, 
         backgroundColor: 'white', 
@@ -74,7 +78,7 @@ export default function DashboardMenu() {
         </Box>
         <Divider sx={{ borderColor: '#e0e0e0' }} />
         
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 0 }}>
           <Tabs 
             value={getActiveTab()} 
             onChange={handleTabChange}
@@ -122,6 +126,12 @@ export default function DashboardMenu() {
               label="Manage Reservations" 
               iconPosition="start"
               sx={{ color: getActiveTab() === 3 ? Colors.blue : 'text.secondary' }}
+            />
+            <Tab 
+              icon={<HolidayVillageIcon sx={{ fontSize: 20 }} />} 
+              label="Property Management" 
+              iconPosition="start"
+              sx={{ color: getActiveTab() === 4 ? Colors.blue : 'text.secondary' }}
             />
           </Tabs>
         </Box>

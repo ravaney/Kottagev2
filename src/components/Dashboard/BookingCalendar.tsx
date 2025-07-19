@@ -50,16 +50,16 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
     const processedIds = new Set<string>();
     
     reservations.forEach(reservation => {
-      if (processedIds.has(reservation.id)) return;
-      
+      if (processedIds.has(reservation.reservationId)) return;
+
       const startDate = new Date(reservation.checkIn);
       const endDate = new Date(reservation.checkOut);
       
       // Find overlapping reservations
       const overlapping = reservations.filter(other => {
-        if (other.id === reservation.id) return true;
-        if (processedIds.has(other.id)) return false;
-        
+        if (other.reservationId === reservation.reservationId) return true;
+        if (processedIds.has(other.reservationId)) return false;
+
         const otherStart = new Date(other.checkIn);
         const otherEnd = new Date(other.checkOut);
         
@@ -68,12 +68,12 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
       });
       
       // Mark all overlapping as processed
-      overlapping.forEach(r => processedIds.add(r.id));
+      overlapping.forEach(r => processedIds.add(r.reservationId));
       
       const isMultiple = overlapping.length > 1;
       
       calendarEvents.push({
-        id: reservation.id,
+        id: reservation.reservationId,
         title: isMultiple ? 'Multiple Reservations' : (reservation.property?.name || 'Reservation'),
         start: startDate,
         end: endDate,
@@ -178,7 +178,7 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
                       {selectedEvent.reservations.length} Overlapping Reservations
                     </Typography>
                     {selectedEvent.reservations.map((reservation, index) => (
-                      <Box key={reservation.id} sx={{ mb: 3, p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
+                      <Box key={reservation.reservationId} sx={{ mb: 3, p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
                         <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
                           <PersonIcon sx={{ color: Colors.raspberry, fontSize: 20 }} />
                           <Typography variant="subtitle1" fontWeight={600}>

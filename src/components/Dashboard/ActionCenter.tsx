@@ -5,6 +5,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import InfoIcon from '@mui/icons-material/Info';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Colors } from '../constants';
+import MaintenanceRequestsCard from './MaintenanceRequestsCard';
 
 export default function ActionCenter() {
   const notifications = [
@@ -42,7 +43,44 @@ export default function ActionCenter() {
 
   return (
     <Box>
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+      <Paper elevation={3} sx={{ p: 2 }}>
+         <MaintenanceRequestsCard
+              requests={[
+                {
+                  id: '1',
+                  propertyName: 'Beach House',
+                  type: 'cleaning',
+                  description: 'Regular cleaning service needed after guest checkout on June 20.',
+                  status: 'scheduled',
+                  priority: 'medium',
+                  createdAt: 'Jun 15, 2023',
+                  scheduledFor: 'Jun 20, 2023',
+                  assignedTo: 'Cleaning Service Inc.'
+                },
+                {
+                  id: '2',
+                  propertyName: 'Mountain Cabin',
+                  type: 'repair',
+                  description: 'Leaking faucet in master bathroom needs repair.',
+                  status: 'pending',
+                  priority: 'high',
+                  createdAt: 'Jun 14, 2023'
+                },
+                {
+                  id: '3',
+                  propertyName: 'City Apartment',
+                  type: 'other',
+                  description: 'Replace light bulbs in living room and bedroom.',
+                  status: 'completed',
+                  priority: 'low',
+                  createdAt: 'Jun 10, 2023',
+                  scheduledFor: 'Jun 12, 2023',
+                  assignedTo: 'John (Maintenance)'
+                }
+              ]}
+              onNewRequest={() => console.log('New request')}
+              onUpdateStatus={(id, status) => console.log(`Update status for ${id}: ${status}`)}
+            />
         <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
           <NotificationsIcon sx={{ color: Colors.blue, fontSize: 28 }} />
           <Typography variant="h5" fontWeight={600} color={Colors.blue}>

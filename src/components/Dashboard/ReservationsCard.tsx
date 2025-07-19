@@ -24,12 +24,14 @@ export default function ReservationsCard({ count, description, percentage, isPos
                 Reservations
               </Typography>
             </Box>
-            <Typography variant='subtitle1' fontWeight={700} color={Colors.raspberry}>
-              {count}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem', lineHeight: 1 }}>
-              {description}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+              <Typography variant='subtitle1' fontWeight={700} color={Colors.raspberry}>
+                {count}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem', lineHeight: 1 }}>
+                {description}
+              </Typography>
+            </Box>
           </Box>
           <Box display="flex" alignItems="center" gap={0.5} sx={{ mt: 0.5 }}>
             {isPositive ? (

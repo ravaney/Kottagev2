@@ -11,7 +11,7 @@ import { AiOutlineCar as Car } from "react-icons/ai";
 import { PiBackpackThin as Backpackers } from "react-icons/pi";
 import { useMediaQuery, useTheme } from "@mui/material";
 import style from "../../styles/Splash.module.css";
-
+import { MdOutlineExplore } from "react-icons/md";
 export default function CommandMenu() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -25,6 +25,7 @@ export default function CommandMenu() {
       EatDrink: <EatDrink />,
       Car: <Car />,
       Backpackers: <Backpackers />,
+      ExploreIcon: <MdOutlineExplore />,
     },
   });
 
@@ -99,11 +100,11 @@ export default function CommandMenu() {
         ]}
         items={[
           {
-            key: "Kottages",
-            text: "Kottages",
+            key: "Explore",
+            text: "Explore",
             style: getItemStyle(),
             iconProps: {
-              iconName: "MdHolidayVillage",
+              iconName: "ExploreIcon",
               styles: {
                 root: {
                   color: Colors.blue,
@@ -112,9 +113,9 @@ export default function CommandMenu() {
               },
             },
             onClick: () => {
-              navigateToRoute("/Kottages");
+              navigateToRoute("/Explore");
             },
-            className: checkRoute("/Kottages"),
+            className: checkRoute("/Explore"),
           },
           {
             key: "Excursions",
