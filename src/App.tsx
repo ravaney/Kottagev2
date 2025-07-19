@@ -6,6 +6,7 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
+import { getSubdomain, isSubdomain } from "./utils/subdomainRouter";
 import Splash from "./components/Home/Splash";
 import Login from "./components/Auth/Login";
 import CreateAccount from "./components/Auth/CreateAccount";
@@ -31,10 +32,17 @@ import Messages from "./components/Dashboard/Messages";
 import ManageReservations from "./components/Dashboard/ManageReservations";
 import PropertyManagement from "./components/Dashboard/PropertyManagement";
 import Explore from "./components/Property/Explore";
+import AdminLanding from "./components/Admin/AdminLanding";
+import SubdomainSimulator from "./components/Admin/SubdomainSimulator";
 
 function App() {
   setIconOptions({ disableWarnings: true });
-  const router = createBrowserRouter([
+  
+  // Check if we're on the admin subdomain
+  const isAdminSite = isSubdomain('admin');
+  
+  // Create different routers based on subdomain
+  const mainRouter = createBrowserRouter([
     {
       path: "/",
       element: <Layout />,
@@ -146,10 +154,23 @@ function App() {
       ],
     },
   ]);
+
+  // Create admin router for admin subdomain
+  const adminRouter = createBrowserRouter([
+    {
+      path: "*",
+      element: <AdminLanding />,
+      errorElement: <PageNotFound />
+    }
+  ]);
+
+  // Select the appropriate router based on subdomain
+  const router = isAdminSite ? adminRouter : mainRouter;
+
   return (
     <QueryProvider>
-      
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
+      {process.env.NODE_ENV === 'development' && <SubdomainSimulator />}
     </QueryProvider>
   );
 }
