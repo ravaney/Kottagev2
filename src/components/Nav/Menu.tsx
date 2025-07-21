@@ -53,16 +53,21 @@ export default function CommandMenu() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "center",
         }}
         PaperProps={{
           sx: {
             minWidth: 220,
             borderRadius: 2,
             boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-            border: '1px solid rgba(0,0,0,0.08)'
+            border: '1px solid rgba(0,0,0,0.08)',
+            mt: 1
           }
         }}
       >

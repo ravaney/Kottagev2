@@ -19,7 +19,6 @@ export default function Sidebar() {
   const menuItems = [
     { path: "/MyAccount/Dashboard", icon: DashboardIcon, label: "Dashboard" },
     { path: "/MyAccount/Profile", icon: AccountBoxIcon, label: "My Account" },
-    { path: "/MyAccount/MyKottages", icon: HolidayVillageIcon, label: "My Properties" },
     { path: "/MyAccount/MyBookings", icon: LuggageIcon, label: "My Bookings" },
     { path: "/MyAccount/Favourites", icon: FavoriteIcon, label: "Favourites" },
     { path: "/MyAccount/Settings", icon: SettingsIcon, label: "Settings" }
