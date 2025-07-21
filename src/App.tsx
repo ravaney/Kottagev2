@@ -32,6 +32,9 @@ import ManageReservations from "./components/Dashboard/ManageReservations";
 import PropertyManagement from "./components/Dashboard/PropertyManagement";
 import AddProperty from "./components/Dashboard/AddProperty";
 import Explore from "./components/Property/Explore";
+import PropertyAnalyticsPage from "./components/Dashboard/PropertyAnalyticsPage";
+import ManageProperty from "./components/Property/ManageProperty";
+// Subdomain-specific imports
 import AdminLanding from "./components/Admin/AdminLanding";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import RegionalAssignment from "./components/Admin/RegionalAssignment";
@@ -47,8 +50,8 @@ import PayoutDispute from "./components/Staff/PayoutDispute";
 import SubdomainSimulator from "./components/Admin/SubdomainSimulator";
 import CEOAnalytics from "./components/Admin/CEOAnalytics";
 import EmployeeManagement from "./components/Admin/EmployeeManagement";
-import PropertyAnalyticsPage from "./components/Dashboard/PropertyAnalyticsPage";
-import ManageProperty from "./components/Property/ManageProperty";
+import ProtectedAdminRoute from "./components/Admin/ProtectedAdminRoute";
+import ProtectedStaffRoute from "./components/Staff/ProtectedStaffRoute";
 
 function App() {
   setIconOptions({ disableWarnings: true });
@@ -173,7 +176,7 @@ function App() {
   const adminRouter = createBrowserRouter([
     {
       path: "/",
-      element: <AdminLanding />,
+      element: <ProtectedAdminRoute><AdminLanding /></ProtectedAdminRoute>,
       errorElement: <PageNotFound />,
       children: [
         {
@@ -240,7 +243,7 @@ function App() {
   const staffRouter = createBrowserRouter([
     {
       path: "/",
-      element: <StaffLanding />,
+      element: <ProtectedStaffRoute><StaffLanding /></ProtectedStaffRoute>,
       errorElement: <PageNotFound />,
       children: [
         {
