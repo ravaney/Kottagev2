@@ -157,7 +157,7 @@ export default function PropertyCard({ property }: Props) {
             <Box display="flex" gap={1} sx={{ mb: 1 }}>
               <Chip 
                 icon={<EventIcon />}
-                label={`${property.currentReservations || 0} Current`}
+                label={`${ 0} Current`}
                 size="small"
                 variant="outlined"
                 sx={{ 
@@ -168,7 +168,7 @@ export default function PropertyCard({ property }: Props) {
               />
               <Chip 
                 icon={<HistoryIcon />}
-                label={`${property.pastReservations || 0} Past`}
+                label={`${ 0} Past`}
                 size="small"
                 variant="outlined"
                 sx={{ 

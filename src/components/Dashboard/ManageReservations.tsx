@@ -82,108 +82,6 @@ export default function ManageReservations() {
     }))
   }));
   
-  // Fallback to mock data if needed
-  const mockReservations = [
-    {
-      id: '1',
-      guest: 'John Doe',
-      email: 'john.doe@email.com',
-      phone: '+1-555-0123',
-      property: 'Villa Velha',
-      checkIn: '2025-01-15',
-      checkOut: '2025-01-20',
-      status: ReservationStatus.Completed,
-      amount: '$1,200',
-      totalPrice: 1200,
-      guests: 2,
-      notes: 'Early check-in requested'
-    },
-    {
-      id: '2',
-      guest: 'Jane Smith',
-      email: 'jane.smith@email.com',
-      phone: '+1-555-0456',
-      property: 'Beach House',
-      checkIn: '2025-01-18',
-      checkOut: '2025-01-25',
-      status: ReservationStatus.Pending,
-      amount: '$2,100',
-      totalPrice: 2100,
-      guests: 4,
-      notes: 'Anniversary celebration',
-      changeHistory: [
-        {
-          date: '2023-06-15 14:30',
-          user: 'Admin User',
-          changes: [
-            { field: 'Check-in Date', oldValue: '2025-01-15', newValue: '2025-01-18' },
-            { field: 'Check-out Date', oldValue: '2025-01-22', newValue: '2025-01-25' }
-          ]
-        },
-        {
-          date: '2023-06-10 09:15',
-          user: 'Jane Smith',
-          changes: [
-            { field: 'Guests', oldValue: '2', newValue: '4' }
-          ]
-        }
-      ]
-    },
-    {
-      id: '3',
-      guest: 'Mike Johnson',
-      email: 'mike.johnson@email.com',
-      phone: '+1-555-0789',
-      property: 'Mountain Cabin',
-      checkIn: '2025-01-22',
-      checkOut: '2025-01-28',
-      status: ReservationStatus.Confirmed,
-      amount: '$900',
-      totalPrice: 900,
-      guests: 3,
-      notes: 'Business trip',
-      changeHistory: [
-        {
-          date: '2023-05-20 11:45',
-          user: 'Admin User',
-          changes: [
-            { field: 'Status', oldValue: 'Pending', newValue: 'Confirmed' }
-          ]
-        }
-      ]
-    },
-    {
-      id: '4',
-      guest: 'Jessica Alba',
-      email: 'jessica.alba@email.com',
-      phone: '+1-555-0321',
-      property: 'Mountain Cabin',
-      checkIn: '2025-01-25',
-      checkOut: '2025-01-30',
-      status: ReservationStatus.Cancelled,
-      amount: '$900',
-      totalPrice: 900,
-      guests: 2,
-      notes: 'Cancelled due to emergency',
-      changeHistory: [
-        {
-          date: '2023-06-18 16:20',
-          user: 'Admin User',
-          changes: [
-            { field: 'Status', oldValue: 'Confirmed', newValue: 'Cancelled' }
-          ]
-        },
-        {
-          date: '2023-06-01 10:30',
-          user: 'Jessica Alba',
-          changes: [
-            { field: 'Check-out Date', oldValue: '2025-01-28', newValue: '2025-01-30' }
-          ]
-        }
-      ]
-    }
-  ];
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case ReservationStatus.Confirmed: return 'success';
@@ -221,6 +119,28 @@ export default function ManageReservations() {
     // Don't close the dialog immediately - the EditReservationDialog will handle showing success and closing
   };
   
+  const handleStatusFilterChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newFilter: string,
+  ) => {
+    if (newFilter !== null) {
+      setStatusFilter(newFilter);
+    }
+  };
+  
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  // Filter reservations based on selected status and search query
+  const filteredReservations = reservations
+    .filter(reservation => statusFilter === 'all' || reservation.status === statusFilter)
+    .filter(reservation => 
+      reservation.guest.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reservation.property.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reservation.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
   // Add loading state display
   const renderContent = () => {
     if (isLoading) {
@@ -431,24 +351,6 @@ export default function ManageReservations() {
       </React.Fragment>
     ));
   };
-  
-  const handleStatusFilterChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newFilter: string,
-  ) => {
-    if (newFilter !== null) {
-      setStatusFilter(newFilter);
-    }
-  };
-  
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-  
-  // Filter reservations based on selected status and search query
-  const filteredReservations = reservations.length > 0 ? reservations : mockReservations
-    .filter(reservation => statusFilter === 'all' || reservation.status === statusFilter)
-    .filter(reservation => searchQuery === '' || reservation.id.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <Box>

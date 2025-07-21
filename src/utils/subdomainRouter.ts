@@ -2,6 +2,9 @@
  * Utility to handle subdomain-based routing
  */
 
+// Define valid subdomains
+export const VALID_SUBDOMAINS = ['admin', 'staff'];
+
 /**
  * Extracts the subdomain from the current hostname
  * @returns The subdomain or null if no subdomain exists
@@ -34,6 +37,15 @@ export const getSubdomain = (): string | null => {
  */
 export const isSubdomain = (subdomain: string): boolean => {
   return getSubdomain() === subdomain;
+};
+
+/**
+ * Checks if the current subdomain is any of the valid subdomains
+ * @returns True if the current subdomain is valid
+ */
+export const isValidSubdomain = (): boolean => {
+  const subdomain = getSubdomain();
+  return subdomain !== null && VALID_SUBDOMAINS.includes(subdomain);
 };
 
 /**

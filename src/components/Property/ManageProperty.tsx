@@ -1,53 +1,107 @@
-import React, { useState } from 'react';
-import { 
-  Paper, 
-  Typography, 
-  Box, 
-  Button, 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions,
-  Chip,
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  Box,
+  Typography,
   Grid,
-  Divider,
+  Button,
+  Card,
+  CardContent,
+  Paper,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress,
+  Chip,
+  Divider,
+  Alert,
+  Container
 } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Kottage, RoomType, useMyProperties, useDeleteProperty, useUpdateProperty } from '../../hooks/propertyHooks';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+  CheckCircle as CheckCircleIcon,
+  PauseCircle as PauseCircleIcon,
+  BarChart as BarChartIcon,
+  ArrowBack as ArrowBackIcon,
+  Settings as SettingsIcon,
+  PhotoLibrary as PhotoLibraryIcon,
+  Schedule as ScheduleIcon
+} from '@mui/icons-material';
 import { Colors } from '../constants';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import PublishIcon from '@mui/icons-material/Publish';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PeopleIcon from '@mui/icons-material/People';
-import BedIcon from '@mui/icons-material/Bed';
-import BathtubIcon from '@mui/icons-material/Bathtub';
-import PhoneIcon from '@mui/icons-material/Phone';
-import AddIcon from '@mui/icons-material/Add';
-import RoomIcon from '@mui/icons-material/Room';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Kottage, useUpdateProperty, useDeleteProperty, useMyProperties, RoomType } from '../../hooks/propertyHooks';
+import { useNavigate, useParams } from 'react-router-dom';
 import EditPropertyDialog from './EditPropertyDialog';
-import RoomConfigCard from './RoomConfigCard';
-import RoomConfigDialog from './RoomConfigDialog';
 
 export default function ManageProperty() {
-  const { propertyName } = useParams<{ propertyName: string }>();
   const navigate = useNavigate();
-  const { data: properties } = useMyProperties();
-  const deleteProperty = useDeleteProperty();
+  const { propertyId } = useParams<{ propertyId: string }>();
   const updateProperty = useUpdateProperty();
+  const deleteProperty = useDeleteProperty();
+  
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [roomDialogOpen, setRoomDialogOpen] = useState(false);
-  const [editingRoom, setEditingRoom] = useState<RoomType | null>(null);
-  const [isAddingRoom, setIsAddingRoom] = useState(false);
-  const [editPropertyOpen, setEditPropertyOpen] = useState(false);
-
-  const property = properties?.find(p => p.name === decodeURIComponent(propertyName || ''));
-
-  const handleToggleListing = async () => {
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  
+  // Toggle room listing status
+  const toggleRoomListingStatus = async (roomId: string, currentStatus: 'listed' | 'unlisted') => {
     if (!property) return;
+    
+    setIsUpdating(true);
+    const newStatus = currentStatus === 'listed' ? 'unlisted' : 'listed';
+    
+    const updatedRoomTypes = property.roomTypes?.map(room => 
+      room.id === roomId 
+        ? { ...room, listStatus: newStatus as "listed" | "unlisted" }
+        : { ...room, listStatus: (room.listStatus || 'listed') as "listed" | "unlisted" }
+    ) || [];
+
+    const updatedProperty = {
+      ...property,
+      roomTypes: updatedRoomTypes
+    };
+
+    updateProperty.mutate(updatedProperty, {
+      onSuccess: () => {
+        setIsUpdating(false);
+      },
+      onError: (error) => {
+        console.error('Error updating room status:', error);
+        setIsUpdating(false);
+      }
+    });
+  };
+  
+  // Fetch all properties and find the specific one
+  const { data: properties, isLoading, error } = useMyProperties();
+  
+  const property = useMemo(() => {
+    return properties?.find(p => p.id === propertyId);
+  }, [properties, propertyId]);
+  
+  const handleBack = useCallback(() => {
+    navigate('/MyAccount/Dashboard/properties');
+  }, [navigate]);
+
+  const handleViewProperty = useCallback(() => {
+    if (property) {
+      navigate(`/Kottages/${property.id}`, {
+        state: { kottage: property }
+      });
+    }
+  }, [navigate, property]);
+
+  const handleEditProperty = useCallback(() => {
+    setEditDialogOpen(true);
+  }, []);
+
+  const handleToggleListing = useCallback(async () => {
+    if (!property) return;
+    
+    setIsUpdating(true);
     try {
       await updateProperty.mutateAsync({
         ...property,
@@ -55,315 +109,702 @@ export default function ManageProperty() {
       });
     } catch (error) {
       console.error('Failed to update listing status:', error);
+    } finally {
+      setIsUpdating(false);
     }
-  };
+  }, [property, updateProperty]);
 
-  const handleDeleteConfirm = async () => {
+  const handleViewAnalytics = useCallback(() => {
+    if (property) {
+      navigate(`/MyAccount/Dashboard/analytics/${property.id}`, {
+        state: { propertyName: property.name }
+      });
+    }
+  }, [navigate, property]);
+
+  const handleDeleteClick = useCallback(() => {
+    setDeleteDialogOpen(true);
+  }, []);
+
+  const handleDeleteConfirm = useCallback(async () => {
     if (!property) return;
+    
     try {
       await deleteProperty.mutateAsync(property.id);
       setDeleteDialogOpen(false);
-      navigate('/MyAccount/MyKottages');
+      navigate('/MyAccount/Dashboard/properties');
     } catch (error) {
       console.error('Failed to delete property:', error);
     }
-  };
+  }, [property, deleteProperty, navigate]);
 
-  const handleSaveRoom = async (roomData: Partial<RoomType>) => {
-    if (!property || !roomData.name || !roomData.quantityAvailable || !roomData.pricePerNight) return;
+  const handleDialogClose = useCallback(() => {
+    setDeleteDialogOpen(false);
+  }, []);
 
-    setIsAddingRoom(true);
-    
-    try {
-      let updatedRooms;
-      
-      if (editingRoom) {
-        // Update existing room
-        updatedRooms = property.roomTypes?.map(room => 
-          room.id === editingRoom.id 
-            ? { ...room, ...roomData }
-            : room
-        ) || [];
-      } else {
-        // Add new room
-        const roomToAdd: RoomType = {
-          id: Date.now().toString(),
-          name: roomData.name,
-          quantityAvailable: roomData.quantityAvailable,
-          pricePerNight: roomData.pricePerNight,
-          description: roomData.description || '',
-          amenities: roomData.amenities || [],
-          images: [],
-          maxGuests: roomData.maxGuests || 1,
-        };
-        updatedRooms = [...(property.roomTypes || []), roomToAdd];
-      }
-      
-      await updateProperty.mutateAsync({
-        ...property,
-        roomTypes: updatedRooms
-      });
-      
-      setRoomDialogOpen(false);
-      setEditingRoom(null);
-    } catch (error) {
-      console.error('Failed to save room:', error);
-    } finally {
-      setIsAddingRoom(false);
+  const handleEditDialogClose = useCallback(() => {
+    setEditDialogOpen(false);
+  }, []);
+
+  const getStatusChip = useCallback((property: Kottage) => {
+    if (!property.isListed) {
+      return <Chip label="Unlisted" color="warning" size="small" />;
     }
-  };
-  
-  const handleEditRoom = (room: RoomType) => {
-    setEditingRoom(room);
-    setRoomDialogOpen(true);
-  };
-  
-  const handleAddNewRoom = () => {
-    setEditingRoom(null);
-    setRoomDialogOpen(true);
-  };
-  
-  const handleDeleteRoom = async (roomId: string) => {
-    if (!property) return;
     
-    try {
-      const updatedRooms = property.roomTypes?.filter(room => room.id !== roomId) || [];
-      await updateProperty.mutateAsync({
-        ...property,
-        roomTypes: updatedRooms
-      });
-    } catch (error) {
-      console.error('Failed to delete room:', error);
+    const approvalStatus = property.approval?.status;
+    switch (approvalStatus) {
+      case 'approved':
+        return <Chip label="Live" color="success" size="small" />;
+      case 'pending':
+        return <Chip label="Pending Review" color="warning" size="small" />;
+      case 'under_review':
+        return <Chip label="Under Review" color="info" size="small" />;
+      case 'rejected':
+        return <Chip label="Rejected" color="error" size="small" />;
+      case 'requires_documents':
+        return <Chip label="Documents Required" color="warning" size="small" />;
+      default:
+        return <Chip label="Draft" color="default" size="small" />;
     }
-  };
-  
- 
+  }, []);
 
-  if (!property) {
+  if (isLoading) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
-        <Typography variant="h6">Property not found</Typography>
-        <Button onClick={() => navigate('/MyAccount/MyKottages')} sx={{ mt: 2 }}>
-          Back to Properties
-        </Button>
+      <Box sx={{ width: '100%', backgroundColor: 'white', pt: 3, pb: 3 }}>
+        <Container maxWidth="lg">
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+            <CircularProgress size={60} sx={{ color: Colors.blue }} />
+          </Box>
+        </Container>
+      </Box>
+    );
+  }
+
+  if (error || !property) {
+    return (
+      <Box sx={{ width: '100%', backgroundColor: 'white', pt: 3, pb: 3 }}>
+        <Container maxWidth="lg">
+          <Paper sx={{ borderRadius: 3, p: 4 }}>
+            <Alert severity="error" sx={{ mb: 3 }}>
+              Property not found or error loading property data.
+            </Alert>
+            <Button 
+              startIcon={<ArrowBackIcon />} 
+              onClick={handleBack}
+              variant="outlined"
+              sx={{ 
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 600
+              }}
+            >
+              Back to Properties
+            </Button>
+          </Paper>
+        </Container>
       </Box>
     );
   }
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-      <Paper elevation={3} sx={{ borderRadius: 3, overflow: 'hidden' }}>
-        <Box 
-          sx={{ 
-            background: `linear-gradient(135deg, ${Colors.blue}15 0%, ${Colors.raspberry}15 100%)`,
-            p: 3,
-            borderBottom: '1px solid #e0e0e0',
-            position: 'relative'
+    <Box sx={{ width: '100%', backgroundColor: 'white', pt: 3, pb: 3 }}>
+      <Container maxWidth="lg">
+        {/* Header Section */}
+        <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <SettingsIcon />
+          Property Management
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Manage all aspects of your property listing
+        </Typography>
+        
+        {/* Back Button */}
+        <Box sx={{ mb: 3 }}>
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={handleBack}
+            variant="outlined"
+            sx={{ 
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 600
+            }}
+          >
+            Back to Properties
+          </Button>
+        </Box>
+
+        <Paper sx={{ borderRadius: 3 }}>
+          {/* Property Overview Header */}
+          <Box sx={{ 
+            p: 3, 
+            backgroundColor: '#f8f9fa', 
+            borderRadius: '12px 12px 0 0', 
+            border: '1px solid #e0e0e0',
+            borderBottom: 'none'
+          }}>
+            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+              <SettingsIcon />
+              Property Overview
+            </Typography>
+            
+            {/* Property Details Card */}
+            <Card elevation={0} sx={{ backgroundColor: 'white', borderRadius: 2 }}>
+              <CardContent sx={{ p: 3 }}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={4}>
+                    <Box
+                      component="img"
+                      src={property.images ? Object.values(property.images)[0] as string : "https://via.placeholder.com/300x200?text=Property"}
+                      alt={property.name}
+                      sx={{
+                        width: '100%',
+                        height: 200,
+                        objectFit: 'cover',
+                        borderRadius: 2,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+                      <Typography variant="h5" fontWeight={600} color={Colors.blue}>
+                        {property.name}
+                      </Typography>
+                      {getStatusChip(property)}
+                    </Box>
+                    
+                    <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                      📍 {property.address?.city}, {property.address?.country}
+                    </Typography>
+
+                    <Grid container spacing={3} sx={{ mb: 3 }}>
+                      {property.roomTypes && property.roomTypes.length > 0 && (
+                        <Grid item xs={12} sm={4}>
+                          <Box sx={{ textAlign: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                              {property.roomTypes.reduce((total: number, room: RoomType) => total + (room.quantityAvailable || 0), 0)}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Total Rooms
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      )}
+                      {property.maxGuests && (
+                        <Grid item xs={12} sm={4}>
+                          <Box sx={{ textAlign: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                              {property.maxGuests}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Max Guests
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      )}
+                      {property.price && (
+                        <Grid item xs={12} sm={4}>
+                          <Box sx={{ textAlign: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                              ${property.price}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Per Night
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      )}
+                    </Grid>
+
+                    {property.description && (
+                      <Typography variant="body2" color="text.secondary" sx={{ 
+                        p: 2, 
+                        backgroundColor: '#f9f9f9', 
+                        borderRadius: 1,
+                        borderLeft: '4px solid ' + Colors.blue
+                      }}>
+                        {property.description.substring(0, 200)}
+                        {property.description.length > 200 && '...'}
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Box>
+
+          {/* Room Types Section */}
+          <Box sx={{ p: 3, borderTop: '1px solid #e0e0e0' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" gutterBottom color={Colors.blue}>
+                🏠 Room Types & Availability
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<EditIcon />}
+                onClick={() => setEditDialogOpen(true)}
+                sx={{ 
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 600
+                }}
+              >
+                Edit Rooms
+              </Button>
+            </Box>
+            
+            {property.roomTypes && property.roomTypes.length > 0 ? (
+              <Grid container spacing={2}>
+                {property.roomTypes.map((room: RoomType, index: number) => (
+                  <Grid item xs={12} md={6} key={index}>
+                    <Card 
+                      elevation={1} 
+                      sx={{ 
+                        height: '100%',
+                        opacity: room.listStatus === 'unlisted' ? 0.7 : 1,
+                        border: room.listStatus === 'unlisted' ? '2px dashed #ff9800' : 'none'
+                      }}
+                    >
+                      {/* Room Image */}
+                      {room.images && room.images.length > 0 && (
+                        <Box sx={{ position: 'relative', height: 200 }}>
+                          <Box
+                            component="img"
+                            src={room.images[0]}
+                            alt={room.name || `Room ${index + 1}`}
+                            sx={{
+                              width: '100%',
+                              height: 200,
+                              objectFit: 'cover',
+                              borderRadius: '4px 4px 0 0'
+                            }}
+                          />
+                          {room.images.length > 1 && (
+                            <Chip
+                              label={`+${room.images.length - 1} more`}
+                              size="small"
+                              sx={{
+                                position: 'absolute',
+                                top: 8,
+                                right: 8,
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                color: 'white',
+                                fontSize: '0.7rem'
+                              }}
+                            />
+                          )}
+                        </Box>
+                      )}
+                      
+                      <CardContent sx={{ p: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                          <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                            {room.name || `Room ${index + 1}`}
+                          </Typography>
+                          <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                              <IconButton
+                                size="small"
+                                onClick={() => toggleRoomListingStatus(room.id, room.listStatus || 'listed')}
+                                disabled={isUpdating}
+                                sx={{
+                                  backgroundColor: room.listStatus === 'unlisted' ? '#ff9800' : '#4caf50',
+                                  color: 'white',
+                                  '&:hover': {
+                                    backgroundColor: room.listStatus === 'unlisted' ? '#f57c00' : '#388e3c',
+                                  },
+                                  width: 28,
+                                  height: 28
+                                }}
+                              >
+                                {room.listStatus === 'unlisted' ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                              </IconButton>
+                              <Chip 
+                                label={room.listStatus === 'unlisted' ? 'Unlisted' : `${room.quantityAvailable || 0} Available`}
+                                size="small"
+                                color={
+                                  room.listStatus === 'unlisted' 
+                                    ? 'warning' 
+                                    : room.quantityAvailable && room.quantityAvailable > 0 
+                                      ? 'success' 
+                                      : 'error'
+                                }
+                              />
+                            </Box>
+                            {room.listStatus === 'unlisted' && (
+                              <Chip 
+                                label="Not Visible to Guests"
+                                size="small"
+                                variant="outlined"
+                                sx={{ fontSize: '0.7rem' }}
+                              />
+                            )}
+                          </Box>
+                        </Box>
+                        
+                        {room.description && (
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            {room.description.substring(0, 100)}
+                            {room.description.length > 100 && '...'}
+                          </Typography>
+                        )}
+                        
+                        <Grid container spacing={2} sx={{ mb: 2 }}>
+                          <Grid item xs={6}>
+                            <Box sx={{ textAlign: 'center', p: 1, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                              <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                                {room.maxOccupancy || 0}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                Max Guests
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Box sx={{ textAlign: 'center', p: 1, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                              <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                                ${room.pricePerNight || 0}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                Per Night
+                              </Typography>
+                            </Box>
+                          </Grid>
+                        </Grid>
+
+                        {room.amenities && room.amenities.length > 0 && (
+                          <Box>
+                            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+                              Amenities:
+                            </Typography>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {room.amenities.slice(0, 3).map((amenity, i) => (
+                                <Chip
+                                  key={i}
+                                  label={amenity}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ fontSize: '0.7rem' }}
+                                />
+                              ))}
+                              {room.amenities.length > 3 && (
+                                <Chip
+                                  label={`+${room.amenities.length - 3} more`}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ fontSize: '0.7rem' }}
+                                />
+                              )}
+                            </Box>
+                          </Box>
+                        )}
+
+                        {/* Show placeholder if no images */}
+                        {(!room.images || room.images.length === 0) && (
+                          <Box 
+                            sx={{ 
+                              mt: 2, 
+                              p: 2, 
+                              textAlign: 'center', 
+                              backgroundColor: '#f5f5f5', 
+                              borderRadius: 1,
+                              border: '2px dashed #ddd'
+                            }}
+                          >
+                            <PhotoLibraryIcon sx={{ color: '#bbb', fontSize: 32, mb: 1 }} />
+                            <Typography variant="caption" color="text.secondary">
+                              No room images uploaded
+                            </Typography>
+                          </Box>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Card elevation={1}>
+                <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+                    No room types configured for this property
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    startIcon={<EditIcon />}
+                    onClick={() => setEditDialogOpen(true)}
+                    sx={{ 
+                      backgroundColor: Colors.blue,
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontWeight: 600
+                    }}
+                  >
+                    Add Room Types
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </Box>
+
+          {/* Action Cards Section */}
+          <Box sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ mb: 3 }}>
+              🛠️ Management Actions
+            </Typography>
+            
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+              {/* View Property */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Card 
+                  elevation={2} 
+                  sx={{ 
+                    height: '100%', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': { 
+                      elevation: 6,
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                    }
+                  }}
+                  onClick={handleViewProperty}
+                >
+                  <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                    <VisibilityIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <Typography variant="h6" fontWeight={600} mb={1}>
+                      View Property
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      See how your property appears to guests
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Edit Property */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Card 
+                  elevation={2} 
+                  sx={{ 
+                    height: '100%', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': { 
+                      elevation: 6,
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                    }
+                  }}
+                  onClick={handleEditProperty}
+                >
+                  <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                    <EditIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <Typography variant="h6" fontWeight={600} mb={1}>
+                      Edit Property
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Update property details, photos, and settings
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Toggle Listing */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Card 
+                  elevation={2} 
+                  sx={{ 
+                    height: '100%', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': { 
+                      elevation: 6,
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                    }
+                  }}
+                  onClick={handleToggleListing}
+                >
+                  <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                    {property.isListed ? (
+                      <PauseCircleIcon sx={{ fontSize: 48, color: 'warning.main', mb: 2 }} />
+                    ) : (
+                      <CheckCircleIcon sx={{ fontSize: 48, color: 'success.main', mb: 2 }} />
+                    )}
+                    <Typography variant="h6" fontWeight={600} mb={1}>
+                      {isUpdating ? 'Updating...' : (property.isListed ? 'Unlist Property' : 'List Property')}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {property.isListed ? 'Remove from public listings' : 'Make available for booking'}
+                    </Typography>
+                    {isUpdating && <CircularProgress size={20} sx={{ mt: 1, color: Colors.blue }} />}
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* View Analytics */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Card 
+                  elevation={2} 
+                  sx={{ 
+                    height: '100%', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': { 
+                      elevation: 6,
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                    }
+                  }}
+                  onClick={handleViewAnalytics}
+                >
+                  <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                    <BarChartIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <Typography variant="h6" fontWeight={600} mb={1}>
+                      View Analytics
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Check performance, bookings, and revenue
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Manage Photos */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Card 
+                  elevation={2} 
+                  sx={{ 
+                    height: '100%', 
+                    cursor: 'not-allowed',
+                    opacity: 0.6,
+                    backgroundColor: '#f9f9f9'
+                  }}
+                >
+                  <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                    <PhotoLibraryIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+                    <Typography variant="h6" fontWeight={600} mb={1} color="text.secondary">
+                      Manage Photos
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      🚧 Coming Soon
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Availability & Pricing */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Card 
+                  elevation={2} 
+                  sx={{ 
+                    height: '100%', 
+                    cursor: 'not-allowed',
+                    opacity: 0.6,
+                    backgroundColor: '#f9f9f9'
+                  }}
+                >
+                  <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                    <ScheduleIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+                    <Typography variant="h6" fontWeight={600} mb={1} color="text.secondary">
+                      Availability & Pricing
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      🚧 Coming Soon
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ my: 4 }} />
+
+            {/* Danger Zone */}
+            <Box sx={{ 
+              p: 3, 
+              backgroundColor: '#fff5f5', 
+              borderRadius: 2,
+              border: '2px solid #ffebee',
+              borderLeft: '6px solid #f44336'
+            }}>
+              <Typography variant="h6" fontWeight={600} color="error.main" mb={2} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <DeleteIcon />
+                Danger Zone
+              </Typography>
+              <Typography variant="body2" color="text.secondary" mb={3}>
+                ⚠️ These actions are permanent and cannot be undone. Please proceed with caution.
+              </Typography>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteClick}
+                sx={{ 
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 600
+                }}
+              >
+                Delete Property Permanently
+              </Button>
+            </Box>
+          </Box>
+        </Paper>
+
+        {/* Edit Property Dialog */}
+        <EditPropertyDialog
+          open={editDialogOpen}
+          property={property}
+          onClose={handleEditDialogClose}
+        />
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog 
+          open={deleteDialogOpen} 
+          onClose={handleDialogClose}
+          PaperProps={{
+            sx: { borderRadius: 3 }
           }}
         >
-          <IconButton
-            onClick={() => navigate('/MyAccount/MyKottages')}
-            sx={{
-              position: 'absolute',
-              top: 16,
-              left: 16,
-              backgroundColor: 'white',
-              color: Colors.blue,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              '&:hover': {
-                backgroundColor: Colors.blue,
-                color: 'white',
-                transform: 'scale(1.05)'
-              }
-            }}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-          <Box display="flex" alignItems="center" gap={2} sx={{ marginLeft:5 }}>
-            <Box>
-              <Typography variant="h4" fontWeight={700} color={Colors.blue}>
-                {property.name}
-              </Typography>
-              <Box display="flex" alignItems="center" gap={1} sx={{ mt: 1 }}>
-                <LocationOnIcon sx={{ fontSize: 16, color: Colors.raspberry }} />
-                <Typography variant="body2" color="text.secondary">
-                  {property.address?.country}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Chip 
-            label={property.isListed ? "Listed" : "Unlisted"}
-            color={property.isListed ? "success" : "warning"}
-            sx={{ fontWeight: 600 }}
-          />
-        </Box>
-        
-        <Box display="flex" gap={2} flexWrap="wrap">
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            onClick={() => setEditPropertyOpen(true)}
-            sx={{
-              backgroundColor: Colors.blue,
-              '&:hover': { backgroundColor: Colors.raspberry },
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-            }}
-          >
-            Edit Property
-          </Button>
-          
-          <Button
-            variant="outlined"
-            startIcon={property.isListed ? <VisibilityOffIcon /> : <PublishIcon />}
-            onClick={handleToggleListing}
-            disabled={updateProperty.isPending}
-            sx={{
-              color: property.isListed ? '#ff9800' : '#4caf50',
-              borderColor: property.isListed ? '#ff9800' : '#4caf50',
-              backgroundColor: 'white',
-              '&:hover': {
-                backgroundColor: property.isListed ? 'rgba(255, 152, 0, 0.08)' : 'rgba(76, 175, 80, 0.08)'
-              }
-            }}
-          >
-            {updateProperty.isPending ? 'Updating...' : (property.isListed ? 'Unlist' : 'List')}
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={() => setDeleteDialogOpen(true)}
-            sx={{ backgroundColor: 'white' }}
-          >
-            Delete Property
-          </Button>
-
-
-        </Box>
-      </Box>
-      
-      <Box sx={{ p: 4 }}>
-        <Divider sx={{ mb: 3 }} />
-
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} md={6}>
-           
-            
-            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-              <BathtubIcon sx={{ color: Colors.blue }} />
-              <Typography>{property.roomTypes?.reduce((total, room) => total + (room.quantityAvailable || 0), 0)} Bathrooms</Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-              <PeopleIcon sx={{ color: Colors.blue }} />
-              <Typography>Max {property.roomTypes?.reduce((total, room) => total + (room.maxGuests || 0), 0)} Guests</Typography>            </Box>
-            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-              <PhoneIcon sx={{ color: Colors.blue }} />
-              <Typography>{property.phone}</Typography>
-            </Box>
-          </Grid>
-        </Grid>
-
-        {property.address && (
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" sx={{ mb: 1, color: Colors.blue }}>
-              Address
+          <DialogTitle sx={{ color: Colors.blue, fontWeight: 600 }}>
+            🗑️ Delete Property
+          </DialogTitle>
+          <DialogContent>
+            <Typography>
+              Are you sure you want to delete "<strong>{property.name}</strong>"? This action cannot be undone and will permanently remove all property data, bookings, and reviews.
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {property.address.address1}
-              {property.address.address2 && `, ${property.address.address2}`}
-              <br />
-              {property.address.city}, {property.address.state} {property.address.zip}
-              <br />
-              {property.address.country}
-            </Typography>
-          </Box>
-        )}
-
-        {property.description && (
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" sx={{ mb: 1, color: Colors.blue }}>
-              Description
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {property.description}
-            </Typography>
-          </Box>
-        )}
-
-        <Box sx={{ mb: 4 }}>
-          <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-            <Typography variant="h6" sx={{ color: Colors.blue, fontWeight: 600 }}>
-              Room Configurations
-            </Typography>
-            <Button
+          </DialogContent>
+          <DialogActions sx={{ p: 3 }}>
+            <Button 
+              onClick={handleDialogClose}
               variant="outlined"
-              startIcon={<AddIcon />}
-              onClick={handleAddNewRoom}
-              sx={{ color: Colors.blue, borderColor: Colors.blue }}
+              sx={{ 
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 600
+              }}
             >
-              Add Room Type
+              Cancel
             </Button>
-          </Box>
-          
-          {property.roomTypes && property.roomTypes.length > 0 ? (
-            <Grid container spacing={2}>
-              {property.roomTypes.map((room) => (
-                <Grid item xs={12} md={6} key={room.id}>
-                  <RoomConfigCard 
-                    room={room}
-                    onEdit={handleEditRoom}
-                    onDelete={handleDeleteRoom}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
-            <Box sx={{ textAlign: 'center', py: 4, border: '2px dashed #e0e0e0', borderRadius: 2 }}>
-              <RoomIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
-              <Typography variant="body1" color="text.secondary">
-                No room configurations yet. Add room types to customize pricing.
-              </Typography>
-            </Box>
-          )}
-        </Box>
-        </Box>
-      </Paper>
-
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-        <DialogTitle>Delete Property</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete "{property.name}"? This action cannot be undone.
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button 
-            onClick={handleDeleteConfirm} 
-            color="error" 
-            disabled={deleteProperty.isPending}
-          >
-            {deleteProperty.isPending ? 'Deleting...' : 'Delete'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <RoomConfigDialog
-        open={roomDialogOpen}
-        editingRoom={editingRoom}
-        onClose={() => setRoomDialogOpen(false)}
-        onSave={handleSaveRoom}
-        isLoading={isAddingRoom}
-      />
-      
-      <EditPropertyDialog
-        open={editPropertyOpen}
-        property={property}
-        onClose={() => setEditPropertyOpen(false)}
-      />
+            <Button 
+              onClick={handleDeleteConfirm} 
+              color="error" 
+              variant="contained"
+              disabled={deleteProperty.isPending}
+              startIcon={deleteProperty.isPending ? <CircularProgress size={16} /> : <DeleteIcon />}
+              sx={{ 
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 600
+              }}
+            >
+              {deleteProperty.isPending ? 'Deleting...' : 'Delete Permanently'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
     </Box>
   );
 }

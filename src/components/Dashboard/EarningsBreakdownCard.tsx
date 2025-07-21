@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Paper,
   Box,
@@ -25,29 +25,13 @@ import {
 } from 'recharts';
 import { Colors } from '../constants';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-
-// Mock data
-const propertyData = [
-  { name: 'Beach House', earnings: 4200 },
-  { name: 'Mountain Cabin', earnings: 3100 },
-  { name: 'City Apartment', earnings: 2800 },
-  { name: 'Lake Cottage', earnings: 1900 }
-];
-
-const roomTypeData = [
-  { name: 'Deluxe Suite', earnings: 5200 },
-  { name: 'Standard Room', earnings: 3800 },
-  { name: 'Economy Room', earnings: 2100 },
-  { name: 'Family Suite', earnings: 900 }
-];
-
-// Source data removed as requested
+import { Reservation } from '../../hooks/reservationHooks';
 
 interface EarningsBreakdownCardProps {
-  // Add props if needed
+  reservations: Reservation[];
 }
 
-export default function EarningsBreakdownCard({}: EarningsBreakdownCardProps) {
+export default function EarningsBreakdownCard({ reservations }: EarningsBreakdownCardProps) {
   const [timePeriod, setTimePeriod] = useState<string>('monthly');
   const [breakdownType, setBreakdownType] = useState<number>(0);
   const [dateRange, setDateRange] = useState<string>('last30days');
@@ -65,17 +49,68 @@ export default function EarningsBreakdownCard({}: EarningsBreakdownCardProps) {
   const handleDateRangeChange = (event: SelectChangeEvent) => {
     setDateRange(event.target.value);
   };
-  
-  // Get data based on selected breakdown type
-  const getChartData = () => {
-    switch (breakdownType) {
-      case 0: return propertyData;
-      case 1: return roomTypeData;
-      default: return propertyData;
+
+  // Filter reservations based on date range
+  const filteredReservations = useMemo(() => {
+    const now = new Date();
+    const completedReservations = reservations.filter(r => r.status.toLowerCase() === 'completed');
+    
+    let startDate: Date;
+    switch (dateRange) {
+      case 'last7days':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case 'last30days':
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+      case 'last90days':
+        startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     }
-  };
-  
-  const chartData = getChartData();
+
+    return completedReservations.filter(r => {
+      const checkOut = new Date(r.checkOut);
+      return checkOut >= startDate && checkOut <= now;
+    });
+  }, [reservations, dateRange]);
+
+  // Calculate earnings data based on breakdown type
+  const chartData = useMemo(() => {
+    if (breakdownType === 0) {
+      // By Property
+      const propertyEarnings = filteredReservations.reduce((acc, reservation) => {
+        const propertyName = reservation.property.name;
+        acc[propertyName] = (acc[propertyName] || 0) + reservation.totalPrice;
+        return acc;
+      }, {} as Record<string, number>);
+
+      return Object.entries(propertyEarnings)
+        .map(([name, earnings]) => ({ name, earnings }))
+        .sort((a, b) => b.earnings - a.earnings)
+        .slice(0, 10); // Top 10 properties
+    } else {
+      // By Room Type (if available in your data structure)
+      // For now, we'll group by guest count as a proxy for room size
+      const roomTypeEarnings = filteredReservations.reduce((acc, reservation) => {
+        const guestCount = reservation.guests.length;
+        let roomType: string;
+        
+        if (guestCount === 1) roomType = 'Single Room';
+        else if (guestCount === 2) roomType = 'Double Room';
+        else if (guestCount <= 4) roomType = 'Family Room';
+        else roomType = 'Group Room';
+
+        acc[roomType] = (acc[roomType] || 0) + reservation.totalPrice;
+        return acc;
+      }, {} as Record<string, number>);
+
+      return Object.entries(roomTypeEarnings)
+        .map(([name, earnings]) => ({ name, earnings }))
+        .sort((a, b) => b.earnings - a.earnings);
+    }
+  }, [filteredReservations, breakdownType]);
   
   return (
     <Paper elevation={3} sx={{ p: 2, borderRadius: '4px',mb:1 }}>

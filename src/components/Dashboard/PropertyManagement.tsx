@@ -1,7 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, Button, Card, CardContent, CardMedia, CardActions, Paper, Divider, Chip, Badge, Tabs, Tab } from '@mui/material';
-import WarningIcon from '@mui/icons-material/Warning';
-import AddIcon from '@mui/icons-material/Add';
+import { Box, Typography, Grid, Paper, Divider, Tabs, Tab } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import StarIcon from '@mui/icons-material/Star';
 import InsightsIcon from '@mui/icons-material/Insights';
@@ -9,9 +7,10 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import HomeIcon from '@mui/icons-material/Home';
 import { Colors } from '../constants';
 import { useMyProperties } from '../../hooks/propertyHooks';
+import { useNavigate, Outlet, useLocation } from 'react-router-dom';
+import PropertyConfig from './PropertyConfig';
 import InventorySummaryCard from './InventorySummaryCard';
 import TopPropertiesCard from './TopPropertiesCard';
-import LowAvailabilityCard from './LowAvailabilityCard';
 import PayoutSummaryCard from './PayoutSummaryCard';
 import TaxFeeBreakdownCard from './TaxFeeBreakdownCard';
 import RecentReviewsCard from './RecentReviewsCard';
@@ -20,11 +19,25 @@ import BookingTrendsCard from './BookingTrendsCard';
 import CancellationTrendsCard from './CancellationTrendsCard';
 import AIForecastingCard from './AIForecastingCard';
 import CalendarSyncCard from './CalendarSyncCard';
-import MaintenanceRequestsCard from './MaintenanceRequestsCard';
 
 export default function PropertyManagement() {
   const { data: properties, isLoading } = useMyProperties();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activeSection, setActiveSection] = React.useState<string>('properties');
+  
+  // Check if we're on the add property route or manage property route
+  const isAddPropertyRoute = location.pathname.includes('/add-property');
+  const isManagePropertyRoute = location.pathname.includes('/manage/');
+  
+  // If we're on nested routes (add property or manage property), just show the outlet
+  if (isAddPropertyRoute || isManagePropertyRoute) {
+    return <Outlet />;
+  }
+
+  const handleAddProperty = () => {
+    navigate('/MyAccount/Dashboard/properties/add-property');
+  };
   
   // Low availability alerts data
   const lowAvailabilityAlerts = [
@@ -33,20 +46,6 @@ export default function PropertyManagement() {
     { id: '3', propertyName: 'City Apartment', roomType: 'Penthouse', availableUnits: 1, totalUnits: 2, dates: 'Aug 5 - Aug 10, 2023' },
     { id: '4', propertyName: 'Iguana Bay', roomType: 'Family Room', availableUnits: 2, totalUnits: 4, dates: 'Aug 12 - Aug 15, 2023' }
   ];
-  
-  // Function to get alerts for a specific property
-  interface LowAvailabilityAlert {
-    id: string;
-    propertyName: string;
-    roomType: string;
-    availableUnits: number;
-    totalUnits: number;
-    dates: string;
-  }
-
-  const getPropertyAlerts = (propertyName: string): LowAvailabilityAlert[] => {
-    return lowAvailabilityAlerts.filter((alert: LowAvailabilityAlert) => alert.propertyName === propertyName);
-  };
   
   const handleSectionChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveSection(newValue);
@@ -87,104 +86,12 @@ export default function PropertyManagement() {
         </Paper>
         
         {/* My Properties Section */}
-        <Box id="properties" mb={5}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-            <Typography variant="h5" fontWeight={600} color={Colors.blue}>
-              My Properties
-            </Typography>
-            <Button 
-              variant="contained" 
-              startIcon={<AddIcon />} 
-              sx={{ backgroundColor: Colors.blue }}
-            >
-              Add Property
-            </Button>
-          </Box>
-
-          {isLoading ? (
-            <Typography>Loading properties...</Typography>
-          ) : properties && properties.length > 0 ? (
-            <Grid container spacing={3}>
-              {properties.map((property) => (
-                <Grid item xs={12} sm={6} md={4} key={property.id}>
-                  <Card elevation={2}>
-                    {/* Add badge if property has low availability alerts */}
-                    <Box sx={{ position: 'relative' }}>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={property.images ? Object.values(property.images)[0] as string : "https://via.placeholder.com/300x140?text=Property"}
-                        alt={property.name}
-                      />
-                      {getPropertyAlerts(property.name).length > 0 && (
-                        <Box 
-                          sx={{ 
-                            position: 'absolute', 
-                            top: 10, 
-                            right: 10, 
-                            backgroundColor: 'rgba(255, 59, 48, 0.9)',
-                            color: 'white',
-                            borderRadius: '4px',
-                            px: 1,
-                            py: 0.5,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 0.5
-                          }}
-                        >
-                          <WarningIcon sx={{ fontSize: 16 }} />
-                          <Typography variant="caption" fontWeight={600}>
-                            Low Availability
-                          </Typography>
-                        </Box>
-                      )}
-                    </Box>
-                    <CardContent>
-                      <Typography gutterBottom variant="h6" component="div" fontWeight={600}>
-                        {property.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {property.address.city}, {property.address.country}
-                      </Typography>
-                      {property.price && (
-                        <Typography variant="h6" color={Colors.blue} fontWeight={600} sx={{ mt: 1 }}>
-                          ${property.price}/night
-                        </Typography>
-                      )}
-                      
-                      {/* Show low availability alerts for this property */}
-                      {getPropertyAlerts(property.name).map(alert => (
-                        <Box 
-                          key={alert.id} 
-                          sx={{ 
-                            mt: 1, 
-                            p: 1, 
-                            backgroundColor: '#fff8e1', 
-                            borderRadius: 1,
-                            border: '1px solid #ffecb3'
-                          }}
-                        >
-                          <Typography variant="caption" fontWeight={600} color="#e65100" display="block">
-                            {alert.roomType}: {alert.availableUnits}/{alert.totalUnits} units left
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {alert.dates}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">Edit</Button>
-                      <Button size="small" color="error">Delete</Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
-            <Typography>No properties found. Add your first property to get started.</Typography>
-          )}
-        </Box>
+        <PropertyConfig
+          properties={properties}
+          isLoading={isLoading}
+          onAddProperty={handleAddProperty}
+          lowAvailabilityAlerts={lowAvailabilityAlerts}
+        />
         
         <Divider sx={{ my: 4 }} />
         

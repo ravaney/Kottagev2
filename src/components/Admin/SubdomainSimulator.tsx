@@ -87,6 +87,7 @@ export default function SubdomainSimulator() {
                 <em>None (main site)</em>
               </MenuItem>
               <MenuItem value="admin">admin (Admin Portal)</MenuItem>
+              <MenuItem value="staff">staff (Staff Portal)</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>

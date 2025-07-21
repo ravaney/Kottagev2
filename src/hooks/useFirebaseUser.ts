@@ -1,8 +1,7 @@
 import { useQuery, UseQueryResult, useQueryClient } from '@tanstack/react-query';
-import { onAuthStateChanged, User, getAuth } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { useEffect } from 'react';
-
-const auth = getAuth();
+import { auth } from '../firebase';
 
 const getFirebaseUser = (): Promise<User | null> => {
   return new Promise((resolve) => {

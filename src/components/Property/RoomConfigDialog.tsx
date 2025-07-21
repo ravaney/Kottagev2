@@ -45,7 +45,7 @@ export default function RoomConfigDialog({
     pricePerNight: editingRoom?.pricePerNight || 0,
     description: editingRoom?.description || '',
     images: editingRoom?.images || [],
-    maxGuests: editingRoom?.maxGuests || 1
+    maxOccupancy: editingRoom?.maxOccupancy || 1
   });
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
@@ -57,11 +57,11 @@ export default function RoomConfigDialog({
         pricePerNight: editingRoom.pricePerNight,
         description: editingRoom.description,
         images: editingRoom.images || [],
-        maxGuests: editingRoom.maxGuests || 1
+        maxOccupancy: editingRoom.maxOccupancy || 1
         
       });
     } else {
-      setRoomData({ name: '', quantityAvailable: 1, pricePerNight: 0, description: '', images: [], maxGuests: 1 });
+      setRoomData({ name: '', quantityAvailable: 1, pricePerNight: 0, description: '', images: [], maxOccupancy: 1 });
     }
     setSelectedImages([]);
   }, [editingRoom, open]);
@@ -93,7 +93,7 @@ export default function RoomConfigDialog({
   };
 
   const handleClose = () => {
-    setRoomData({ name: '', quantityAvailable: 1, pricePerNight: 0, description: '', images: [], maxGuests: 1 });
+    setRoomData({ name: '', quantityAvailable: 1, pricePerNight: 0, description: '', images: [], maxOccupancy: 1 });
     setSelectedImages([]);
     onClose();
   };
