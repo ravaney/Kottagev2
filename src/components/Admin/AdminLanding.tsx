@@ -9,7 +9,10 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Menu,
+  MenuItem,
+  Avatar
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
@@ -26,7 +29,11 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import WorkIcon from '@mui/icons-material/Work';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { useUserClaims } from '../../hooks/useUserClaims';
+import { useSignOut } from '../../hooks/useSignOut';
 
 export default function AdminLanding() {
   const theme = useTheme();
@@ -34,6 +41,28 @@ export default function AdminLanding() {
   const navigate = useNavigate();
   const location = useLocation();
   const [staffOperationsOpen, setStaffOperationsOpen] = useState(false);
+  const { firebaseUser, appUser } = useAuth();
+  const { claims } = useUserClaims();
+  const signOutMutation = useSignOut();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOutMutation.mutateAsync();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+    handleMenuClose();
+  };
 
   // Determine active module based on current path
   const getActiveModule = () => {
@@ -213,14 +242,58 @@ export default function AdminLanding() {
         <Box sx={{ 
           p: 2, 
           borderTop: '1px solid rgba(255,255,255,0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1
         }}>
-          <PersonIcon />
-          <Typography variant="body2">
-            Admin User
-          </Typography>
+          <Button
+            fullWidth
+            onClick={handleMenuOpen}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 1,
+              color: 'white',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)'
+              }
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'rgba(255,255,255,0.2)' }}>
+                <PersonIcon fontSize="small" />
+              </Avatar>
+              <Box sx={{ textAlign: 'left' }}>
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  {appUser?.firstName ? `${appUser.firstName} ${appUser.lastName}` : firebaseUser?.email?.split('@')[0] || 'Admin User'}
+                </Typography>
+                <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                  {claims?.role === 'super_admin' ? 'Super Admin' : 'Admin'} • Online
+                </Typography>
+              </Box>
+            </Box>
+            <ExpandMoreIcon fontSize="small" />
+          </Button>
+          
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Sign Out" />
+            </MenuItem>
+          </Menu>
         </Box>
       </Box>
 

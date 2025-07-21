@@ -16,7 +16,10 @@ import {
   ListItemText,
   Chip,
   AppBar,
-  Toolbar
+  Toolbar,
+  Menu,
+  MenuItem,
+  Avatar
 } from '@mui/material';
 import { Colors } from '../constants';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -29,7 +32,12 @@ import PersonIcon from '@mui/icons-material/Person';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import SecurityIcon from '@mui/icons-material/Security';
 import PaymentIcon from '@mui/icons-material/Payment';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { useUserClaims } from '../../hooks/useUserClaims';
+import { useSignOut } from '../../hooks/useSignOut';
 
 // Mock data for tasks
 const pendingTasks = [
@@ -44,6 +52,28 @@ export default function StaffLanding() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const location = useLocation();
+  const { firebaseUser, appUser } = useAuth();
+  const { claims } = useUserClaims();
+  const signOutMutation = useSignOut();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOutMutation.mutateAsync();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+    handleMenuClose();
+  };
   
   // Determine active module based on current path
   const getActiveModule = () => {
@@ -152,14 +182,58 @@ export default function StaffLanding() {
         <Box sx={{ 
           p: 2, 
           borderTop: '1px solid rgba(255,255,255,0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1
         }}>
-          <PersonIcon />
-          <Typography variant="body2">
-            Staff User
-          </Typography>
+          <Button
+            fullWidth
+            onClick={handleMenuOpen}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 1,
+              color: 'white',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)'
+              }
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'rgba(255,255,255,0.2)' }}>
+                <PersonIcon fontSize="small" />
+              </Avatar>
+              <Box sx={{ textAlign: 'left' }}>
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  {appUser?.firstName ? `${appUser.firstName} ${appUser.lastName}` : firebaseUser?.email?.split('@')[0] || 'Staff User'}
+                </Typography>
+                <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                  {claims?.role || 'Staff'} • Online
+                </Typography>
+              </Box>
+            </Box>
+            <ExpandMoreIcon fontSize="small" />
+          </Button>
+          
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Sign Out" />
+            </MenuItem>
+          </Menu>
         </Box>
       </Box>
 
