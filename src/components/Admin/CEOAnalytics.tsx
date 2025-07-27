@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CardContent,
   Button,
@@ -23,6 +22,7 @@ import {
   Tab,
   useTheme
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,

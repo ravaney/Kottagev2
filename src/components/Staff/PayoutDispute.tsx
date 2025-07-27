@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
-  Grid,
   Paper,
   Button,
   Divider,
@@ -32,6 +31,7 @@ import {
   FormControl,
   InputLabel
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy"
 import {
   Payment as PaymentIcon,
   NavigateNext as NavigateNextIcon,

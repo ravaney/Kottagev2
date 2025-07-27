@@ -9,6 +9,21 @@ import {
 } from 'firebase/storage';
 import { IAddress } from '../../public/QuickType';
 
+export interface RoomPromotion {
+  id: string;
+  name: string;
+  description?: string;
+  discountType: 'percentage' | 'fixed';
+  discountValue: number; // percentage (0-100) or fixed amount
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  minNights?: number;
+  maxNights?: number;
+  daysOfWeek?: number[]; // 0-6 (Sunday-Saturday)
+  blackoutDates?: string[];
+}
+
 export interface RoomType {
   id: string; // e.g. "standard", "penthouse"
   name: string; // "Standard Room", "Penthouse Suite"
@@ -19,6 +34,7 @@ export interface RoomType {
   amenities: string[];
   images: string[];
   listStatus: 'listed' | 'unlisted';
+  promotion?: RoomPromotion;
 }
 
 export interface ApprovalDocument {
@@ -61,8 +77,8 @@ export interface Kottage {
   isListed: boolean;
   amenities: string[];
   roomTypes?: RoomType[];
+  promotions?: RoomPromotion[];
   images: string[];
-  price?: number;
   approval: PropertyApproval;
   createdAt: string;
   updatedAt?: string;
@@ -216,6 +232,23 @@ export const useAllProperties = () => {
       return properties.filter((property) => property !== null);
     },
     // This query is for staff use, so it doesn't depend on current user
+  });
+};
+
+export const useGetPropertyById = (propertyId: string | undefined) => {
+  return useQuery({
+    queryKey: ['property', propertyId],
+    queryFn: async (): Promise<Kottage | null> => {
+      if (!propertyId) return null;
+      
+      const propertySnapshot = await get(ref(database, `properties/${propertyId}`));
+      if (!propertySnapshot.exists()) return null;
+      
+      return propertySnapshot.val() as Kottage;
+    },
+    enabled: !!propertyId,
+    staleTime: 0, // Always refetch to ensure fresh data
+    gcTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 };
 

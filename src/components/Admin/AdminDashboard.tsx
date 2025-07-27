@@ -3,11 +3,9 @@ import {
   Box,
   Container,
   Typography,
-  Grid,
   Paper,
   Button,
   Card,
-  CardContent,
   List,
   ListItem,
   ListItemIcon,
@@ -17,8 +15,8 @@ import {
   Avatar,
   AvatarGroup
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import { Colors } from '../constants';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import EventNoteIcon from '@mui/icons-material/EventNote';

@@ -2,10 +2,10 @@ import React, { useState, useCallback, useMemo } from 'react';
 import {
   Box,
   Typography,
-  Grid,
   Button,
   Card,
   CardContent,
+  CardActions,
   Paper,
   IconButton,
   Dialog,
@@ -16,8 +16,16 @@ import {
   Chip,
   Divider,
   Alert,
-  Container
+  Container,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Switch,
+  FormControlLabel
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -29,7 +37,17 @@ import {
   ArrowBack as ArrowBackIcon,
   Settings as SettingsIcon,
   PhotoLibrary as PhotoLibraryIcon,
-  Schedule as ScheduleIcon
+  Schedule as ScheduleIcon,
+  LocalOffer as LocalOfferIcon,
+  Add as AddIcon,
+  Cancel as CancelIcon,
+  Info as InfoIcon,
+  CalendarToday as CalendarTodayIcon,
+  FilterAlt as FilterAltIcon,
+  Today as TodayIcon,
+  Block as BlockIcon,
+  Save as SaveIcon,
+  Percent as PercentIcon
 } from '@mui/icons-material';
 import { Colors } from '../constants';
 import { Kottage, useUpdateProperty, useDeleteProperty, useMyProperties, RoomType } from '../../hooks/propertyHooks';
@@ -45,6 +63,21 @@ export default function ManageProperty() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [promotionDialogOpen, setPromotionDialogOpen] = useState(false);
+  const [editingPromotion, setEditingPromotion] = useState<any>(null);
+  const [promotionForm, setPromotionForm] = useState({
+    name: '',
+    description: '',
+    discountType: 'percentage' as 'percentage' | 'fixed',
+    discountValue: '',
+    startDate: '',
+    endDate: '',
+    isActive: true,
+    minNights: '',
+    maxNights: '',
+    daysOfWeek: [] as number[],
+    blackoutDates: [] as string[]
+  });
   
   // Toggle room listing status
   const toggleRoomListingStatus = async (roomId: string, currentStatus: 'listed' | 'unlisted') => {
@@ -167,6 +200,132 @@ export default function ManageProperty() {
         return <Chip label="Draft" color="default" size="small" />;
     }
   }, []);
+
+  // Promotion handlers
+  const handleEditPromotion = useCallback((promotion: any) => {
+    setEditingPromotion(promotion);
+    setPromotionForm({
+      name: promotion.name || '',
+      description: promotion.description || '',
+      discountType: promotion.discountType || 'percentage',
+      discountValue: promotion.discountValue?.toString() || '',
+      startDate: promotion.startDate || '',
+      endDate: promotion.endDate || '',
+      isActive: promotion.isActive !== undefined ? promotion.isActive : true,
+      minNights: promotion.minNights?.toString() || '',
+      maxNights: promotion.maxNights?.toString() || '',
+      daysOfWeek: promotion.daysOfWeek || [],
+      blackoutDates: promotion.blackoutDates || []
+    });
+    setPromotionDialogOpen(true);
+  }, []);
+
+  const handleTogglePromotion = useCallback(async (promotion: any) => {
+    if (!property) return;
+    
+    setIsUpdating(true);
+    const updatedPromotions = property.promotions?.map(p => 
+      p.id === promotion.id 
+        ? { ...p, isActive: !p.isActive }
+        : p
+    ) || [];
+
+    const updatedProperty = {
+      ...property,
+      promotions: updatedPromotions
+    };
+
+    updateProperty.mutate(updatedProperty, {
+      onSuccess: () => {
+        setIsUpdating(false);
+      },
+      onError: (error) => {
+        console.error('Error updating promotion status:', error);
+        setIsUpdating(false);
+      }
+    });
+  }, [property, updateProperty]);
+
+  const handleDeletePromotion = useCallback(async (promotionId: string) => {
+    if (!property) return;
+    
+    setIsUpdating(true);
+    const updatedPromotions = property.promotions?.filter(p => p.id !== promotionId) || [];
+
+    const updatedProperty = {
+      ...property,
+      promotions: updatedPromotions
+    };
+
+    updateProperty.mutate(updatedProperty, {
+      onSuccess: () => {
+        setIsUpdating(false);
+      },
+      onError: (error) => {
+        console.error('Error deleting promotion:', error);
+        setIsUpdating(false);
+      }
+    });
+  }, [property, updateProperty]);
+
+  const handleSavePromotion = useCallback(async () => {
+    if (!property) return;
+    
+    setIsUpdating(true);
+    const newPromotion = {
+      id: editingPromotion?.id || `promo_${Date.now()}`,
+      name: promotionForm.name,
+      description: promotionForm.description,
+      discountType: promotionForm.discountType,
+      discountValue: parseFloat(promotionForm.discountValue),
+      startDate: promotionForm.startDate,
+      endDate: promotionForm.endDate,
+      isActive: promotionForm.isActive,
+      minNights: promotionForm.minNights ? parseInt(promotionForm.minNights) : undefined,
+      maxNights: promotionForm.maxNights ? parseInt(promotionForm.maxNights) : undefined,
+      daysOfWeek: promotionForm.daysOfWeek,
+      blackoutDates: promotionForm.blackoutDates
+    };
+
+    let updatedPromotions;
+    if (editingPromotion) {
+      updatedPromotions = property.promotions?.map(p => 
+        p.id === editingPromotion.id ? newPromotion : p
+      ) || [];
+    } else {
+      updatedPromotions = [...(property.promotions || []), newPromotion];
+    }
+
+    const updatedProperty = {
+      ...property,
+      promotions: updatedPromotions
+    };
+
+    updateProperty.mutate(updatedProperty, {
+      onSuccess: () => {
+        setIsUpdating(false);
+        setPromotionDialogOpen(false);
+        setEditingPromotion(null);
+        setPromotionForm({
+          name: '',
+          description: '',
+          discountType: 'percentage',
+          discountValue: '',
+          startDate: '',
+          endDate: '',
+          isActive: true,
+          minNights: '',
+          maxNights: '',
+          daysOfWeek: [],
+          blackoutDates: []
+        });
+      },
+      onError: (error) => {
+        console.error('Error saving promotion:', error);
+        setIsUpdating(false);
+      }
+    });
+  }, [property, updateProperty, promotionForm, editingPromotion]);
 
   if (isLoading) {
     return (
@@ -299,18 +458,6 @@ export default function ManageProperty() {
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
                               Max Guests
-                            </Typography>
-                          </Box>
-                        </Grid>
-                      )}
-                      {property.price && (
-                        <Grid item xs={12} sm={4}>
-                          <Box sx={{ textAlign: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
-                              ${property.price}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              Per Night
                             </Typography>
                           </Box>
                         </Grid>
@@ -544,6 +691,160 @@ export default function ManageProperty() {
                     Add Room Types
                   </Button>
                 </CardContent>
+              </Card>
+            )}
+          </Box>
+
+          {/* Promotions Section */}
+          <Box sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ mb: 3 }}>
+              🎯 Promotions & Discounts
+            </Typography>
+            
+            {/* Add Promotion Button */}
+            <Box sx={{ mb: 3 }}>
+              <Button
+                startIcon={<AddIcon />}
+                variant="contained"
+                onClick={() => setPromotionDialogOpen(true)}
+                sx={{ 
+                  backgroundColor: Colors.blue,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 600
+                }}
+              >
+                Create New Promotion
+              </Button>
+            </Box>
+
+            {/* Promotions List */}
+            {property?.promotions && property.promotions.length > 0 ? (
+              <Grid container spacing={2}>
+                {property.promotions.map((promotion: any, index: number) => (
+                  <Grid item xs={12} md={6} lg={4} key={promotion.id || index}>
+                    <Card 
+                      elevation={2} 
+                      sx={{ 
+                        height: '100%',
+                        border: promotion.isActive ? `2px solid #4caf50` : '1px solid #e0e0e0',
+                        opacity: promotion.isActive ? 1 : 0.7
+                      }}
+                    >
+                      <CardContent sx={{ pb: 1 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                          <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                            {promotion.name}
+                          </Typography>
+                          <Chip
+                            label={promotion.isActive ? 'Active' : 'Inactive'}
+                            size="small"
+                            sx={{
+                              backgroundColor: promotion.isActive ? '#4caf50' : '#bdbdbd',
+                              color: 'white',
+                              fontWeight: 500
+                            }}
+                          />
+                        </Box>
+                        
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                          {promotion.description}
+                        </Typography>
+
+                        <Box sx={{ mb: 2 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: Colors.blue }}>
+                            Discount: {promotion.discountType === 'percentage' 
+                              ? `${promotion.discountValue}%` 
+                              : `$${promotion.discountValue}`}
+                          </Typography>
+                          
+                          {promotion.startDate && promotion.endDate && (
+                            <Typography variant="caption" color="text.secondary">
+                              Valid: {new Date(promotion.startDate).toLocaleDateString()} - {new Date(promotion.endDate).toLocaleDateString()}
+                            </Typography>
+                          )}
+                        </Box>
+
+                        {(promotion.minNights || promotion.maxNights) && (
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                            Night restrictions: {promotion.minNights ? `Min ${promotion.minNights}` : ''} 
+                            {promotion.minNights && promotion.maxNights ? ' / ' : ''}
+                            {promotion.maxNights ? `Max ${promotion.maxNights}` : ''}
+                          </Typography>
+                        )}
+
+                        {promotion.daysOfWeek && promotion.daysOfWeek.length > 0 && (
+                          <Box sx={{ mb: 1 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                              Valid days:
+                            </Typography>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {promotion.daysOfWeek.map((day: number) => (
+                                <Chip
+                                  key={day}
+                                  label={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ fontSize: '0.7rem', height: 20 }}
+                                />
+                              ))}
+                            </Box>
+                          </Box>
+                        )}
+                      </CardContent>
+
+                      <CardActions sx={{ pt: 0, px: 2, pb: 2 }}>
+                        <Button
+                          size="small"
+                          startIcon={<EditIcon />}
+                          onClick={() => handleEditPromotion(promotion)}
+                          sx={{ color: Colors.blue }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="small"
+                          startIcon={promotion.isActive ? <PauseCircleIcon /> : <CheckCircleIcon />}
+                          onClick={() => handleTogglePromotion(promotion)}
+                          sx={{ color: promotion.isActive ? '#f57c00' : '#4caf50' }}
+                        >
+                          {promotion.isActive ? 'Deactivate' : 'Activate'}
+                        </Button>
+                        <Button
+                          size="small"
+                          startIcon={<DeleteIcon />}
+                          onClick={() => handleDeletePromotion(promotion.id)}
+                          sx={{ color: '#d32f2f' }}
+                        >
+                          Delete
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Card sx={{ p: 3, textAlign: 'center', backgroundColor: '#f5f5f5' }}>
+                <LocalOfferIcon sx={{ fontSize: 48, color: '#bdbdbd', mb: 2 }} />
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  No promotions created yet
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  Create promotions to attract more bookings with special discounts and offers
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setPromotionDialogOpen(true)}
+                  sx={{ 
+                    backgroundColor: Colors.blue,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontWeight: 600
+                  }}
+                >
+                  Create Your First Promotion
+                </Button>
               </Card>
             )}
           </Box>
@@ -801,6 +1102,343 @@ export default function ManageProperty() {
               }}
             >
               {deleteProperty.isPending ? 'Deleting...' : 'Delete Permanently'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Promotion Dialog */}
+        <Dialog 
+          open={promotionDialogOpen} 
+          onClose={() => setPromotionDialogOpen(false)}
+          maxWidth="md"
+          fullWidth
+          PaperProps={{
+            sx: { borderRadius: 3, overflow: 'hidden' }
+          }}
+        >
+          {/* Dialog Header with Background */}
+          <Box sx={{ 
+            bgcolor: '#f8f9ff', 
+            borderBottom: '1px solid #e0e6ff',
+            px: 3,
+            py: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5
+          }}>
+            <Box sx={{ 
+              bgcolor: Colors.blue, 
+              color: 'white', 
+              width: 40, 
+              height: 40, 
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {editingPromotion ? <EditIcon /> : <LocalOfferIcon />}
+            </Box>
+            <DialogTitle sx={{ 
+              color: Colors.blue, 
+              fontWeight: 600, 
+              p: 0,
+              fontSize: '1.25rem'
+            }}>
+              {editingPromotion ? 'Edit Promotion' : 'Create New Promotion'}
+            </DialogTitle>
+          </Box>
+          
+          <DialogContent sx={{ px: 3, py: 4 }}>
+            <Box>
+              <Grid container spacing={2}>
+                {/* Section: Basic Information */}
+                <Grid item xs={12}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <InfoIcon fontSize="small" /> Basic Information
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                </Grid>
+                
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Promotion Name"
+                    value={promotionForm.name}
+                    onChange={(e) => setPromotionForm(prev => ({ ...prev, name: e.target.value }))}
+                    variant="outlined"
+                    placeholder="Summer Special, Weekend Deal, etc."
+                    size="small"
+                    InputProps={{ sx: { borderRadius: 2 } }}
+                  />
+                </Grid>
+                
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Description"
+                    value={promotionForm.description}
+                    onChange={(e) => setPromotionForm(prev => ({ ...prev, description: e.target.value }))}
+                    variant="outlined"
+                    multiline
+                    rows={2}
+                    placeholder="Describe your promotion to attract guests"
+                    size="small"
+                    InputProps={{ sx: { borderRadius: 2 } }}
+                  />
+                </Grid>
+
+                {/* Section: Discount Details */}
+                <Grid item xs={12} sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <PercentIcon fontSize="small" /> Discount Details
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Discount Type</InputLabel>
+                    <Select
+                      value={promotionForm.discountType}
+                      onChange={(e) => setPromotionForm(prev => ({ ...prev, discountType: e.target.value as 'percentage' | 'fixed' }))}
+                      label="Discount Type"
+                      size="small"
+                      sx={{ borderRadius: 2 }}
+                    >
+                      <MenuItem value="percentage">Percentage (%)</MenuItem>
+                      <MenuItem value="fixed">Fixed Amount ($)</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label={`Discount Value ${promotionForm.discountType === 'percentage' ? '(%)' : '($)'}`}
+                    value={promotionForm.discountValue}
+                    onChange={(e) => setPromotionForm(prev => ({ ...prev, discountValue: e.target.value }))}
+                    variant="outlined"
+                    type="number"
+                    size="small"
+                    InputProps={{
+                      startAdornment: promotionForm.discountType === 'fixed' ? <Box component="span" sx={{ mr: 1 }}>$</Box> : null,
+                      endAdornment: promotionForm.discountType === 'percentage' ? <Box component="span" sx={{ ml: 1 }}>%</Box> : null,
+                      sx: { borderRadius: 2 }
+                    }}
+                  />
+                </Grid>
+
+                {/* Section: Validity Period */}
+                <Grid item xs={12} sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CalendarTodayIcon fontSize="small" /> Validity Period
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Start Date"
+                    type="date"
+                    value={promotionForm.startDate}
+                    onChange={(e) => setPromotionForm(prev => ({ ...prev, startDate: e.target.value }))}
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    size="small"
+                    InputProps={{ sx: { borderRadius: 2 } }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="End Date"
+                    type="date"
+                    value={promotionForm.endDate}
+                    onChange={(e) => setPromotionForm(prev => ({ ...prev, endDate: e.target.value }))}
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    size="small"
+                    InputProps={{ sx: { borderRadius: 2 } }}
+                  />
+                </Grid>
+
+                {/* Section: Booking Restrictions */}
+                <Grid item xs={12} sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <FilterAltIcon fontSize="small" /> Booking Restrictions
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Minimum Nights"
+                    value={promotionForm.minNights}
+                    onChange={(e) => setPromotionForm(prev => ({ ...prev, minNights: e.target.value }))}
+                    variant="outlined"
+                    type="number"
+                    placeholder="Optional"
+                    size="small"
+                    InputProps={{ sx: { borderRadius: 2 } }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Maximum Nights"
+                    value={promotionForm.maxNights}
+                    onChange={(e) => setPromotionForm(prev => ({ ...prev, maxNights: e.target.value }))}
+                    variant="outlined"
+                    type="number"
+                    placeholder="Optional"
+                    size="small"
+                    InputProps={{ sx: { borderRadius: 2 } }}
+                  />
+                </Grid>
+
+                {/* Active Status */}
+                <Grid item xs={12} sx={{ mt: 1 }}>
+                  <Paper elevation={0} sx={{ 
+                    p: 2, 
+                    bgcolor: promotionForm.isActive ? '#e8f5e9' : '#f5f5f5',
+                    border: `1px solid ${promotionForm.isActive ? '#a5d6a7' : '#e0e0e0'}`,
+                    borderRadius: 2
+                  }}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={promotionForm.isActive}
+                          onChange={(e) => setPromotionForm(prev => ({ ...prev, isActive: e.target.checked }))}
+                          color="success"
+                        />
+                      }
+                      label={
+                        <Box>
+                          <Typography variant="body1" fontWeight={500}>
+                            {promotionForm.isActive ? 'Promotion Active' : 'Promotion Inactive'}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {promotionForm.isActive 
+                              ? 'This promotion is visible and available for bookings' 
+                              : 'This promotion is saved but not available for bookings'}
+                          </Typography>
+                        </Box>
+                      }
+                    />
+                  </Paper>
+                </Grid>
+               {/* Days of Week */}
+               <Grid item xs={12} sx={{ mt: 2 }}>
+                 <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                   <TodayIcon fontSize="small" color="action" /> Valid Days of Week
+                 </Typography>
+                 <Divider sx={{ mb: 2 }} />
+                 <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: '#fafafa' }}>
+                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                     {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, idx) => {
+                       const isSelected = promotionForm.daysOfWeek.includes(idx);
+                       return (
+                         <Button
+                           key={day}
+                           variant={isSelected ? "contained" : "outlined"}
+                           size="small"
+                           sx={{ 
+                             minWidth: 42, 
+                             height: 36,
+                             fontSize: '0.85rem', 
+                             borderRadius: 2,
+                             backgroundColor: isSelected ? Colors.blue : 'transparent',
+                             color: isSelected ? 'white' : Colors.blue,
+                             boxShadow: isSelected ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                             '&:hover': {
+                               backgroundColor: isSelected ? Colors.blue : 'rgba(0, 0, 0, 0.04)'
+                             }
+                           }}
+                           onClick={() => {
+                             setPromotionForm(prev => {
+                               const days = prev.daysOfWeek.includes(idx)
+                                 ? prev.daysOfWeek.filter(d => d !== idx)
+                                 : [...prev.daysOfWeek, idx];
+                               return { ...prev, daysOfWeek: days };
+                             });
+                           }}
+                         >
+                           {day}
+                         </Button>
+                       );
+                     })}
+                   </Box>
+                   <Typography variant="caption" color="text.secondary" sx={{ mt: 1.5, display: 'block' }}>
+                     {promotionForm.daysOfWeek.length === 0 
+                       ? 'No days selected - promotion will be valid every day' 
+                       : promotionForm.daysOfWeek.length === 7 
+                         ? 'All days selected - promotion will be valid every day'
+                         : `Promotion will only be valid on selected days`}
+                   </Typography>
+                 </Paper>
+               </Grid>
+               
+               {/* Blackout Dates */}
+               <Grid item xs={12} sx={{ mt: 1 }}>
+                 <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                   <BlockIcon fontSize="small" color="action" /> Blackout Dates
+                 </Typography>
+                 <Divider sx={{ mb: 2 }} />
+                 <TextField
+                   fullWidth
+                   label="Blackout Dates (comma-separated YYYY-MM-DD)"
+                   value={promotionForm.blackoutDates.join(', ')}
+                   onChange={e => {
+                     const dates = e.target.value
+                       .split(',')
+                       .map(d => d.trim())
+                       .filter(d => d.length > 0);
+                     setPromotionForm(prev => ({ ...prev, blackoutDates: dates }));
+                   }}
+                   variant="outlined"
+                   placeholder="e.g. 2025-07-04, 2025-08-15"
+                   helperText="Enter dates when this promotion should not be available"
+                   size="small"
+                   InputProps={{ sx: { borderRadius: 2 } }}
+                 />
+               </Grid>
+              </Grid>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 3, bgcolor: '#f8f9ff', borderTop: '1px solid #e0e6ff' }}>
+            <Button
+              onClick={() => setPromotionDialogOpen(false)}
+              startIcon={<CancelIcon />}
+              sx={{ 
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 3
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSavePromotion}
+              variant="contained"
+              disabled={isUpdating || !promotionForm.name || !promotionForm.discountValue}
+              startIcon={isUpdating ? <CircularProgress size={16} /> : <SaveIcon />}
+              sx={{ 
+                backgroundColor: Colors.blue,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 3,
+                '&:hover': {
+                  backgroundColor: '#0056b3'
+                }
+              }}
+            >
+              {isUpdating ? 'Saving...' : (editingPromotion ? 'Update Promotion' : 'Create Promotion')}
             </Button>
           </DialogActions>
         </Dialog>

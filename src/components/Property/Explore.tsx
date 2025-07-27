@@ -3,7 +3,7 @@ import {
   Box, 
   Typography, 
   Container, 
-  Grid, 
+
   Paper, 
   Skeleton,
   Button,
@@ -20,6 +20,7 @@ import {
   Tab,
   Chip
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import { useGetAllProperties, useGetFeaturedRegionProperties } from '../../hooks/propertyListingHooks';
 import PropertyCard from '../PropertyCard';
 import { Colors } from '../constants';

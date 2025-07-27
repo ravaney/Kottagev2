@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
-  Grid,
+
   Paper,
   Button,
   Divider,
@@ -26,6 +26,7 @@ import {
   Tabs,
   Badge
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import {
   RateReview as ReviewIcon,
   NavigateNext as NavigateNextIcon,

@@ -4,7 +4,7 @@ import {
   Typography,
   Card,
   CardContent,
-  Grid,
+
   Button,
   Table,
   TableBody,
@@ -39,6 +39,7 @@ import {
   Avatar,
   Divider
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import {
   Edit as EditIcon,
   Add as AddIcon,

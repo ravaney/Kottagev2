@@ -1,19 +1,18 @@
 import React from 'react';
 import {
   Box,
-  Grid,
   CircularProgress,
   Alert,
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 
-import { enUS } from 'date-fns/locale';
 
-import IncomeChartCard from './IncomeChartCard';
+import IncomeChartCard from './Home/IncomeChartCard';
 import ReservationStatusCard from './ReservationStatusCard';
-import EarningsBreakdownCard from './EarningsBreakdownCard';
-import BookingCalendar from './BookingCalendar';
-import UpcomingReservations from './UpcomingReservations';
-import { Reservation, ReservationStatus, useGetMyReservations } from '../../hooks/reservationHooks';
+import EarningsBreakdownCard from './Home/EarningsBreakdownCard';
+import BookingCalendar from './Home/BookingCalendar';
+import UpcomingReservations from './Home/UpcomingReservations';
+import {  ReservationStatus, useGetMyReservations } from '../../hooks/reservationHooks';
 
 
 export default function Dashboard() {

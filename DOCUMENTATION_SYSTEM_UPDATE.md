@@ -1,3 +1,19 @@
+## Industry Standard Reservation Statuses
+
+Industry standard reservation statuses for booking systems (hotels, vacation rentals, etc.) typically include:
+
+- **Pending**: Reservation has been created but not yet confirmed (e.g., awaiting payment or host approval).
+- **Confirmed**: Reservation is accepted and guaranteed.
+- **Checked-in**: Guest has arrived and checked in.
+- **Checked-out**: Guest has completed their stay and checked out.
+- **Completed**: Reservation is fully finished (often used after checkout and payment reconciliation).
+- **Cancelled**: Reservation was cancelled by guest or host.
+- **No-show**: Guest did not arrive for their reservation.
+
+You may also see:
+
+- **On Hold**: Temporarily held, awaiting further action.
+- **Rejected/Declined**: Reservation was not accepted.
 # Documentation System Update Summary
 
 ## Overview
@@ -16,6 +32,11 @@ From `src/components/Admin/` to `public/docs/`:
    - Access control implementation details
    - Updated existing entry to point to new location
 
+3. **PROMOTIONAL_PRICING_DOCUMENTATION.md** → `docs/PROMOTIONAL_PRICING_DOCUMENTATION.md`
+   - Comprehensive promotional pricing system documentation
+   - Implementation guide for dynamic discounts and special offers
+   - Business benefits and usage examples
+
 ## DocumentationViewer Updates
 
 ### New Documentation Entries Added:
@@ -30,6 +51,12 @@ From `src/components/Admin/` to `public/docs/`:
    - Category: Administration
    - Enhanced description for implementation details
 
+3. **Promotional Pricing System**
+   - Path: `/docs/PROMOTIONAL_PRICING_DOCUMENTATION.md`
+   - Category: Administration
+   - Icon: LocalOffer icon
+   - Description: Comprehensive system for dynamic room pricing, discounts, and promotional offers
+
 ### Current Documentation Library Structure:
 
 #### Analytics & Metrics (4 documents)
@@ -43,12 +70,13 @@ From `src/components/Admin/` to `public/docs/`:
 - Migration Guide
 - Changelog
 
-#### Administration (6 documents)
+#### Administration (7 documents)
 - Firebase Claims Guide
 - Claims & Permissions Documentation *(updated location)*
 - Firebase Indexing Setup
 - New Employee Wizard
 - **CEO Analytics Documentation** *(newly added)*
+- **Promotional Pricing System** *(newly added)*
 
 #### Fraud Detection (5 documents)
 - Fraud Detection Overview
@@ -65,6 +93,7 @@ public/
 ├── docs/
 │   ├── CEOAnalytics.md *(newly moved)*
 │   ├── CLAIMS_PERMISSIONS_DOCUMENTATION.md *(newly moved)*
+│   ├── PROMOTIONAL_PRICING_DOCUMENTATION.md *(newly added)*
 │   └── fraud-detection/
 │       ├── API.md
 │       ├── IMPLEMENTATION.md

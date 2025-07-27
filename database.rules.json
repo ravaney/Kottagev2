@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "userChats": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "messages": {
+      "$chatId": {
+        ".read": "root.child('userChats').child(auth.uid).child($chatId).exists()",
+        ".write": "root.child('userChats').child(auth.uid).child($chatId).exists()"
+      }
+    },
+    "chats": {
+      ".read": false,
+      ".write": "auth != null"
+    }
+  }
+}

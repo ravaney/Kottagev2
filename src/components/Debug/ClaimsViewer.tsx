@@ -7,9 +7,10 @@ import {
   Chip,
   Divider,
   Button,
-  Grid,
+
   Paper
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import { useUserClaims } from '../../hooks/useUserClaims';
 
 export const ClaimsViewer: React.FC = () => {

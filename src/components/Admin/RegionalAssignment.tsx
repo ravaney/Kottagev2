@@ -3,7 +3,7 @@ import {
   Box,
   Container,
   Typography,
-  Grid,
+
   Paper,
   Button,
   Card,
@@ -32,6 +32,7 @@ import {
   Divider,
   Alert
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import { Colors } from '../constants';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';

@@ -12,7 +12,8 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Avatar
+  Avatar,
+  ListItemButton
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
@@ -205,11 +206,8 @@ export default function AdminLanding() {
               {staffOperationModules.map((module) => (
                 <ListItem 
                   key={module.id}
-                  button
-                  onClick={() => handleModuleClick(module.id, module.path)}
+                  disablePadding
                   sx={{
-                    py: 1,
-                    px: 0,
                     color: activeModule === module.id ? 'white' : 'rgba(255,255,255,0.6)',
                     backgroundColor: activeModule === module.id ? 'rgba(255,255,255,0.1)' : 'transparent',
                     borderLeft: activeModule === module.id ? '4px solid white' : '4px solid transparent',
@@ -218,20 +216,28 @@ export default function AdminLanding() {
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ 
-                    color: activeModule === module.id ? 'white' : 'rgba(255,255,255,0.6)',
-                    minWidth: 40,
-                    pl: 2
-                  }}>
-                    {module.icon}
-                  </ListItemIcon>
-                  <ListItemText 
-                    primary={module.name}
-                    primaryTypographyProps={{
-                      fontSize: '14px',
-                      fontWeight: 500
+                  <ListItemButton
+                    onClick={() => handleModuleClick(module.id, module.path)}
+                    sx={{
+                      py: 1,
+                      px: 0,
                     }}
-                  />
+                  >
+                    <ListItemIcon sx={{ 
+                      color: activeModule === module.id ? 'white' : 'rgba(255,255,255,0.6)',
+                      minWidth: 40,
+                      pl: 2
+                    }}>
+                      {module.icon}
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary={module.name}
+                      primaryTypographyProps={{
+                        fontSize: '14px',
+                        fontWeight: 500
+                      }}
+                    />
+                  </ListItemButton>
                 </ListItem>
               ))}
             </List>

@@ -115,8 +115,11 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
         const priceRange = searchData.priceRange || filters?.priceRange;
         if (priceRange) {
           filteredProperties = filteredProperties.filter(property => {
-            const price = property.price || property.roomTypes?.[0]?.pricePerNight || 0;
-            return price >= priceRange.min && price <= priceRange.max;
+            // Get the lowest price from all room types
+            const lowestPrice = property.roomTypes?.length ? 
+              Math.min(...property.roomTypes.map(room => room.pricePerNight)) : 
+              0;
+            return lowestPrice >= priceRange.min && lowestPrice <= priceRange.max;
           });
         }
       }
@@ -171,9 +174,8 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
            
           switch (filters.sortBy) {
             case 'price':
-              aValue = a.price || a.roomTypes?.[0]?.pricePerNight || 0;
-              bValue = b.price || b.roomTypes?.[0]?.pricePerNight || 0;
-              break;
+              aValue = a.roomTypes?.length ? Math.min(...a.roomTypes.map(room => room.pricePerNight)) : 0;
+              bValue = b.roomTypes?.length ? Math.min(...b.roomTypes.map(room => room.pricePerNight)) : 0;              break;
             case 'rating':
               aValue = a.rating;
               bValue = b.rating;
