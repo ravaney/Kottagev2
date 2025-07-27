@@ -36,6 +36,42 @@ export const blockDatesManually = async (
   await update(ref(database), updates);
 };
 
+// Block dates for a reservation
+export const blockDatesForReservation = async (
+  propertyId: string,
+  roomTypeId: string,
+  checkIn: Date,
+  checkOut: Date,
+  reservationId: string,
+  userId: string
+): Promise<void> => {
+  const dates: string[] = [];
+  const currentDate = new Date(checkIn);
+  
+  // Generate dates from check-in to check-out (excluding check-out date)
+  while (currentDate < checkOut) {
+    dates.push(currentDate.toISOString().split('T')[0]);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  
+  const updates: { [key: string]: any } = {};
+  
+  dates.forEach(date => {
+    const blockKey = `${propertyId}_${roomTypeId}_${date}`;
+    updates[`blockedDates/${blockKey}`] = {
+      propertyId,
+      roomTypeId,
+      date,
+      reason: 'reservation' as const,
+      reservationId,
+      createdAt: Date.now(),
+      createdBy: userId
+    };
+  });
+  
+  await update(ref(database), updates);
+};
+
 // Unblock dates manually
 export const unblockDatesManually = async (
   propertyId: string,

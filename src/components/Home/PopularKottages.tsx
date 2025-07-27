@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
@@ -8,7 +9,6 @@ import {
   IconButton,
   Chip,
   Container,
-  Grid,
   Button,
   Rating,
   Avatar,
@@ -17,6 +17,7 @@ import {
   alpha,
   Skeleton
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import {
   Favorite,
   FavoriteBorder,
@@ -47,7 +48,8 @@ const getPropertyRegion = (kottage: KottageWithId): string => {
 };
 
 const getPropertyPrice = (kottage: KottageWithId): number => {
-  return kottage.price || kottage.roomTypes?.[0]?.pricePerNight || 0;
+  if (!kottage.roomTypes || kottage.roomTypes.length === 0) return 0;
+  return Math.min(...kottage.roomTypes.map(rt => rt.pricePerNight || 0));
 };
 
 // const getPropertyReviews = (kottage: KottageWithId): number => {
@@ -64,11 +66,22 @@ type Props = {};
 
 function PopularKottages({}: Props) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [favorites, setFavorites] = useState<string[]>([]);
   const [imageLoaded, setImageLoaded] = useState<string[]>([]);
   
   // Use the Firebase-backed popular properties hook
   const { data: properties = [], isLoading: loading, error } = usePopularProperties(6);
+
+  const handlePropertyClick = (property: KottageWithId) => {
+    // Navigate to property detail page with property data in state
+    navigate(`/Kottages/${property.key}`, {
+      state: { 
+        kottage: property,
+        source: 'popular' // Indicate this came from popular properties
+      }
+    });
+  };
 
   const toggleFavorite = (id: string) => {
     setFavorites(prev => 
@@ -168,6 +181,7 @@ function PopularKottages({}: Props) {
               <Grid item xs={12} sm={6} lg={4} key={property.key}>
                 <Fade in={true} timeout={600 + index * 100}>
                   <Card 
+                    onClick={() => handlePropertyClick(property)}
                     sx={{ 
                       height: '100%',
                       borderRadius: 3,

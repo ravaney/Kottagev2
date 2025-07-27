@@ -8,7 +8,7 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import {onRequest, onCall} from "firebase-functions/v2/https";
+import {onRequest} from "firebase-functions/v2/https";
 import {onValueWritten} from "firebase-functions/v2/database";
 import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";

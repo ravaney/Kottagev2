@@ -9,11 +9,13 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
 import { Colors } from '../constants';
 import { useAuth } from '../../hooks';
+import { useChat } from '../../contexts/ChatContext';
 
 export default function DashboardMenu() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { appUser } = useAuth();
+  const { appUser, firebaseUser } = useAuth();
+  const { chats } = useChat();
   
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -21,6 +23,12 @@ export default function DashboardMenu() {
     month: 'long',
     day: 'numeric'
   });
+  
+  // Calculate total unread messages
+  const totalUnreadMessages = chats.reduce((total, chat) => {
+    const currentUserId = firebaseUser?.uid || '';
+    return total + (chat.unreadCount?.[currentUserId] || 0);
+  }, 0);
   
   const getActiveTab = () => {
     const path = location.pathname;
@@ -113,7 +121,7 @@ export default function DashboardMenu() {
             />
             <Tab 
               icon={
-                <Badge badgeContent={2} color="primary" sx={{ '& .MuiBadge-badge': { fontSize: '0.6rem', minWidth: 16, height: 16 } }}>
+                <Badge badgeContent={totalUnreadMessages} color="primary" sx={{ '& .MuiBadge-badge': { fontSize: '0.6rem', minWidth: 16, height: 16 } }}>
                   <MessageIcon sx={{ fontSize: 20 }} />
                 </Badge>
               } 

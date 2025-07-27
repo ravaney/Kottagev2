@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Box,
   Typography,
-  Grid,
   Paper,
   Button,
   Divider,
@@ -16,6 +15,7 @@ import {
   Breadcrumbs,
   Link
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
@@ -126,7 +126,7 @@ export default function StaffDashboard() {
                   <React.Fragment key={task.id}>
                     <ListItem 
                       alignItems="flex-start"
-                      button
+                      component="button"
                       onClick={() => handleTaskClick(task.title)}
                       sx={{ 
                         px: 2, 

@@ -3,7 +3,7 @@ import {
   Box,
   Container,
   Typography,
-  Grid,
+
   Paper,
   Button,
   Table,
@@ -31,6 +31,7 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import { Colors } from '../constants';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import EditIcon from '@mui/icons-material/Edit';

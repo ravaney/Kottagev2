@@ -6,7 +6,6 @@ import {
   DialogActions,
   Button,
   TextField,
-  Grid,
   Box,
   Typography,
   CircularProgress,
@@ -27,6 +26,7 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import { Kottage, useUpdateProperty, useUploadApprovalDocuments, useUploadRoomImages, useAddPropertyImages, ApprovalDocument, RoomType } from '../../hooks/propertyHooks';
 import { Colors } from '../constants';
 import { IAddress } from '../../../public/QuickType';
@@ -717,23 +717,6 @@ export default function EditPropertyDialog({
                 />
               </Grid>
 
-              <Grid item xs={12} md={3}>
-                <TextField
-                  fullWidth
-                  label="Price per Night"
-                  type="number"
-                  value={propertyData.price || ''}
-                  onChange={(e) =>
-                    setPropertyData((prev) => ({
-                      ...prev,
-                      price: parseFloat(e.target.value) || 0,
-                    }))
-                  }
-                  inputProps={{ min: 0, step: 0.01 }}
-                  size="small"
-                  disabled={isAnyOperationInProgress}
-                />
-              </Grid>
 
               <Grid item xs={12} md={6}>
                 <TextField

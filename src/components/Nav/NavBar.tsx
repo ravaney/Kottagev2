@@ -10,6 +10,7 @@ import {
   Drawer,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Badge,
@@ -36,10 +37,16 @@ import { useUserClaims } from "../../hooks/useUserClaims";
 import { AnimatedBadge } from '../common/AnimatedBadge';
 import { Colors } from "../constants";
 import UserMenu from "./Menu";
+import { useChat } from "../../contexts/ChatContext";
 
-const NavBar = () => {
+interface NavBarProps {
+  transparent?: boolean;
+}
+
+const NavBar = ({ transparent = false }: NavBarProps) => {
   const { firebaseUser, loading, appUser } = useAuth();
   const { user: claimsUser, loading: claimsLoading } = useUserClaims();
+  const { chats } = useChat();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -51,6 +58,12 @@ const NavBar = () => {
   // Use either firebaseUser from useAuth or claimsUser from useUserClaims
   const currentUser = firebaseUser || claimsUser;
   const isLoading = loading && claimsLoading;
+  
+  // Calculate total unread messages
+  const totalUnreadMessages = chats.reduce((total, chat) => {
+    const currentUserId = currentUser?.uid || '';
+    return total + (chat.unreadCount?.[currentUserId] || 0);
+  }, 0);
 
   const handleMessageClick = () => {
     navigate('/MyAccount/Dashboard/messages');
@@ -69,7 +82,6 @@ const NavBar = () => {
     { label: "Excursions", icon: <TravelIcon />, path: "/Excursions" },
     { label: "Events", icon: <EventIcon />, path: "/Events" },
     { label: "Restaurants", icon: <RestaurantIcon />, path: "/Restaurants" },
-    { label: "Car Rentals", icon: <CarIcon />, path: "/CarRentals" },
   ];
 
   const toggleMobileMenu = () => {
@@ -79,13 +91,13 @@ const NavBar = () => {
   return (
     <>
       <AppBar 
-        position="sticky" 
+        // position={transparent ? "absolute" : "sticky"} 
         elevation={0}
         sx={{ 
-          backgroundColor: "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(10px)",
-          borderBottom: "1px solid rgba(0,0,0,0.08)",
-          color: "inherit"
+          backgroundColor: transparent ? "transparent" : "rgba(255,255,255,0.95)",
+          backdropFilter: transparent ? "none" : "blur(10px)",
+          borderBottom: transparent ? "none" : "1px solid rgba(0,0,0,0.08)",
+          color: "inherit",
         }}
       >
         <Toolbar sx={{ 
@@ -140,7 +152,8 @@ const NavBar = () => {
                     minWidth: "auto",
                     flexShrink: 1,
                     "&:hover": {
-                      backgroundColor: `${Colors.blue}10`,
+                      backgroundColor: transparent ? "rgba(255,255,255,0.1)" : `${Colors.raspberry}10`,
+                      color: Colors.raspberry,
                       transform: "translateY(-1px)"
                     },
                     transition: "all 0.2s ease"
@@ -167,25 +180,33 @@ const NavBar = () => {
                 {!isLoading && currentUser && (
                   <>
                     {/* Messages */}
-                    <AnimatedBadge badgeContent={1} color="primary" animate>
-                      <IconButton 
-                        onClick={handleMessageClick}
-                        sx={{ 
-                          color: Colors.blue,
-                          "&:hover": { backgroundColor: `${Colors.blue}10` }
-                        }}
-                      >
-                        <MailIcon />
-                      </IconButton>
-                    </AnimatedBadge>
+                    {totalUnreadMessages > 0 && (
+                      <AnimatedBadge badgeContent={totalUnreadMessages} color="primary" animate>
+                        <IconButton 
+                          onClick={handleMessageClick}
+                          sx={{ 
+                            color: Colors.blue,
+                            "&:hover": { 
+                              backgroundColor: transparent ? "rgba(255,255,255,0.1)" : `${Colors.raspberry}10`,
+                              color: Colors.raspberry
+                            }
+                          }}
+                        >
+                          <MailIcon />
+                        </IconButton>
+                      </AnimatedBadge>
+                    )}
 
                     {/* Notifications */}
                     <AnimatedBadge badgeContent={3} color="secondary" animate>
                       <IconButton 
                         onClick={handleNotificationClick}
                         sx={{ 
-                          color: Colors.blue,
-                          "&:hover": { backgroundColor: `${Colors.blue}10` }
+                          color:  Colors.blue,
+                          "&:hover": { 
+                            backgroundColor: transparent ? "rgba(255,255,255,0.1)" : `${Colors.raspberry}10`,
+                            color: Colors.raspberry
+                          }
                         }}
                       >
                         <NotificationsIcon />
@@ -214,7 +235,8 @@ const NavBar = () => {
                         fontSize: { xs: "14px", md: "16px" },
                         minWidth: "auto",
                         "&:hover": {
-                          backgroundColor: `${Colors.blue}10`
+                          backgroundColor: transparent ? "rgba(255,255,255,0.1)" : `${Colors.raspberry}10`,
+                          color: Colors.raspberry
                         }
                       }}
                     >
@@ -254,8 +276,12 @@ const NavBar = () => {
               <IconButton
                 onClick={toggleMobileMenu}
                 sx={{ 
-                  color: Colors.blue,
-                  p: 1
+                  color:Colors.blue,
+                  p: 1,
+                  "&:hover": {
+                    backgroundColor: transparent ? "rgba(255,255,255,0.1)" : `${Colors.raspberry}10`,
+                    color: Colors.raspberry
+                  }
                 }}
               >
                 <MenuIcon />
@@ -324,56 +350,60 @@ const NavBar = () => {
           {/* User Actions for Mobile (when logged in) */}
           {!isLoading && currentUser && (
             <List sx={{ py: 0 }}>
-              <ListItem 
-                button 
-                onClick={() => {
-                  handleMessageClick();
-                  toggleMobileMenu();
-                }}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: `${Colors.blue}10`
-                  }
-                }}
-              >
-                <ListItemIcon sx={{ color: Colors.blue }}>
-                  <Badge badgeContent={1} color="primary">
-                    <MailIcon />
-                  </Badge>
-                </ListItemIcon>
-                <ListItemText 
-                  primary="Messages"
-                  primaryTypographyProps={{
-                    fontWeight: 500,
-                    color: Colors.blue
-                  }}
-                />
-              </ListItem>
+              {totalUnreadMessages > 0 && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      handleMessageClick();
+                      toggleMobileMenu();
+                    }}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: `${Colors.blue}10`
+                      }
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: Colors.blue }}>
+                      <Badge badgeContent={totalUnreadMessages} color="primary">
+                        <MailIcon />
+                      </Badge>
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Messages"
+                      primaryTypographyProps={{
+                        fontWeight: 500,
+                        color: Colors.blue
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
               
-              <ListItem 
-                button 
-                onClick={(event) => {
-                  handleNotificationClick(event);
-                  toggleMobileMenu();
-                }}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: `${Colors.blue}10`
-                  }
-                }}
-              >
-                <ListItemIcon sx={{ color: Colors.blue }}>
-                  <Badge badgeContent={3} color="secondary">
-                    <NotificationsIcon />
-                  </Badge>
-                </ListItemIcon>
-                <ListItemText 
-                  primary="Notifications"
-                  primaryTypographyProps={{
-                    fontWeight: 500,
-                    color: Colors.blue
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={(event) => {
+                    handleNotificationClick(event);
+                    toggleMobileMenu();
                   }}
-                />
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: `${Colors.blue}10`
+                    }
+                  }}
+                >
+                  <ListItemIcon sx={{ color: Colors.blue }}>
+                    <Badge badgeContent={3} color="secondary">
+                      <NotificationsIcon />
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary="Notifications"
+                    primaryTypographyProps={{
+                      fontWeight: 500,
+                      color: Colors.blue
+                    }}
+                  />
+                </ListItemButton>
               </ListItem>
             </List>
           )}
@@ -383,28 +413,37 @@ const NavBar = () => {
             {currentUser && <Divider sx={{ my: 1 }} />}
             {navigationItems.map((item) => (
               <ListItem 
-                button 
                 key={item.label}
-                onClick={() => {
-                  navigate(item.path);
-                  toggleMobileMenu();
-                }}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: `${Colors.blue}10`
-                  }
-                }}
+                disablePadding
               >
-                <ListItemIcon sx={{ color: Colors.blue }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText 
-                  primary={item.label}
-                  primaryTypographyProps={{
-                    fontWeight: 500,
-                    color: Colors.blue
+                <ListItemButton
+                  onClick={() => {
+                    navigate(item.path);
+                    toggleMobileMenu();
                   }}
-                />
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: `${Colors.raspberry}10`,
+                      "& .MuiListItemIcon-root": {
+                        color: Colors.raspberry
+                      },
+                      "& .MuiListItemText-primary": {
+                        color: Colors.raspberry
+                      }
+                    }
+                  }}
+                >
+                  <ListItemIcon sx={{ color: Colors.blue }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={item.label}
+                    primaryTypographyProps={{
+                      fontWeight: 500,
+                      color: Colors.blue
+                    }}
+                  />
+                </ListItemButton>
               </ListItem>
             ))}
           </List>

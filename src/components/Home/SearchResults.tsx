@@ -3,7 +3,6 @@ import {
   Box,
   Container,
   Typography,
-  Grid,
   Card,
   CardContent,
   CardMedia,
@@ -17,6 +16,7 @@ import {
   Fade,
   Stack
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import {
   LocationOn,
   People,
@@ -105,7 +105,10 @@ const getPropertyRegion = (kottage: KottageWithId): string => {
 };
 
 const getPropertyPrice = (kottage: KottageWithId): number => {
-  return kottage.price || kottage.roomTypes?.[0]?.pricePerNight || 0;
+  if (kottage.roomTypes && kottage.roomTypes.length > 0) {
+    return Math.min(...kottage.roomTypes.map(rt => rt.pricePerNight || 0));
+  }
+  return 0;
 };
 
 // const getPropertyReviews = (kottage: KottageWithId): number => {
@@ -113,8 +116,8 @@ const getPropertyPrice = (kottage: KottageWithId): number => {
 // };
 
 const getHostInfo = (kottage: KottageWithId) => ({
-  name: `Host ${kottage.ownerId?.slice(0, 8)}` || 'Property Host',
-  avatar: `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 99)}.jpg`,
+  name: `Host ${kottage.host?.name?.slice(0, 8)}` || 'Property Host',
+  avatar: kottage.host?.avatar || '/default-avatar.png',
   superhost: kottage.rating > 4.7
 });
 
@@ -349,7 +352,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                       }}
                     >
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        ${property.price}/night
+                        ${getPropertyPrice(property)}/night
                       </Typography>
                     </Box>
                   </Box>

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack
 import { IAddress } from "../../public/QuickType";
 import { push, getDatabase, ref, query, orderByChild, equalTo, get, set, update } from "firebase/database";
 import { auth, database } from "../firebase";
+import { blockDatesForReservation } from "../utils/blockingUtils";
 
 /*
  * FIREBASE INDEXING NOTE:
@@ -30,6 +31,8 @@ export enum ReservationStatus {
   Confirmed = "confirmed",
   Cancelled = "cancelled",
   Completed = "completed",
+  CheckedIn = 'Checked-in',
+  CheckedOut = 'Checked-out',
   NoShow = "no_show",
   Refunded = "refunded",
   InProgress = "in_progress",
@@ -38,13 +41,13 @@ export enum ReservationStatus {
 export interface KottageStump{
   id: string;
   name: string;
-  address: IAddress;
 }
 export interface PaymentDetails {
   method: 'card' | 'paypal' | 'cash' | 'bank_transfer';
   transactionId?: string;
   paid: boolean;
   paidAt?: string;
+  amount?: number; // Amount paid, if applicable
 }
 export interface Reservation {
   reservationId: string;
@@ -61,6 +64,9 @@ export interface Reservation {
   notes?: string; // optional user message
   payment?: PaymentDetails;
   property: KottageStump;
+  // Required fields for date blocking functionality
+  propertyId: string;
+  roomTypeId: string;
   edits?: Array<{
     userId: string;
     timestamp: string;
@@ -83,22 +89,21 @@ export const useCreateReservation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (reservation: Omit<Reservation, 'id'>) => {
+    mutationFn: async (reservation: Omit<Partial<Reservation>, 'id'>) => {
       const user = auth.currentUser;
       if (!user) throw new Error('Not authenticated');
 
       const newReservationRef = push(ref(database, 'reservations'));
       const reservationId = `BK-${newReservationRef.key!}-RES`;      
-      const fullReservation: Reservation = {
-        ...reservation,
-        userId: user.uid,
-        createdAt: Date.now().toString(),
-      };
+      
 
      const updates: Record<string, any> = {
-        [`reservations/${reservationId}`]: fullReservation,
+        [`reservations/${reservationId}`]: {
+          ...reservation,
+          reservationId
+        },
         [`users/${user.uid}/reservations/${reservationId}`]: true,
-        [`properties/${reservation.property.id}/reservations/${reservationId}`]: true,
+        [`properties/${reservation.property?.id}/reservations/${reservationId}`]: true,
       };
 
       await update(ref(database), updates);
@@ -107,6 +112,7 @@ export const useCreateReservation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['blockedDates'] });
     },
   });
 };

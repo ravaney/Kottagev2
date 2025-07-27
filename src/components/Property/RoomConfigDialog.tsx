@@ -6,13 +6,13 @@ import {
   DialogActions,
   Button,
   TextField,
-  Grid,
   Box,
   Typography,
   CircularProgress,
   Paper,
   Divider
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy"
 import { RoomType, useAddPropertyImages } from '../../hooks/propertyHooks';
 import { Colors } from '../constants';
 import RoomIcon from '@mui/icons-material/Room';

@@ -8,6 +8,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import { ChatProvider } from "./contexts/ChatContext";
 import { getSubdomain, isSubdomain } from "./utils/subdomainRouter";
 import Splash from "./components/Home/Splash";
 import SearchPage from "./components/Home/SearchPage";
@@ -20,19 +21,19 @@ import MyBookings from "./components/Property/Reservations/MyBookings";
 import Favourites from "./components/MyAccount/Favourites";
 import PageNotFound from "./components/Nav/PageNotFound";
 import ProtectedRoute from "./ProtectedRoute";
-import ViewKottages from "./components/Property/ViewKottages";
+import ViewKottage from "./components/Property/ViewKottage";
+import BookRoom from "./components/Property/Reservations/BookRoom";
 import { setIconOptions } from "@fluentui/react";
 import { QueryProvider } from "./providers/QueryProvider";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import DashboardMenu from "./components/Dashboard/DashboardMenu";
 import Dashboard from "./components/Dashboard/Dashboard";
-import ActionCenter from "./components/Dashboard/ActionCenter";
-import Messages from "./components/Dashboard/Messages";
 import { analyticsService } from "./services/analyticsService";
-import ManageReservations from "./components/Dashboard/ManageReservations";
-import PropertyManagement from "./components/Dashboard/PropertyManagement";
-import AddProperty from "./components/Dashboard/AddProperty";
+import ManageReservations from "./components/Dashboard/ManageReservations/ManageReservations";
+import PropertyManagement from "./components/Dashboard/PropertyManagement/PropertyManagement";
 import Explore from "./components/Property/Explore";
-import PropertyAnalyticsPage from "./components/Dashboard/PropertyAnalyticsPage";
+import PropertyAnalyticsPage from "./components/Dashboard/PropertyManagement/PropertyAnalyticsPage";
 import ManageProperty from "./components/Property/ManageProperty";
 // Subdomain-specific imports
 import AdminLanding from "./components/Admin/AdminLanding";
@@ -52,6 +53,9 @@ import CEOAnalytics from "./components/Admin/CEOAnalytics";
 import EmployeeManagement from "./components/Admin/EmployeeManagement";
 import ProtectedAdminRoute from "./components/Admin/ProtectedAdminRoute";
 import ProtectedStaffRoute from "./components/Staff/ProtectedStaffRoute";
+import AddProperty from "./components/Dashboard/PropertyManagement/AddProperty";
+import Messages from "./components/Dashboard/Messages/Messages";
+import ActionCenter from "./components/Dashboard/ActionCenter/ActionCenter";
 
 function App() {
   setIconOptions({ disableWarnings: true });
@@ -97,7 +101,11 @@ function App() {
         },
         {
           path: "/Kottages/:id",
-          element: <ViewKottages />,
+          element: <ViewKottage />,
+        },
+        {
+          path: "/book-room",
+          element: <BookRoom />,
         },
         {
           path: "/MyAccount",
@@ -304,8 +312,12 @@ function App() {
 
   return (
     <QueryProvider>
-      <RouterProvider router={router} />
-      {process.env.NODE_ENV === 'development' && <SubdomainSimulator />}
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <ChatProvider>
+          <RouterProvider router={router} />
+          {process.env.NODE_ENV === 'development' && <SubdomainSimulator />}
+        </ChatProvider>
+      </LocalizationProvider>
     </QueryProvider>
   );
 }

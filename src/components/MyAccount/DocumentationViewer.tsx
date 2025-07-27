@@ -12,7 +12,7 @@ import {
   Divider,
   Paper,
   Chip,
-  Grid,
+
   Card,
   CardContent,
   CardHeader,
@@ -21,6 +21,7 @@ import {
   Alert,
   CircularProgress
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import {
   Description as DescriptionIcon,
   ExpandMore as ExpandMoreIcon,
@@ -32,7 +33,8 @@ import {
   School as SchoolIcon,
   OpenInNew as OpenInNewIcon,
   Article as ArticleIcon,
-  Dashboard as DashboardIcon
+  Dashboard as DashboardIcon,
+  LocalOffer as LocalOfferIcon
 } from '@mui/icons-material';
 import { Colors } from '../constants';
 
@@ -60,6 +62,14 @@ export default function DocumentationViewer() {
 
   // Documentation catalog
   const documentationCatalog: DocumentInfo[] = [
+    {
+      name: 'Reservation Statuses',
+      path: '/docs/RESERVATION_STATUSES.md',
+      category: 'core',
+      description: 'Industry standard reservation statuses for booking systems (hotels, vacation rentals, etc.)',
+      icon: <DescriptionIcon />,
+      color: '#2e7d32'
+    },
     {
       name: 'Analytics Documentation',
       path: '/ANALYTICS_DOCUMENTATION.md',
@@ -130,6 +140,14 @@ export default function DocumentationViewer() {
       category: 'admin',
       description: 'Executive-level analytics dashboard providing strategic insights for CEO decision-making',
       icon: <DashboardIcon />,
+      color: '#f57c00'
+    },
+    {
+      name: 'Promotional Pricing System',
+      path: '/docs/PROMOTIONAL_PRICING_DOCUMENTATION.md',
+      category: 'admin',
+      description: 'Comprehensive system for dynamic room pricing, discounts, and promotional offers with flexible conditions',
+      icon: <LocalOfferIcon />,
       color: '#f57c00'
     },
     {

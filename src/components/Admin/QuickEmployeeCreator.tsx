@@ -13,9 +13,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Grid,
+
   Typography
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import { useCreateEmployee } from '../../hooks/useUserClaims';
 
 interface QuickEmployeeCreatorProps {

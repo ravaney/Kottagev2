@@ -8,16 +8,13 @@ import {
   Paper,
   Fade,
   Chip,
-  Grid,
   Card,
   CardContent,
-  Breadcrumbs,
-  Link,
   Skeleton
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import {
   ArrowBack,
-  Home,
   Search as SearchIcon,
   FilterList,
   Sort,
@@ -80,8 +77,13 @@ const SearchPage: React.FC = () => {
   };
 
   const handlePropertyClick = (property: KottageWithId) => {
-    // Navigate to property detail page
-    navigate(`/Kottages/${property.key}`);
+    // Navigate to property detail page with property data in state
+    navigate(`/Kottages/${property.key}`, {
+      state: { 
+        kottage: property,
+        searchCriteria: searchData 
+      }
+    });
   };
 
   const getSearchSummary = () => {

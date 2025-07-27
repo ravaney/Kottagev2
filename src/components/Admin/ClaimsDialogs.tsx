@@ -15,7 +15,7 @@ import {
   Select,
   MenuItem,
   Chip,
-  Grid,
+
   Alert,
   List,
   ListItem,
@@ -30,6 +30,7 @@ import {
   Checkbox,
   FormGroup
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import {
   ExpandMore as ExpandMoreIcon,
   Security as SecurityIcon,

@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Paper,
-  Grid,
   LinearProgress,
   Chip,
   List,
@@ -11,6 +10,7 @@ import {
   ListItemText,
   ListItemIcon
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy"
 import SecurityIcon from '@mui/icons-material/Security';
 import WarningIcon from '@mui/icons-material/Warning';
 import ErrorIcon from '@mui/icons-material/Error';

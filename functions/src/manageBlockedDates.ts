@@ -15,7 +15,9 @@ export const onReservationCreated = functions.database
     const reservation = snapshot.val();
     const reservationId = context.params.reservationId;
     
-    if (reservation.status !== 'confirmed') return;
+    // Only block if status is one that should block dates
+    const blockStatuses = ['pending', 'confirmed', 'Checked-in', 'in_progress'];
+    if (!blockStatuses.includes(reservation.status)) return;
     
     try {
       await blockDatesForReservation(reservation, reservationId);
@@ -33,22 +35,25 @@ export const onReservationUpdated = functions.database
     const after = change.after.val();
     const reservationId = context.params.reservationId;
     
-    // If reservation was cancelled or rejected
-    if (before.status === 'confirmed' && 
-        (after.status === 'cancelled' || after.status === 'rejected')) {
+    // Define statuses that should unblock dates
+    const unblockStatuses = ['cancelled', 'refunded', 'completed', 'Checked-out', 'no_show'];
+    const blockStatuses = ['pending', 'confirmed', 'Checked-in', 'in_progress'];
+
+    // If reservation was in a block status and is now in an unblock status
+    if (blockStatuses.includes(before.status) && unblockStatuses.includes(after.status)) {
       try {
         await unblockDatesForReservation(before, reservationId);
-        console.log(`Unblocked dates for cancelled reservation ${reservationId}`);
+        console.log(`Unblocked dates for reservation ${reservationId} (status: ${after.status})`);
       } catch (error) {
         console.error('Error unblocking dates:', error);
       }
     }
-    
-    // If reservation was confirmed
-    if (before.status !== 'confirmed' && after.status === 'confirmed') {
+
+    // If reservation was not in a block status and is now in a block status
+    if (!blockStatuses.includes(before.status) && blockStatuses.includes(after.status)) {
       try {
         await blockDatesForReservation(after, reservationId);
-        console.log(`Blocked dates for confirmed reservation ${reservationId}`);
+        console.log(`Blocked dates for reservation ${reservationId} (status: ${after.status})`);
       } catch (error) {
         console.error('Error blocking dates:', error);
       }
@@ -56,10 +61,19 @@ export const onReservationUpdated = functions.database
   });
 
 async function blockDatesForReservation(reservation: any, reservationId: string) {
-  const { propertyId, roomTypeId, checkIn, checkOut, userId } = reservation;
+  // Extract propertyId and roomTypeId from reservation
+  const propertyId = reservation.propertyId || reservation.property?.id;
+  const roomTypeId = reservation.roomTypeId || (reservation.rooms && reservation.rooms[0]);
+  
+  if (!propertyId || !roomTypeId) {
+    console.error('Missing propertyId or roomTypeId for reservation:', reservationId);
+    return;
+  }
+
+  const { checkIn, checkOut, userId } = reservation;
   const checkInDate = new Date(checkIn);
   const checkOutDate = new Date(checkOut);
-  
+
   const updates: { [key: string]: any } = {};
   
   // Block each night between check-in and check-out
@@ -82,7 +96,16 @@ async function blockDatesForReservation(reservation: any, reservationId: string)
 }
 
 async function unblockDatesForReservation(reservation: any, reservationId: string) {
-  const { propertyId, roomTypeId, checkIn, checkOut } = reservation;
+  // Extract propertyId and roomTypeId from reservation
+  const propertyId = reservation.propertyId || reservation.property?.id;
+  const roomTypeId = reservation.roomTypeId || (reservation.rooms && reservation.rooms[0]);
+  
+  if (!propertyId || !roomTypeId) {
+    console.error('Missing propertyId or roomTypeId for reservation:', reservationId);
+    return;
+  }
+  
+  const { checkIn, checkOut } = reservation;
   const checkInDate = new Date(checkIn);
   const checkOutDate = new Date(checkOut);
   

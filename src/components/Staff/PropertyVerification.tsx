@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
-  Grid,
   Paper,
   Button,
   Tabs,
@@ -35,6 +34,7 @@ import {
   Avatar,
   CircularProgress
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import MoreVertIcon from '@mui/icons-material/MoreVert';

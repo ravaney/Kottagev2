@@ -12,7 +12,6 @@ import {
   Fade,
   IconButton,
   Chip,
-  Grid,
   Card,
   CardContent,
   CardMedia,
@@ -23,6 +22,7 @@ import {
   useTheme,
   alpha
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import { 
   KeyboardArrowDown, 
   LocationOn, 

@@ -19,7 +19,7 @@ import {
   Box,
   Typography,
   Button,
-  Grid,
+
   Card,
   CardContent,
   Divider,
@@ -34,6 +34,7 @@ import {
   ListItemText,
   ListItemIcon
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import {
   Person,
   Security,

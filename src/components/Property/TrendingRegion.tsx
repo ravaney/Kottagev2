@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Paper,
-  Grid,
   Card,
   CardMedia,
   CardContent,
@@ -12,6 +11,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import Grid from "@mui/material/GridLegacy";
 import { Colors } from '../constants';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';

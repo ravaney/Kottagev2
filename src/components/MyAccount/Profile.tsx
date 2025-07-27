@@ -1,5 +1,6 @@
 import { Label, PrimaryButton, Stack, Text, TextField as FluentTextField, Modal } from "@fluentui/react";
-import { IconButton, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Grid, Card, CardContent, Divider, TextField, Avatar, Chip } from "@mui/material";
+import { IconButton, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Card, CardContent, Divider, TextField, Avatar, Chip } from "@mui/material";
+import Grid from '@mui/material/GridLegacy';
 import React, { useState } from "react";
 import { Colors } from "../constants";
 import Address from "./Address";

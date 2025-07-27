@@ -4,6 +4,22 @@ import { useEffect } from 'react';
 
 // Analytics service for tracking user interactions
 export class AnalyticsService {
+  // Track completed booking
+  public trackBookingCompleted(propertyId: string, roomId: string, userId: string, totalPrice: number, guests: number, checkIn: string, checkOut: string): void {
+    this.trackInteraction({
+      propertyId,
+      action: 'booking_completed',
+      metadata: {
+        roomId,
+        userId,
+        totalPrice,
+        guests,
+        checkIn,
+        checkOut,
+        deviceType: this.getDeviceType()
+      }
+    });
+  }
   private static instance: AnalyticsService;
   private sessionId: string;
   private pageStartTime: number = 0;
