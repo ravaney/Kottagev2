@@ -30,7 +30,6 @@ import Grid from "@mui/material/GridLegacy";
 import { Kottage, useUpdateProperty, useUploadApprovalDocuments, useUploadRoomImages, useAddPropertyImages, ApprovalDocument, RoomType } from '../../hooks/propertyHooks';
 import { Colors } from '../constants';
 import { IAddress } from '../../../public/QuickType';
-import MuiPhoneNumber from 'mui-phone-number';
 import ImagePicker from '../ImagePicker';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -514,18 +513,13 @@ export default function EditPropertyDialog({
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <MuiPhoneNumber
+                <TextField
                   label="Phone"
                   value={propertyData.phone || ''}
-                  defaultCountry={'us'}
+                  onChange={(e) => setPropertyData((prev) => ({ ...prev, phone: e.target.value }))}
                   size="small"
                   disabled={isAnyOperationInProgress}
-                  onChange={(value) =>
-                    setPropertyData((prev) => ({
-                      ...prev,
-                      phone: value as string,
-                    }))
-                  }
+                 
                 />
               </Grid>
 

@@ -6,7 +6,6 @@ import { IAddress, IInitUser } from "../../../public/QuickType";
 import { Link, useNavigate } from "react-router-dom";
 import { useCreateAccount } from "../../hooks";
 import { Box, Card, CardContent } from "@mui/material";
-import MuiPhoneNumber from "mui-phone-number";
 
 export default function CreateAccount() {
   const [email, setEmail] = useState<string>("");
@@ -195,12 +194,13 @@ export default function CreateAccount() {
                 }
               }}
             />          
-              <MuiPhoneNumber
-              defaultCountry={'us'}
+              <TextField
+              type="tel"
+              label="Phone Number"
               value={phoneNumber}
-              onChange={(value) => setPhoneNumber(value as string)}
+              onChange={(e, v) => setPhoneNumber(v as string)}
               placeholder="Enter your new phone number"
-              style={{ width: '100%' }}
+            
             />
             <TextField
               type="text"
