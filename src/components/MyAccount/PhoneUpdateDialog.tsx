@@ -3,7 +3,6 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
 import { Stack, TextField } from '@fluentui/react';
 import { updatePhoneNumber, PhoneAuthProvider, RecaptchaVerifier } from 'firebase/auth';
 import { auth } from '../../firebase';
-import MuiPhoneNumber from 'mui-phone-number';
 import PhoneIcon from '@mui/icons-material/Phone';
 import SecurityIcon from '@mui/icons-material/Security';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -116,12 +115,12 @@ export const PhoneUpdateDialog: React.FC<PhoneUpdateDialogProps> = ({ open, onCl
             <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
               {currentPhone ? `Current: ${currentPhone}` : 'No phone number set'}
             </Typography>
-            <MuiPhoneNumber
-              defaultCountry={'us'}
+            <TextField
+              label="New Phone Number"
               value={newPhone}
-              onChange={(value) => setNewPhone(value as string)}
+              onChange={(e, v) => setNewPhone(v as string)}
               placeholder="Enter your new phone number"
-              style={{ width: '100%' }}
+             
             />
           </Box>
           
