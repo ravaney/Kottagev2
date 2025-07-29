@@ -1,12 +1,5 @@
 import  { useState } from "react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/GridLegacy";
-import Paper from "@mui/material/Paper";
-import { Slide, IconButton } from "@mui/material";
-import { Close } from "@mui/icons-material";
-
-import BigGallery from "./BigGallery";
-import RoomTypes from "./RoomTypes";
 import { Kottage, RoomType, useGetPropertyById } from "../../hooks";
 import { useLocation,  useParams } from "react-router-dom";
 import { usePropertyAnalytics } from "../../services/analyticsService";
@@ -16,6 +9,7 @@ import {
   PropertyPostcard,
 } from "./ViewProperty";
 import { DetailedRoomView } from "./ViewProperty/DetailedRoomViewDialog";
+import RoomTypes from "./RoomTypes";
 
 function ViewKottage() {
   const location = useLocation();
@@ -23,10 +17,15 @@ function ViewKottage() {
   const { data: freshKottage, isLoading, error } = useGetPropertyById(propertyId);
   const kottage = freshKottage || (location.state?.kottage as Kottage | undefined);
   
+  // Extract search criteria from location state (includes dates if provided)
+  const searchCriteria = location.state?.searchCriteria;
+  const checkInDate = searchCriteria?.checkIn;
+  const checkOutDate = searchCriteria?.checkOut;
+  const guests = searchCriteria?.guests;
+  
   const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
   const [detailedRoomView, setDetailedRoomView] = useState<RoomType | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [showRoomSelector, setShowRoomSelector] = useState(false);
   
   // Initialize analytics tracking for this property
   const analytics = usePropertyAnalytics(kottage?.id || '', document.referrer);
@@ -59,125 +58,62 @@ function ViewKottage() {
 
   const defaultRoom = getDefaultRoom();
 
+  // Handle scroll to rooms section
+  const handleViewRooms = () => {
+    const roomsSection = document.getElementById('rooms-section');
+    if (roomsSection) {
+      roomsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <Box>
       {/* Detailed Room View Modal */}
       <DetailedRoomView 
         detailedRoomView={detailedRoomView}
         setDetailedRoomView={setDetailedRoomView}
         kottage={kottage}
+        guests={guests}
+        checkInDate={checkInDate}
+        checkOutDate={checkOutDate}
       />
 
-      {/* Main Content - Full Width */}
-      <Box sx={{ flex: 1, height: '100%', position: 'relative' }}>
-        {/* Property Postcard - Full Width */}
-        <Box sx={{ height: '100%', position: 'relative' }}>
-          {kottage && (
-            <PropertyPostcard 
-              kottage={kottage}
-              defaultRoom={defaultRoom}
-              isFavorite={isFavorite}
-              onFavoriteToggle={() => setIsFavorite(!isFavorite)}
-              onShowRooms={() => setShowRoomSelector(true)}
-            />
-          )}
-        </Box>
-
-        {/* Sliding Room Selector */}
-        {showRoomSelector && (
-          <Box
-            sx={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              bgcolor: 'rgba(0, 0, 0, 0.3)',
-              zIndex: 1299
-            }}
-            onClick={() => setShowRoomSelector(false)}
+      {/* Property Postcard - Full Width */}
+      <Box sx={{ height: '100vh', position: 'relative' }}>
+        {kottage && (
+          <PropertyPostcard 
+            kottage={kottage}
+            defaultRoom={defaultRoom}
+            isFavorite={isFavorite}
+            onFavoriteToggle={() => setIsFavorite(!isFavorite)}
+            onViewRooms={handleViewRooms}
           />
         )}
-        
-        <Slide direction="up" in={showRoomSelector} mountOnEnter unmountOnExit>
-          <Box
-            sx={{
-              position: 'fixed',
-              bottom: 0,
-              right: { xs: 0, lg: 0 },
-              left: { xs: 0, lg: 'auto' },
-              width: { xs: '100%', lg: '25%' },
-              height: '70vh',
-              bgcolor: 'background.paper',
-              borderRadius: { xs: '24px 24px 0 0', lg: '24px 0 0 0' },
-              boxShadow: '0 -8px 32px rgba(0,0,0,0.15)',
-              zIndex: 1300,
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-          >
-            {/* Close handle and button */}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                py: 2,
-                px: 3,
-                borderBottom: '1px solid #e0e0e0'
-              }}
-            >
-              {/* Handle bar (mobile) */}
-              <Box
-                sx={{
-                  display: { xs: 'flex', lg: 'none' },
-                  flex: 1,
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setShowRoomSelector(false)}
-              >
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 4,
-                    bgcolor: '#ccc',
-                    borderRadius: 2
-                  }}
-                />
-              </Box>
-              
-              {/* Close button (desktop only) */}
-              <Box sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1 }} />
-              <IconButton
-                onClick={() => setShowRoomSelector(false)}
-                sx={{
-                  display: { xs: 'none', lg: 'flex' },
-                  color: 'text.secondary',
-                  '&:hover': {
-                    bgcolor: 'rgba(0, 0, 0, 0.04)'
-                  }
-                }}
-              >
-                <Close />
-              </IconButton>
-            </Box>
+      </Box>
 
-            {/* Room Types Content */}
-            <Box sx={{ flex: 1, overflow: 'auto', p: 3 }}>
-              {kottage && (
-                <RoomTypes 
-                  kottage={kottage}
-                  selectedRoom={selectedRoom}
-                  setSelectedRoom={setSelectedRoom}
-                  setDetailedRoomView={setDetailedRoomView}
-                />
-              )}
-            </Box>
-          </Box>
-        </Slide>
+      {/* Room Types Section */}
+      <Box 
+        id="rooms-section"
+        sx={{ 
+          minHeight: '100vh',
+          backgroundColor: 'background.default',
+          py: 4
+        }}
+      >
+        {kottage && (
+          <RoomTypes 
+            kottage={kottage}
+            selectedRoom={selectedRoom}
+            setSelectedRoom={setSelectedRoom}
+            setDetailedRoomView={setDetailedRoomView}
+            checkInDate={checkInDate}
+            checkOutDate={checkOutDate}
+            guests={guests}
+          />
+        )}
       </Box>
     </Box>
   );

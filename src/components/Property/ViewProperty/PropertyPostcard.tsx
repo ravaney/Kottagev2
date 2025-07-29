@@ -16,19 +16,21 @@ import {
   People,
   Hotel,
   CheckCircle,
+  KeyboardArrowDown,
 } from '@mui/icons-material';
 import Carousel from "react-bootstrap/Carousel";
 import { Kottage, RoomType } from '../../../hooks';
 import { calculatePromotionalPrice } from '../../../utils/promotionUtils';
 import { ContactHostButton } from '../../Chat';
 import { Colors } from '../../constants';
+import './viewproperty.css';
 
 interface PropertyHeaderProps {
   kottage: Kottage;
   defaultRoom?: RoomType | null;
   isFavorite: boolean;
   onFavoriteToggle: () => void;
-  onShowRooms?: () => void;
+  onViewRooms?: () => void;
 }
 
 export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
@@ -36,8 +38,9 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
   defaultRoom,
   isFavorite,
   onFavoriteToggle,
-  onShowRooms,
+  onViewRooms,
 }) => {
+
   // Get all available images for carousel
   const allImages = [
     ...(kottage?.images || []),
@@ -47,31 +50,7 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
 
   return (
     <>
-      <style>
-        {`
-          @media (max-width: 768px) {
-            .mobile-carousel .carousel-control-prev,
-            .mobile-carousel .carousel-control-next {
-              display: none !important;
-            }
-            .mobile-carousel .carousel-indicators {
-              display: none !important;
-            }
-          }
-        `}
-      </style>
-      <Box 
-        sx={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: '100vh',
-          width: '100vw',
-          overflow: 'hidden',
-        }}
-      >
+      <Box className="property-postcard">
       {/* Carousel Background */}
       {allImages.length > 0 ? (
         <Carousel
@@ -81,49 +60,20 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
           interval={4000}
           touch={true}
           wrap={true}
-          className="mobile-carousel"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: '100vh',
-            width: '100%',
-            zIndex: 1
-          }}
+          className="mobile-carousel property-carousel"
         >
           {allImages.map((image, index) => (
-            <Carousel.Item key={index} style={{ height: '100vh' }}>
+            <Carousel.Item key={index} className="property-carousel-item">
               <img
                 src={image}
                 alt={`Property image ${index + 1}`}
-                style={{
-                  width: '100%',
-                  height: '100vh',
-                  objectFit: 'cover',
-                  objectPosition: 'center'
-                }}
+                className="property-carousel-image"
               />
             </Carousel.Item>
           ))}
         </Carousel>
       ) : (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: '100vh',
-            backgroundColor: '#f0f0f0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1
-          }}
-        >
+        <Box className="no-images-container">
           <Typography variant="h6" color="text.secondary">
             No images available
           </Typography>
@@ -131,33 +81,10 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
       )}
       
       {/* Dark overlay for text readability */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.95))',
-          zIndex: 0,
-          pointerEvents: 'none'
-        }}
-      />
+      <Box className="dark-overlay" />
       
       {/* Content overlay */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 3,
-          color: 'white',
-          p: 4,
-          pointerEvents: 'auto',
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.95))'
-        }}
-      >
+      <Box className="content-overlay">
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={8}>
             <Box>
@@ -192,11 +119,7 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
                     label={`${kottage.roomTypes.length} Room Types`}
                     size="small"
                     variant="filled"
-                    sx={{ 
-                      bgcolor: 'rgba(255,255,255,0.2)',
-                      color: 'white',
-                      '& .MuiChip-icon': { color: 'white' }
-                    }}
+                    className="property-chip-white"
                   />
                 )}
                 
@@ -206,11 +129,7 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
                     label={`Up to ${Math.max(...(kottage?.roomTypes?.map(r => r.maxOccupancy) || [2]))} Guests`}
                     size="small"
                     variant="filled"
-                    sx={{ 
-                      bgcolor: 'rgba(255,255,255,0.2)', 
-                      color: 'white',
-                      '& .MuiChip-icon': { color: 'white' }
-                    }}
+                    className="property-chip-white"
                   />
                 )}
                 
@@ -219,78 +138,31 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
                   label="Verified Property"
                   size="small"
                   variant="filled"
-                  sx={{ 
-                    borderColor: '#4caf50', 
-                    color: '#4caf50',
-                    bgcolor: 'rgba(76, 175, 80, 0.1)',
-                    '& .MuiChip-icon': { color: '#4caf50' }
-                  }}
+                  className="property-chip-verified"
                 />
               </Box>
 
               {/* Property Description */}
-              <Typography variant="body1" color="rgba(255,255,255,0.9)" sx={{ lineHeight: 1.6 }}>
+              <Typography variant="body1" color="rgba(255,255,255,0.9)" sx={{ lineHeight: 1.6, mb: 3 }}>
                 {kottage?.description || 'Experience luxury and comfort in this beautiful property with modern amenities and exceptional service.'}
               </Typography>
-            </Box>
-          </Grid>
-          
-          <Grid item xs={12} md={4}>
-            <Box textAlign={{ xs: 'left', md: 'right' }}>
-              {/* Pricing Starting From */}
-              {defaultRoom && (
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body2" color="rgba(255,255,255,0.7)">
-                    Starting from
-                  </Typography>
-                  <Typography variant="h4" fontWeight={800} sx={{ color: Colors.raspberry }}>
-                    ${(() => {
-                      const promotion = calculatePromotionalPrice(defaultRoom, undefined, undefined, undefined, kottage?.promotions);
-                      return promotion.isPromotionApplied ? promotion.finalPrice : defaultRoom.pricePerNight;
-                    })()}
-                    <Typography component="span" variant="body1" color="rgba(255,255,255,0.7)">
-                      /night
-                    </Typography>
-                  </Typography>
-                  {(() => {
-                    const promotion = calculatePromotionalPrice(defaultRoom, undefined, undefined, undefined, kottage?.promotions);
-                    return promotion.isPromotionApplied && (
-                      <Typography variant="body2" sx={{ color: '#4caf50', fontWeight: 600 }}>
-                        Save ${promotion.savings} per night!
-                      </Typography>
-                    );
-                  })()}
-                </Box>
-              )}
 
               {/* Action Buttons */}
-              <Box display="flex" gap={1} justifyContent={{ xs: 'flex-start', md: 'flex-end' }} sx={{ mb: 2 }}>
-                {onShowRooms && (
-                  <Button
-                    variant="contained"
-                    onClick={onShowRooms}
-                    sx={{
-                      background: `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`,
-                      color: 'white',
-                      fontWeight: 700,
-                      px: 3,
-                      py: 1,
-                      borderRadius: 3,
-                      textTransform: 'none',
-                      fontSize: '1rem',
-                      boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                      '&:hover': {
-                        boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
-                        transform: 'translateY(-1px)'
-                      }
-                    }}
-                  >
-                    Stay Here
-                  </Button>
-                )}
+              <Box display="flex" gap={1} justifyContent="flex-start" sx={{ mb: 2 }}>
+                <Button
+                  variant="contained"
+                  onClick={onViewRooms}
+                  className="stay-here-button"
+                  sx={{
+                    background: `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`,
+                    color: 'white',
+                  }}
+                >
+                  View Rooms
+                </Button>
               </Box>
 
-              <Box display="flex" gap={1} justifyContent={{ xs: 'flex-start', md: 'flex-end' }}>
+              <Box display="flex" gap={1} justifyContent="flex-start">
                 {kottage?.ownerId && (
                   <ContactHostButton 
                     hostId={kottage.ownerId}
@@ -303,28 +175,142 @@ export const PropertyPostcard: React.FC<PropertyHeaderProps> = ({
                 )}
                 <IconButton
                   onClick={onFavoriteToggle}
+                  className="property-icon-button"
                   sx={{
-                    bgcolor: 'rgba(255,255,255,0.2)',
                     color: isFavorite ? Colors.raspberry : 'white',
-                    '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' }
                   }}
                 >
                   {isFavorite ? <Favorite /> : <FavoriteBorder />}
                 </IconButton>
                 
                 <IconButton
-                  sx={{
-                    bgcolor: 'rgba(255,255,255,0.2)',
-                    color: 'white',
-                    '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' }
-                  }}
+                  className="property-icon-button"
                 >
                   <Share />
                 </IconButton>
               </Box>
             </Box>
           </Grid>
+          
+          <Grid item xs={12} md={4}>
+            <Box textAlign={{ xs: 'left', md: 'right' }}>
+              {/* Pricing Starting From */}
+              {defaultRoom && (
+                <Box 
+                  sx={{ 
+                    mb: 3, 
+                    p: 2,
+                    background: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: 2,
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    maxWidth: 'fit-content',
+                    ml: { xs: 0, md: 'auto' }
+                  }}
+                >
+                  <Typography 
+                    variant="body2" 
+                    color="rgba(255,255,255,0.8)"
+                    sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}
+                  >
+                    Starting from
+                  </Typography>
+                  
+                  <Box display="flex" alignItems="baseline" gap={1}>
+                    <Typography 
+                      variant="h3" 
+                      fontWeight={900} 
+                      sx={{ 
+                        color: Colors.raspberry,
+                        textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                      }}
+                    >
+                      ${(() => {
+                        const promotion = calculatePromotionalPrice(defaultRoom, undefined, undefined, undefined, kottage?.promotions);
+                        return promotion.isPromotionApplied ? promotion.finalPrice : defaultRoom.pricePerNight;
+                      })()}
+                    </Typography>
+                    <Typography 
+                      variant="body1" 
+                      color="rgba(255,255,255,0.8)"
+                      sx={{ fontWeight: 500 }}
+                    >
+                      /night
+                    </Typography>
+                  </Box>
+                  
+                  {(() => {
+                    const promotion = calculatePromotionalPrice(defaultRoom, undefined, undefined, undefined, kottage?.promotions);
+                    return promotion.isPromotionApplied && (
+                      <Box 
+                        sx={{ 
+                          mt: 1,
+                          p: 1,
+                          background: 'rgba(76, 175, 80, 0.2)',
+                          borderRadius: 1,
+                          border: '1px solid rgba(76, 175, 80, 0.3)'
+                        }}
+                      >
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#4caf50', 
+                            fontWeight: 700,
+                            textAlign: 'center'
+                          }}
+                        >
+                          🎉 Save ${promotion.savings} per night!
+                        </Typography>
+                      </Box>
+                    );
+                  })()}
+                </Box>
+              )}
+            </Box>
+          </Grid>
         </Grid>
+      </Box>
+
+      {/* Jumping Down Arrow */}
+      <Box
+        onClick={onViewRooms}
+        sx={{
+          position: 'absolute',
+          bottom: 20,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          cursor: 'pointer',
+          animation: 'bounce 2s infinite',
+          zIndex: 10,
+          '&:hover': {
+            transform: 'translateX(-50%) scale(1.1)',
+          },
+          '@keyframes bounce': {
+            '0%, 20%, 50%, 80%, 100%': {
+              transform: 'translateX(-50%) translateY(0)',
+            },
+            '40%': {
+              transform: 'translateX(-50%) translateY(-10px)',
+            },
+            '60%': {
+              transform: 'translateX(-50%) translateY(-5px)',
+            },
+          },
+        }}
+      >
+        <IconButton
+          sx={{
+            color: 'white',
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,0.2)',
+            },
+          }}
+        >
+          <KeyboardArrowDown fontSize="large" />
+        </IconButton>
       </Box>
     </Box>
     </>

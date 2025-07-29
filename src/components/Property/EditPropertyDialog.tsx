@@ -21,7 +21,6 @@ import {
   Tab,
   Tabs,
   IconButton,
-  Divider,
   OutlinedInput,
   ListItemIcon,
   ListItemText
@@ -32,56 +31,16 @@ import { Colors } from '../constants';
 import { IAddress } from '../../../public/QuickType';
 import ImagePicker from '../ImagePicker';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import PendingIcon from '@mui/icons-material/Pending';
-import ErrorIcon from '@mui/icons-material/Error';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-// Amenity Icons
-import WifiIcon from '@mui/icons-material/Wifi';
-import PoolIcon from '@mui/icons-material/Pool';
-import KitchenIcon from '@mui/icons-material/Kitchen';
-import LocalParkingIcon from '@mui/icons-material/LocalParking';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
-import HotTubIcon from '@mui/icons-material/HotTub';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import FitnessCenter from '@mui/icons-material/FitnessCenter';
-import YardIcon from '@mui/icons-material/Yard';
-import BalconyIcon from '@mui/icons-material/Balcony';
-import PetsIcon from '@mui/icons-material/Pets';
-import LocalLaundryServiceIcon from '@mui/icons-material/LocalLaundryService';
-import DryCleaningIcon from '@mui/icons-material/DryCleaning';
-import FireplaceIcon from '@mui/icons-material/Fireplace';
-import OutdoorGrillIcon from '@mui/icons-material/OutdoorGrill';
-import SecurityIcon from '@mui/icons-material/Security';
-import TvIcon from '@mui/icons-material/Tv';
-import BathtubIcon from '@mui/icons-material/Bathtub';
-import ShowerIcon from '@mui/icons-material/Shower';
-import CoffeeMakerIcon from '@mui/icons-material/Coffee';
-import MicrowaveIcon from '@mui/icons-material/Microwave';
-import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import ChairIcon from '@mui/icons-material/Chair';
-import CountertopsIcon from '@mui/icons-material/Countertops';
-import WeekendIcon from '@mui/icons-material/Weekend';
-import BedIcon from '@mui/icons-material/Bed';
+
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import StarIcon from '@mui/icons-material/Star';
-import ImageIcon from '@mui/icons-material/Image';
-import { styled } from '@mui/material/styles';
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
+import ImageIcon from '@mui/icons-material/Image';
+import { getApprovalStatusIcon, getApprovalStatusColor, propertyTypeOptions, amenitiesOptions, VisuallyHiddenInput, documentTypeOptions } from './constants';
+
+
 
 interface EditPropertyDialogProps {
   open: boolean;
@@ -101,7 +60,7 @@ export default function EditPropertyDialog({
   const [documentTypes, setDocumentTypes] = useState<ApprovalDocument['type'][]>([]);
   const [roomNewImages, setRoomNewImages] = useState<{ [roomIndex: number]: File[] }>({});
   const [propertyImages, setPropertyImages] = useState<File[]>([]);
-  
+
   const { mutate: updateProperty, isPending: isLoading } = useUpdateProperty();
   const { mutate: uploadDocuments, isPending: isUploadingDocs } = useUploadApprovalDocuments();
   const { mutate: uploadRoomImages, isPending: isUploadingRoomImages } = useUploadRoomImages();
@@ -109,78 +68,6 @@ export default function EditPropertyDialog({
 
   // Track if any operation is in progress
   const isAnyOperationInProgress = isLoading || isUploadingDocs || isUploadingRoomImages || isUploadingPropertyImages;
-
-  const propertyTypeOptions = [
-    { value: 'villa', label: 'Villa' },
-    { value: 'apartment', label: 'Apartment' },
-    { value: 'house', label: 'House' },
-    { value: 'cabin', label: 'Cabin' },
-    { value: 'cottage', label: 'Cottage' },
-    { value: 'resort', label: 'Resort' },
-    { value: 'other', label: 'Other' }
-  ];
-
-  const documentTypeOptions: { value: ApprovalDocument['type']; label: string }[] = [
-    { value: 'title_deed', label: 'Title Deed' },
-    { value: 'utility_bill', label: 'Utility Bill' },
-    { value: 'property_tax', label: 'Property Tax' },
-    { value: 'lease_agreement', label: 'Lease Agreement' },
-    { value: 'authorization_letter', label: 'Authorization Letter' },
-    { value: 'other', label: 'Other Document' }
-  ];
-
-  const amenitiesOptions = [
-    { value: 'WiFi', label: 'WiFi', icon: <WifiIcon /> },
-    { value: 'Pool', label: 'Swimming Pool', icon: <PoolIcon /> },
-    { value: 'Kitchen', label: 'Full Kitchen', icon: <KitchenIcon /> },
-    { value: 'Parking', label: 'Free Parking', icon: <LocalParkingIcon /> },
-    { value: 'Beach Access', label: 'Beach Access', icon: <BeachAccessIcon /> },
-    { value: 'Hot Tub', label: 'Hot Tub/Jacuzzi', icon: <HotTubIcon /> },
-    { value: 'Air Conditioning', label: 'Air Conditioning', icon: <AcUnitIcon /> },
-    { value: 'Gym', label: 'Fitness Center', icon: <FitnessCenter /> },
-    { value: 'Garden', label: 'Garden/Yard', icon: <YardIcon /> },
-    { value: 'Balcony', label: 'Balcony/Patio', icon: <BalconyIcon /> },
-    { value: 'Pet Friendly', label: 'Pet Friendly', icon: <PetsIcon /> },
-    { value: 'Washing Machine', label: 'Washing Machine', icon: <LocalLaundryServiceIcon /> },
-    { value: 'Dryer', label: 'Dryer', icon: <DryCleaningIcon /> },
-    { value: 'Fireplace', label: 'Fireplace', icon: <FireplaceIcon /> },
-    { value: 'BBQ Grill', label: 'BBQ Grill', icon: <OutdoorGrillIcon /> },
-    { value: 'Security System', label: 'Security System', icon: <SecurityIcon /> },
-    { value: 'TV', label: 'Smart TV', icon: <TvIcon /> },
-    { value: 'Bathtub', label: 'Bathtub', icon: <BathtubIcon /> },
-    { value: 'Shower', label: 'Private Shower', icon: <ShowerIcon /> },
-    { value: 'Coffee Maker', label: 'Coffee Maker', icon: <CoffeeMakerIcon /> },
-    { value: 'Microwave', label: 'Microwave', icon: <MicrowaveIcon /> },
-    { value: 'Dining Area', label: 'Dining Area', icon: <LocalDiningIcon /> },
-    { value: 'Work Desk', label: 'Work Desk', icon: <ChairIcon /> },
-    { value: 'Granite Counters', label: 'Granite Countertops', icon: <CountertopsIcon /> },
-    { value: 'Living Room', label: 'Living Room', icon: <WeekendIcon /> },
-    { value: 'King Bed', label: 'King Size Bed', icon: <BedIcon /> },
-    { value: 'Queen Bed', label: 'Queen Size Bed', icon: <BedIcon /> },
-    { value: 'Premium', label: 'Premium Property', icon: <StarIcon /> }
-  ];
-
-  const getApprovalStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved': return '#4caf50';
-      case 'pending': return '#ff9800';
-      case 'under_review': return '#2196f3';
-      case 'rejected': return '#f44336';
-      case 'requires_documents': return '#9c27b0';
-      default: return '#757575';
-    }
-  };
-
-  const getApprovalStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved': return <VerifiedIcon sx={{ color: '#4caf50' }} />;
-      case 'pending': return <PendingIcon sx={{ color: '#ff9800' }} />;
-      case 'under_review': return <PendingIcon sx={{ color: '#2196f3' }} />;
-      case 'rejected': return <ErrorIcon sx={{ color: '#f44336' }} />;
-      case 'requires_documents': return <CloudUploadIcon sx={{ color: '#9c27b0' }} />;
-      default: return <PendingIcon sx={{ color: '#757575' }} />;
-    }
-  };
 
   useEffect(() => {
     if (property) {
@@ -218,8 +105,8 @@ export default function EditPropertyDialog({
   };
 
   const removeExistingRoomImage = (roomIndex: number, imageIndex: number) => {
-    setRoomTypes(prev => prev.map((room, i) => 
-      i === roomIndex 
+    setRoomTypes(prev => prev.map((room, i) =>
+      i === roomIndex
         ? { ...room, images: room.images?.filter((_, imgIndex) => imgIndex !== imageIndex) || [] }
         : room
     ));
@@ -271,7 +158,7 @@ export default function EditPropertyDialog({
   };
 
   const updateRoomType = (index: number, field: keyof RoomType, value: any) => {
-    setRoomTypes(prev => prev.map((room, i) => 
+    setRoomTypes(prev => prev.map((room, i) =>
       i === index ? { ...room, [field]: value } : room
     ));
   };
@@ -330,7 +217,7 @@ export default function EditPropertyDialog({
         const updatedRoomTypes: RoomType[] = await Promise.all(
           roomTypes.map(async (room, index) => {
             let uploadedImageUrls: string[] = [];
-            
+
             // Upload new images for this room if any exist
             if (roomNewImages[index] && roomNewImages[index].length > 0) {
               uploadedImageUrls = await new Promise<string[]>((resolve, reject) => {
@@ -357,8 +244,8 @@ export default function EditPropertyDialog({
           })
         );
 
-        const updatedProperty = { 
-          ...property, 
+        const updatedProperty = {
+          ...property,
           ...propertyData,
           roomTypes: updatedRoomTypes,
           // Merge existing property images with newly uploaded ones
@@ -367,7 +254,7 @@ export default function EditPropertyDialog({
             ...generalImageUrls
           ]
         } as Kottage;
-        
+
         updateProperty(updatedProperty, {
           onSuccess: () => {
             handleClose();
@@ -403,9 +290,9 @@ export default function EditPropertyDialog({
           {property?.approval && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {getApprovalStatusIcon(property.approval.status)}
-              <Chip 
+              <Chip
                 label={property.approval.status.replace('_', ' ').toUpperCase()}
-                sx={{ 
+                sx={{
                   backgroundColor: `${getApprovalStatusColor(property.approval.status)}15`,
                   color: getApprovalStatusColor(property.approval.status),
                   fontWeight: 600
@@ -415,7 +302,7 @@ export default function EditPropertyDialog({
           )}
         </Box>
       </DialogTitle>
-      
+
       <DialogContent>
         {/* Approval Status Alert */}
         {property?.approval && (
@@ -519,7 +406,7 @@ export default function EditPropertyDialog({
                   onChange={(e) => setPropertyData((prev) => ({ ...prev, phone: e.target.value }))}
                   size="small"
                   disabled={isAnyOperationInProgress}
-                 
+
                 />
               </Grid>
 
@@ -744,11 +631,11 @@ export default function EditPropertyDialog({
                         {(selected as string[]).map((value) => {
                           const amenity = amenitiesOptions.find(a => a.value === value);
                           return (
-                            <Chip 
-                              key={value} 
+                            <Chip
+                              key={value}
                               label={amenity?.label || value}
                               size="small"
-                              icon={amenity?.icon}
+                              icon={amenity?.icon ? <amenity.icon /> : undefined}
                               sx={{ height: 24 }}
                             />
                           );
@@ -759,7 +646,7 @@ export default function EditPropertyDialog({
                     {amenitiesOptions.map((amenity) => (
                       <MenuItem key={amenity.value} value={amenity.value}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          {amenity.icon}
+                          {amenity.icon && <amenity.icon />}
                         </ListItemIcon>
                         <ListItemText primary={amenity.label} />
                         {propertyData.amenities?.includes(amenity.value) && (
@@ -784,12 +671,12 @@ export default function EditPropertyDialog({
               Add general property images that showcase your property's exterior, common areas, and overall ambiance.
               These images will be displayed in the main property gallery.
             </Typography>
-            
+
             <ImagePicker
               selectedImages={propertyImages}
               setSelectedImages={setPropertyImages}
             />
-            
+
             {propertyImages.length > 0 && (
               <Alert severity="info" sx={{ mt: 2 }}>
                 <Typography variant="body2">
@@ -842,13 +729,13 @@ export default function EditPropertyDialog({
             ) : (
               <Grid container spacing={3}>
                 {roomTypes.map((room, index) => (
-                  <Grid item xs={12} key={index}>
+                  <Grid item xs={12} md={6} key={index}>
                     <Card variant="outlined">
                       <CardContent>
-                        <Box sx={{ 
-                          display: 'flex', 
-                          justifyContent: 'space-between', 
-                          alignItems: 'center', 
+                        <Box sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                           mb: 2
                         }}>
                           <Typography variant="h6" color={Colors.blue}>
@@ -877,7 +764,7 @@ export default function EditPropertyDialog({
                               disabled={isAnyOperationInProgress}
                             />
                           </Grid>
-                          
+
                           <Grid item xs={12} md={6}>
                             <TextField
                               fullWidth
@@ -890,7 +777,7 @@ export default function EditPropertyDialog({
                               disabled={isAnyOperationInProgress}
                             />
                           </Grid>
-                          
+
                           <Grid item xs={12}>
                             <TextField
                               fullWidth
@@ -919,7 +806,7 @@ export default function EditPropertyDialog({
                               disabled={isAnyOperationInProgress}
                             />
                           </Grid>
-                          
+
                           <Grid item xs={12} md={4}>
                             <TextField
                               fullWidth
@@ -932,7 +819,7 @@ export default function EditPropertyDialog({
                               disabled={isAnyOperationInProgress}
                             />
                           </Grid>
-                          
+
                           <Grid item xs={12} md={4}>
                             <FormControl fullWidth size="small">
                               <InputLabel>Listing Status</InputLabel>
@@ -963,11 +850,11 @@ export default function EditPropertyDialog({
                                     {(selected as string[]).map((value) => {
                                       const amenity = amenitiesOptions.find(a => a.value === value);
                                       return (
-                                        <Chip 
-                                          key={value} 
+                                        <Chip
+                                          key={value}
                                           label={amenity?.label || value}
                                           size="small"
-                                          icon={amenity?.icon}
+                                          icon={amenity?.icon ? <amenity.icon /> : undefined}
                                           sx={{ height: 24 }}
                                         />
                                       );
@@ -978,7 +865,7 @@ export default function EditPropertyDialog({
                                 {amenitiesOptions.map((amenity) => (
                                   <MenuItem key={amenity.value} value={amenity.value}>
                                     <ListItemIcon sx={{ minWidth: 36 }}>
-                                      {amenity.icon}
+                                      {amenity.icon && <amenity.icon />}
                                     </ListItemIcon>
                                     <ListItemText primary={amenity.label} />
                                     {room.amenities?.includes(amenity.value) && (
@@ -995,7 +882,7 @@ export default function EditPropertyDialog({
                             <Typography variant="subtitle1" sx={{ mb: 2, mt: 2, color: Colors.blue, fontWeight: 600 }}>
                               Room Images
                             </Typography>
-                            
+
                             {/* Upload Button */}
                             <Box sx={{ mb: 2 }}>
                               <Button
@@ -1024,16 +911,16 @@ export default function EditPropertyDialog({
                                 <Typography variant="body2" color="textSecondary" gutterBottom>
                                   Current Images ({room.images.length})
                                 </Typography>
-                                <Box sx={{ 
-                                  display: 'flex', 
-                                  flexWrap: 'wrap', 
+                                <Box sx={{
+                                  display: 'flex',
+                                  flexWrap: 'wrap',
                                   gap: 1,
                                   justifyContent: 'flex-start'
                                 }}>
                                   {room.images.map((image, imgIndex) => (
-                                    <Box 
+                                    <Box
                                       key={imgIndex}
-                                      sx={{ 
+                                      sx={{
                                         width: { xs: 'calc(50% - 4px)', sm: 'calc(33.33% - 6px)', md: 'calc(25% - 6px)' },
                                         minWidth: 120,
                                         position: 'relative'
@@ -1083,16 +970,16 @@ export default function EditPropertyDialog({
                                 <Typography variant="body2" color="textSecondary" gutterBottom>
                                   New Images to Upload ({roomNewImages[index].length})
                                 </Typography>
-                                <Box sx={{ 
-                                  display: 'flex', 
-                                  flexWrap: 'wrap', 
+                                <Box sx={{
+                                  display: 'flex',
+                                  flexWrap: 'wrap',
                                   gap: 1,
                                   justifyContent: 'flex-start'
                                 }}>
                                   {roomNewImages[index].map((file, imgIndex) => (
-                                    <Box 
+                                    <Box
                                       key={imgIndex}
-                                      sx={{ 
+                                      sx={{
                                         width: { xs: 'calc(50% - 4px)', sm: 'calc(33.33% - 6px)', md: 'calc(25% - 6px)' },
                                         minWidth: 120,
                                         position: 'relative'
@@ -1176,7 +1063,7 @@ export default function EditPropertyDialog({
                             Type: {documentTypeOptions.find(opt => opt.value === doc.type)?.label || doc.type}
                           </Typography>
                         </Box>
-                        <Chip 
+                        <Chip
                           label={doc.status.toUpperCase()}
                           size="small"
                           color={doc.status === 'approved' ? 'success' : doc.status === 'rejected' ? 'error' : 'warning'}
@@ -1199,7 +1086,7 @@ export default function EditPropertyDialog({
                 <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                   Upload Additional Documents
                 </Typography>
-                
+
                 <Box sx={{ textAlign: 'center', py: 2, mb: 2 }}>
                   <Button
                     component="label"
@@ -1269,7 +1156,7 @@ export default function EditPropertyDialog({
                         </CardContent>
                       </Card>
                     ))}
-                    
+
                     <Box sx={{ mt: 2 }}>
                       <Button
                         variant="contained"
@@ -1288,7 +1175,7 @@ export default function EditPropertyDialog({
           </Box>
         )}
       </DialogContent>
-      
+
       <DialogActions>
         <Button onClick={handleClose} disabled={isLoading || isUploadingRoomImages}>
           Cancel
@@ -1300,10 +1187,10 @@ export default function EditPropertyDialog({
           startIcon={isAnyOperationInProgress ? <CircularProgress size={20} /> : null}
           sx={{ backgroundColor: Colors.blue }}
         >
-          {isAnyOperationInProgress ? 
-            (isUploadingPropertyImages ? 'Uploading Property Images...' : 
-             isUploadingRoomImages ? 'Uploading Room Images...' : 
-             'Updating Property...') : 
+          {isAnyOperationInProgress ?
+            (isUploadingPropertyImages ? 'Uploading Property Images...' :
+              isUploadingRoomImages ? 'Uploading Room Images...' :
+                'Updating Property...') :
             'Update Property'
           }
         </Button>

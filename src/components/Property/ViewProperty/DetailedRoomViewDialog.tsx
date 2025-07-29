@@ -14,10 +14,13 @@ import Grid from '@mui/material/GridLegacy';
 import { useNavigate } from "react-router-dom";
 
  export const DetailedRoomView = (
-    { detailedRoomView, setDetailedRoomView, kottage }: {
+    { detailedRoomView, setDetailedRoomView, kottage, guests, checkInDate, checkOutDate }: {
         detailedRoomView: RoomType | null;
         setDetailedRoomView: (room: RoomType | null) => void;
         kottage?: Kottage;
+        guests?: number;
+        checkInDate?: Date;
+        checkOutDate?: Date;
     }
  ) => {
      const navigate = useNavigate();
@@ -131,21 +134,43 @@ import { useNavigate } from "react-router-dom";
               variant="outlined"
             />
           )}
-          <Button
-            variant="contained"
-            onClick={() => {
-              setDetailedRoomView(null);
-              navigate('/book-room', { state: { kottage, room: detailedRoomView } });
-            }}
-            sx={{
-              background: `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`,
-              fontWeight: 700,
-              px: 4,
-              py: 1.5
-            }}
-          >
-            Book Now
-          </Button>
+          {(() => {
+            const canAccommodateGuests = !guests || guests <= detailedRoomView.maxOccupancy;
+            
+            return (
+              <Button
+                variant="contained"
+                disabled={!canAccommodateGuests}
+                onClick={() => {
+                  setDetailedRoomView(null);
+                  navigate('/book-room', { 
+                    state: { 
+                      kottage, 
+                      room: detailedRoomView,
+                      checkInDate,
+                      checkOutDate,
+                      guests 
+                    } 
+                  });
+                }}
+                sx={{
+                  background: canAccommodateGuests 
+                    ? `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`
+                    : '#e0e0e0',
+                  color: canAccommodateGuests ? 'white' : '#9e9e9e',
+                  fontWeight: 700,
+                  px: 4,
+                  py: 1.5,
+                  cursor: canAccommodateGuests ? 'pointer' : 'not-allowed',
+                  '&:hover': canAccommodateGuests ? {
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                  } : {}
+                }}
+              >
+                {canAccommodateGuests ? 'Book Now' : 'Too Many Guests'}
+              </Button>
+            );
+          })()}
         </DialogActions>
       </Dialog>
     );

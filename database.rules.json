@@ -15,6 +15,25 @@
     "chats": {
       ".read": false,
       ".write": "auth != null"
+    },
+    "properties": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "blockedDates": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": "propertyId"
+    },
+    "bookings": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid || auth.token.role === 'admin'",
+        ".write": "$uid === auth.uid || auth.token.role === 'admin'"
+      }
     }
   }
 }
