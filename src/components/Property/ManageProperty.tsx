@@ -53,6 +53,7 @@ import { Colors } from '../constants';
 import { Kottage, useUpdateProperty, useDeleteProperty, useMyProperties, RoomType } from '../../hooks/propertyHooks';
 import { useNavigate, useParams } from 'react-router-dom';
 import EditPropertyDialog from './EditPropertyDialog';
+import PhotoManagementDialog from './PhotoManagementDialog';
 
 export default function ManageProperty() {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ export default function ManageProperty() {
   
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [photoManagementOpen, setPhotoManagementOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [promotionDialogOpen, setPromotionDialogOpen] = useState(false);
   const [editingPromotion, setEditingPromotion] = useState<any>(null);
@@ -177,6 +179,14 @@ export default function ManageProperty() {
 
   const handleEditDialogClose = useCallback(() => {
     setEditDialogOpen(false);
+  }, []);
+
+  const handlePhotoManagement = useCallback(() => {
+    setPhotoManagementOpen(true);
+  }, []);
+
+  const handlePhotoManagementClose = useCallback(() => {
+    setPhotoManagementOpen(false);
   }, []);
 
   const getStatusChip = useCallback((property: Kottage) => {
@@ -979,18 +989,23 @@ export default function ManageProperty() {
                   elevation={2} 
                   sx={{ 
                     height: '100%', 
-                    cursor: 'not-allowed',
-                    opacity: 0.6,
-                    backgroundColor: '#f9f9f9'
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': { 
+                      elevation: 6,
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                    }
                   }}
+                  onClick={handlePhotoManagement}
                 >
                   <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                    <PhotoLibraryIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-                    <Typography variant="h6" fontWeight={600} mb={1} color="text.secondary">
+                    <PhotoLibraryIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <Typography variant="h6" fontWeight={600} mb={1}>
                       Manage Photos
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      🚧 Coming Soon
+                      Upload, organize, and manage property and room photos
                     </Typography>
                   </CardContent>
                 </Card>
@@ -1059,6 +1074,13 @@ export default function ManageProperty() {
           open={editDialogOpen}
           property={property}
           onClose={handleEditDialogClose}
+        />
+
+        {/* Photo Management Dialog */}
+        <PhotoManagementDialog
+          open={photoManagementOpen}
+          property={property}
+          onClose={handlePhotoManagementClose}
         />
 
         {/* Delete Confirmation Dialog */}

@@ -57,9 +57,9 @@ const getPropertyPrice = (kottage: KottageWithId): number => {
 // };
 
 const getHostInfo = (kottage: KottageWithId) => ({
-  name: `Host ${kottage.ownerId?.slice(0, 8)}` || 'Property Host',
-  avatar: `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 99)}.jpg`,
-  superhost: kottage.rating > 4.7
+  name: `${kottage.host?.name || 'Property Host'}`,
+  avatar: kottage.host?.avatar || `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 99)}.jpg`,
+  superhost: kottage.host?.superhost || false
 });
 
 type Props = {};

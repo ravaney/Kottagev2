@@ -42,19 +42,27 @@ import { calculateNights, hasBlockedDatesInRange, getMaxCheckoutDate, handleConf
 const BookRoom = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as { kottage?: Kottage; room?: RoomType } || {};
-  const { kottage, room } = state;
+  const state = location.state as { 
+    kottage?: Kottage; 
+    room?: RoomType;
+    checkInDate?: Date;
+    checkOutDate?: Date;
+    guests?: number;
+    totalPrice?: number;
+    nights?: number;
+    pricePerNight?: number;
+  } || {};
+  const { kottage, room, checkInDate, checkOutDate, guests: passedGuests, totalPrice: passedTotalPrice, nights: passedNights, pricePerNight: passedPricePerNight } = state;
   const { appUser, uid } = useAuth ();
   const updateProperty = useUpdateProperty();
-  // Reservation state
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
-  const [guests, setGuests] = useState<number>(1);
+  // Reservation state - Initialize with passed values
+  const [startDate, setStartDate] = useState<Date | undefined>(checkInDate);
+  const [endDate, setEndDate] = useState<Date | undefined>(checkOutDate);
+  const [guests, setGuests] = useState<number>(passedGuests || 1);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [showPricing, setShowPricing] = useState<boolean>(false);
   
-  // Payment dialog state
-  const [paymentDialogOpen, setPaymentDialogOpen] = useState<boolean>(false);
+  // Payment state
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
   const [paymentError, setPaymentError] = useState<string>('');
   
@@ -95,7 +103,7 @@ const BookRoom = () => {
 
   const nights = calculateNights(startDate, endDate);
   
-  // Calculate promotional pricing if available
+  // Calculate promotional pricing if available - always recalculate to ensure accuracy
   const roomForPricing = room;
   const promotionalPricing = roomForPricing ? calculatePromotionalPrice(
     roomForPricing,
@@ -106,7 +114,17 @@ const BookRoom = () => {
   ) : null;
   
   // Use promotional price if available, otherwise use regular price
-  const basePrice = promotionalPricing?.finalPrice || room?.pricePerNight || 300;
+  // If dates match what was passed from RoomTypes and we have a passed promotional price, use it for consistency
+  const datesMatchPassed = checkInDate && checkOutDate && startDate && endDate && 
+    checkInDate.getTime() === startDate.getTime() && 
+    checkOutDate.getTime() === endDate.getTime() &&
+    nights === passedNights;
+    
+  const basePrice = datesMatchPassed && passedPricePerNight ? 
+    passedPricePerNight : 
+    (promotionalPricing?.finalPrice || room?.pricePerNight || 300);
+  
+
   const maxGuestsAllowed = room?.maxOccupancy || 4;
   
   const subtotal = nights * basePrice;
@@ -545,14 +563,80 @@ const BookRoom = () => {
                   </Fade>
                 )}
 
+                {/* Reservation Summary */}
+                {showPricing && startDate && endDate && isDateRangeValid && (
+                  <Paper 
+                    elevation={1} 
+                    sx={{ 
+                      p: 2, 
+                      mb: 3, 
+                      backgroundColor: '#f0f8ff', 
+                      borderRadius: 2,
+                      border: '1px solid #e3f2fd',
+                      width: '100%'
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: Colors.blue }}>
+                      Reservation Summary
+                    </Typography>
+                    
+                    <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="body2" sx={{ mb: 0.5 }}>
+                          <strong>Check-in:</strong> {startDate?.toLocaleDateString()}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 0.5 }}>
+                          <strong>Check-out:</strong> {endDate?.toLocaleDateString()}
+                        </Typography>
+                        <Typography variant="body2">
+                          <strong>Guests:</strong> {guests}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="body2" sx={{ mb: 0.5 }}>
+                          <strong>Room:</strong> {room.name}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 0.5 }}>
+                          <strong>Nights:</strong> {nights}
+                        </Typography>
+                        <Typography variant="body2" fontWeight={700} color={Colors.raspberry}>
+                          <strong>Total:</strong> ${total.toFixed(2)}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                      By confirming, you agree to the booking terms and conditions.
+                    </Typography>
+                  </Paper>
+                )}
+
                 {/* Action Buttons */}
                 <Box sx={{ mb: 3 }}>
                   <Button
                     fullWidth
                     variant="contained"
                     size="large"
-                    disabled={!startDate || !endDate || nights <= 0 || !isDateRangeValid}
-                    onClick={() => setPaymentDialogOpen(true)}
+                    disabled={!startDate || !endDate || nights <= 0 || !isDateRangeValid || isProcessing}
+                    onClick={async () => {
+                      if (!startDate || !endDate || !room || !kottage) return;
+
+                      await handleConfirmPayment({
+                        startDate,
+                        endDate,
+                        room,
+                        kottage,
+                        uid: String(uid),
+                        appUser,
+                        total,
+                        guests,
+                        createReservation,
+                        updateProperty,
+                        refetchBlockedDates,
+                        setPaymentSuccess,
+                        setPaymentError
+                      });
+                    }}
                     sx={{
                       backgroundColor: Colors.raspberry,
                       color: 'white',
@@ -575,11 +659,16 @@ const BookRoom = () => {
                       transition: 'all 0.3s ease'
                     }}
                   >
-                    {!startDate || !endDate || nights <= 0 
+                    {isProcessing ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <CircularProgress size={20} sx={{ color: 'white' }} />
+                        Processing...
+                      </Box>
+                    ) : !startDate || !endDate || nights <= 0 
                       ? 'Select Valid Dates to Book' 
                       : !isDateRangeValid
                       ? 'Selected Range Contains Blocked Dates'
-                      : `Reserve ${room.name} - ${nights} night${nights > 1 ? 's' : ''}`
+                      : `Confirm Reservation - ${nights} night${nights > 1 ? 's' : ''}`
                     }
                   </Button>
                 </Box>
@@ -645,102 +734,47 @@ const BookRoom = () => {
           </Box>
         </Box>
       </Paper>
-      {/* Payment Confirmation Dialog */}
-      <Dialog
-        open={paymentDialogOpen}
-        onClose={() => !isProcessing && setPaymentDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle sx={{ pb: 1 }}>
-          {paymentSuccess ? "Reservation Confirmed!" : "Confirm Your Reservation"}
-        </DialogTitle>
-        
-        <DialogContent>
-          {isProcessing ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 4 }}>
-              <CircularProgress size={60} sx={{ color: Colors.raspberry, mb: 3 }} />
-              <DialogContentText>Processing your payment...</DialogContentText>
+      {/* Success Dialog */}
+      {paymentSuccess && (
+        <Dialog
+          open={paymentSuccess}
+          onClose={() => navigate(`/Kottages/${kottage.id}`)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Reservation Confirmed!</DialogTitle>
+          <DialogContent>
+            <Alert severity="success" sx={{ mb: 3 }}>
+              Your reservation has been successfully confirmed!
+            </Alert>
+            <DialogContentText sx={{ mb: 2 }}>
+              Thank you for booking with us. Your reservation details have been sent to your email.
+            </DialogContentText>
+            <Box sx={{ bgcolor: '#f5f5f5', p: 2, borderRadius: 1 }}>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
+                Reservation Details:
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                <strong>Property:</strong> {kottage.name}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                <strong>Room:</strong> {room.name}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                <strong>Check-in:</strong> {startDate?.toLocaleDateString()}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                <strong>Check-out:</strong> {endDate?.toLocaleDateString()}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                <strong>Guests:</strong> {guests}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Total Amount:</strong> ${total.toFixed(2)}
+              </Typography>
             </Box>
-          ) : paymentSuccess ? (
-            <Box sx={{ py: 2 }}>
-              <Alert severity="success" sx={{ mb: 3 }}>
-                Your reservation has been successfully confirmed!
-              </Alert>
-              <DialogContentText sx={{ mb: 2 }}>
-                Thank you for booking with us. Your reservation details have been sent to your email.
-              </DialogContentText>
-              <Box sx={{ bgcolor: '#f5f5f5', p: 2, borderRadius: 1, mb: 2 }}>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                  Reservation Details:
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                  <strong>Property:</strong> {kottage.name}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                  <strong>Room:</strong> {room.name}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                  <strong>Check-in:</strong> {startDate?.toLocaleDateString()}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                  <strong>Check-out:</strong> {endDate?.toLocaleDateString()}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                  <strong>Guests:</strong> {guests}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                  <strong>Total Amount:</strong> ${total.toFixed(2)}
-                </Typography>
-              </Box>
-            </Box>
-          ) : (
-            <>
-              {paymentError && (
-                <Alert severity="error" sx={{ mb: 3 }}>
-                  {paymentError}
-                </Alert>
-              )}
-              <DialogContentText sx={{ mb: 3 }}>
-                Please review your reservation details before confirming:
-              </DialogContentText>
-              
-              <Box sx={{ bgcolor: '#f5f5f5', p: 2, borderRadius: 1, mb: 3 }}>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      <strong>Check-in:</strong> {startDate?.toLocaleDateString()}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      <strong>Check-out:</strong> {endDate?.toLocaleDateString()}
-                    </Typography>
-                    <Typography variant="body2">
-                      <strong>Guests:</strong> {guests}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      <strong>Room:</strong> {room.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      <strong>Nights:</strong> {nights}
-                    </Typography>
-                    <Typography variant="body2" fontWeight={700} color={Colors.raspberry}>
-                      <strong>Total:</strong> ${total.toFixed(2)}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-              
-              <DialogContentText variant="body2" color="text.secondary">
-                By clicking "Confirm & Pay", you agree to the booking terms and conditions.
-              </DialogContentText>
-            </>
-          )}
-        </DialogContent>
-        
-        <DialogActions sx={{ px: 3, pb: 3 }}>
-          {paymentSuccess ? (
+          </DialogContent>
+          <DialogActions>
             <Button 
               fullWidth 
               variant="contained" 
@@ -753,48 +787,26 @@ const BookRoom = () => {
             >
               Return to Property
             </Button>
-          ) : (
-            <>
-              <Button 
-                disabled={isProcessing}
-                onClick={() => setPaymentDialogOpen(false)}
-                sx={{ color: 'text.secondary' }}
-              >
-                Cancel
-              </Button>
-              <Button 
-                variant="contained" 
-                disabled={isProcessing}
-                onClick={async () => {
-                  if (!startDate || !endDate || !room || !kottage) return;
+          </DialogActions>
+        </Dialog>
+      )}
 
-                  await handleConfirmPayment({
-                    startDate,
-                    endDate,
-                    room,
-                    kottage,
-                    uid: String(uid),
-                    appUser,
-                    total,
-                    guests,
-                    createReservation,
-                    updateProperty,
-                    refetchBlockedDates,
-                    setPaymentSuccess,
-                    setPaymentError
-                  });
-                }}
-                sx={{ 
-                  bgcolor: Colors.raspberry, 
-                  '&:hover': { bgcolor: Colors.raspberry, filter: 'brightness(1.1)' }
-                }}
-              >
-                Confirm & Pay
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
+      {/* Error Alert */}
+      {paymentError && (
+        <Alert 
+          severity="error" 
+          onClose={() => setPaymentError('')}
+          sx={{ 
+            position: 'fixed',
+            top: 20,
+            right: 20,
+            zIndex: 9999,
+            maxWidth: 400
+          }}
+        >
+          {paymentError}
+        </Alert>
+      )}
     </Container>
   );
 };

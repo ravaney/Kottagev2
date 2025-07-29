@@ -1,0 +1,155 @@
+/* Mobile carousel controls and indicators styling */
+@media (max-width: 768px) {
+  .mobile-carousel .carousel-control-prev,
+  .mobile-carousel .carousel-control-next {
+    display: none !important;
+  }
+  .mobile-carousel .carousel-indicators {
+    display: none !important;
+  }
+}
+
+/* Property postcard container */
+.property-postcard {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Enhanced button animations */
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-8px);
+  }
+  70% {
+    transform: translateY(-4px);
+  }
+  90% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+/* Carousel styling */
+.property-carousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  width: 100%;
+  z-index: 1;
+}
+
+.property-carousel-item {
+  height: 100vh;
+}
+
+.property-carousel-image {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* No images fallback */
+.no-images-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* Dark overlay for text readability */
+.dark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.95));
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Content overlay */
+.content-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  color: white;
+  padding: 32px;
+  pointer-events: auto;
+  background: linear-gradient(transparent, rgba(0,0,0,0.95));
+}
+
+/* Property chips */
+.property-chip-white {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+}
+
+.property-chip-white .MuiChip-icon {
+  color: white;
+}
+
+.property-chip-verified {
+  border-color: #4caf50;
+  color: #4caf50;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.property-chip-verified .MuiChip-icon {
+  color: #4caf50;
+}
+
+/* Action buttons */
+.stay-here-button {
+  font-weight: 700;
+  padding: 8px 24px;
+  border-radius: 5px;
+  text-transform: none;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.stay-here-button:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
+}
+
+/* Icon buttons */
+.property-icon-button {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+}
+
+.property-icon-button:hover {
+  background-color: rgba(255,255,255,0.3);
+}
