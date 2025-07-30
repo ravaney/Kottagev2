@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Box,
   Typography,
@@ -9,23 +9,23 @@ import {
   Button,
   Fade,
   alpha,
-} from "@mui/material";
+} from '@mui/material';
 import {
   Hotel,
   People,
   Image as ImageIcon,
   LocalOffer,
   LocationOn,
-} from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import { Kottage, RoomType } from "../../hooks";
-import { Colors } from "../constants";
-import { 
-  calculatePromotionalPrice, 
-  formatPromotionDiscount, 
-  getPromotionBadgeColor 
-} from "../../utils/promotionUtils";
-import { getAmenityIcon } from "./ViewProperty/getAmenityIcon";
+} from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { Kottage, RoomType } from '../../hooks';
+import { Colors } from '../constants';
+import {
+  calculatePromotionalPrice,
+  formatPromotionDiscount,
+  getPromotionBadgeColor,
+} from '../../utils/promotionUtils';
+import { getAmenityIcon } from './ViewProperty/getAmenityIcon';
 
 interface RoomTypesProps {
   kottage: Kottage;
@@ -37,7 +37,15 @@ interface RoomTypesProps {
   guests?: number;
 }
 
-function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView, checkInDate, checkOutDate, guests }: RoomTypesProps) {
+function RoomTypes({
+  kottage,
+  selectedRoom,
+  setSelectedRoom,
+  setDetailedRoomView,
+  checkInDate,
+  checkOutDate,
+  guests,
+}: RoomTypesProps) {
   const navigate = useNavigate();
 
   if (!kottage?.roomTypes || kottage.roomTypes.length === 0) {
@@ -57,25 +65,32 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
   // Format date for display
   const formatDate = (date: Date | undefined) => {
     if (!date) return '';
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
   return (
-    <Box sx={{ px: { xs: 2, md: 4 }, py: { xs: 3, md: 6 }, maxWidth: '1400px', mx: 'auto' }}>
+    <Box
+      sx={{
+        px: { xs: 2, md: 4 },
+        py: { xs: 3, md: 6 },
+        maxWidth: '1400px',
+        mx: 'auto',
+      }}
+    >
       {/* Modern Header Section */}
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           mb: 2,
           textAlign: 'center',
           background: `linear-gradient(135deg, ${Colors.blue}15 0%, ${Colors.raspberry}15 100%)`,
           borderRadius: 3,
           p: 4,
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
       >
         {/* Background Pattern */}
@@ -88,12 +103,18 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
             bottom: 0,
             backgroundImage: `radial-gradient(circle at 20% 50%, ${Colors.blue}08 0%, transparent 50%), 
                               radial-gradient(circle at 80% 20%, ${Colors.raspberry}08 0%, transparent 50%)`,
-            zIndex: 0
+            zIndex: 0,
           }}
         />
-        
+
         <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Box display="flex" alignItems="center" justifyContent="center" gap={2} sx={{ mb: 2 }}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+            sx={{ mb: 2 }}
+          >
             <Box
               sx={{
                 p: 1.5,
@@ -101,71 +122,72 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                 background: `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
             >
               <Hotel sx={{ color: 'white', fontSize: 32 }} />
             </Box>
           </Box>
-          
-          <Typography 
-            variant="h3" 
-            fontWeight={800} 
-            sx={{ 
+
+          <Typography
+            variant="h3"
+            fontWeight={800}
+            sx={{
               background: `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`,
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              mb: 1
+              mb: 1,
             }}
           >
             Choose Your Perfect Room
           </Typography>
-          
-          <Box 
-            display="flex" 
-            alignItems="center" 
-            justifyContent="center" 
+
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
             gap={1}
-            sx={{ 
+            sx={{
               mb: 2,
             }}
           >
             <LocationOn sx={{ color: Colors.blue, fontSize: 24 }} />
-            <Typography 
-              variant="h5" 
+            <Typography
+              variant="h5"
               fontWeight={600}
               color={Colors.blue}
-              sx={{ 
-                opacity: 0.9
+              sx={{
+                opacity: 0.9,
               }}
             >
               {kottage.name}
             </Typography>
           </Box>
-          
-          <Typography 
-            variant="h6" 
+
+          <Typography
+            variant="h6"
             color="text.secondary"
-            sx={{ 
+            sx={{
               fontWeight: 400,
               maxWidth: '600px',
               mx: 'auto',
-              lineHeight: 1.6
+              lineHeight: 1.6,
             }}
           >
-            Discover our collection of beautifully designed rooms, each offering unique amenities and comfort for your perfect stay
+            Discover our collection of beautifully designed rooms, each offering
+            unique amenities and comfort for your perfect stay
           </Typography>
         </Box>
       </Box>
-      
+
       {/* Room Cards Grid */}
-      <Box 
-        display="grid" 
-        gridTemplateColumns={{ 
-          xs: '1fr', 
-          md: 'repeat(auto-fit, minmax(300px, 400px))' 
-        }} 
+      <Box
+        display="grid"
+        gridTemplateColumns={{
+          xs: 'repeat(auto-fit, minmax(200px, 400px))',
+          md: 'repeat(auto-fit, minmax(200px, 400px))',
+        }}
         gap={2.5}
         sx={{ mb: 4 }}
         justifyContent={'space-around'}
@@ -174,43 +196,64 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
           .filter(room => room.listStatus === 'listed')
           .map((room, index) => (
             <Fade in timeout={500 + index * 100} key={room.id}>
-              <Card 
+              <Card
                 elevation={0}
-                sx={{ 
+                sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   border: '2px solid',
-                  borderColor: selectedRoom?.id === room.id ? Colors.blue : 'rgba(0, 0, 0, 0.08)',
+                  borderColor:
+                    selectedRoom?.id === room.id
+                      ? Colors.blue
+                      : 'rgba(0, 0, 0, 0.08)',
                   borderRadius: '5px',
                   transition: 'all 0.3s ease',
-                  background: selectedRoom?.id === room.id 
-                    ? `linear-gradient(135deg, ${alpha(Colors.blue, 0.1)} 0%, ${alpha(Colors.raspberry, 0.1)} 100%)`
-                    : '#ffffff',
+                  background:
+                    selectedRoom?.id === room.id
+                      ? `linear-gradient(135deg, ${alpha(
+                          Colors.blue,
+                          0.1
+                        )} 0%, ${alpha(Colors.raspberry, 0.1)} 100%)`
+                      : '#ffffff',
                   overflow: 'hidden',
                   cursor: 'pointer',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
                   '&:hover': {
                     boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
-                    borderColor: selectedRoom?.id === room.id ? Colors.blue : alpha(Colors.blue, 0.4),
-                    background: selectedRoom?.id === room.id 
-                      ? `linear-gradient(135deg, ${alpha(Colors.blue, 0.15)} 0%, ${alpha(Colors.raspberry, 0.15)} 100%)`
-                      : alpha('#f8f9fa', 0.8),
-                    transform: 'translateY(-2px)'
-                  }
+                    borderColor:
+                      selectedRoom?.id === room.id
+                        ? Colors.blue
+                        : alpha(Colors.blue, 0.4),
+                    background:
+                      selectedRoom?.id === room.id
+                        ? `linear-gradient(135deg, ${alpha(
+                            Colors.blue,
+                            0.15
+                          )} 0%, ${alpha(Colors.raspberry, 0.15)} 100%)`
+                        : alpha('#f8f9fa', 0.8),
+                    transform: 'translateY(-2px)',
+                  },
                 }}
                 onClick={() => setSelectedRoom(room)}
               >
                 {/* Room Image with Promotion Badge */}
-                <Box sx={{ position: 'relative', height: '140px', width: '100%', flexShrink: 0 }}>
+                <Box
+                  sx={{
+                    position: 'relative',
+                    height: '140px',
+                    width: '100%',
+                    flexShrink: 0,
+                  }}
+                >
                   {room.images && room.images.length > 0 ? (
                     <CardMedia
                       component="img"
                       height="140"
                       image={room.images[0]}
                       alt={room.name}
-                      sx={{ 
+                      sx={{
                         objectFit: 'cover',
-                        width: '100%'
+                        width: '100%',
                       }}
                     />
                   ) : (
@@ -222,13 +265,15 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        borderRadius: '14px 14px 0 0'
+                        borderRadius: '14px 14px 0 0',
                       }}
                     >
-                      <ImageIcon sx={{ fontSize: 40, color: alpha(Colors.blue, 0.4) }} />
+                      <ImageIcon
+                        sx={{ fontSize: 40, color: alpha(Colors.blue, 0.4) }}
+                      />
                     </Box>
                   )}
-                  
+
                   {/* Room Promotion Badge */}
                   {room.promotion && room.promotion.isActive && (
                     <Chip
@@ -243,53 +288,79 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                         color: 'white',
                         fontWeight: 700,
                         fontSize: '0.75rem',
-                        '& .MuiChip-icon': { 
+                        '& .MuiChip-icon': {
                           color: 'white',
-                          fontSize: 14
+                          fontSize: 14,
                         },
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                       }}
                     />
                   )}
-                  
+
                   {/* Property-level Promotion Badge */}
-                  {!room.promotion && kottage?.promotions && kottage.promotions.length > 0 && kottage.promotions.some(p => p.isActive) && (
-                    <Chip
-                      icon={<LocalOffer />}
-                      label={formatPromotionDiscount(kottage.promotions.find(p => p.isActive)!)}
-                      size="small"
-                      sx={{
-                        position: 'absolute',
-                        top: 12,
-                        right: 12,
-                        bgcolor: getPromotionBadgeColor(kottage.promotions.find(p => p.isActive)!),
-                        color: 'white',
-                        fontWeight: 700,
-                        fontSize: '0.75rem',
-                        '& .MuiChip-icon': { 
+                  {!room.promotion &&
+                    kottage?.promotions &&
+                    kottage.promotions.length > 0 &&
+                    kottage.promotions.some(p => p.isActive) && (
+                      <Chip
+                        icon={<LocalOffer />}
+                        label={formatPromotionDiscount(
+                          kottage.promotions.find(p => p.isActive)!
+                        )}
+                        size="small"
+                        sx={{
+                          position: 'absolute',
+                          top: 12,
+                          right: 12,
+                          bgcolor: getPromotionBadgeColor(
+                            kottage.promotions.find(p => p.isActive)!
+                          ),
                           color: 'white',
-                          fontSize: 14
-                        },
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                      }}
-                    />
-                  )}
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          '& .MuiChip-icon': {
+                            color: 'white',
+                            fontSize: 14,
+                          },
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                        }}
+                      />
+                    )}
                 </Box>
 
-                <CardContent sx={{ p: 2, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                <CardContent
+                  sx={{
+                    p: 2,
+                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
                   {/* Room Header */}
-                  <Box display="flex" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 1.5 }}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="flex-start"
+                    sx={{ mb: 1.5 }}
+                  >
                     <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" fontWeight={700} color={Colors.blue} sx={{  mb: 0.5 }}>
+                      <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        color={Colors.blue}
+                        sx={{ mb: 0.5 }}
+                      >
                         {room.name}
                       </Typography>
                       <Box display="flex" alignItems="center" gap={0.5}>
-                        <People sx={{ fontSize: 16, color: 'text.secondary' }} />
-                        <Typography variant="body2" color="text.secondary" >
+                        <People
+                          sx={{ fontSize: 16, color: 'text.secondary' }}
+                        />
+                        <Typography variant="body2" color="text.secondary">
                           Up to {room.maxOccupancy} guests
                         </Typography>
                       </Box>
-                         {/* Details Button */}
+                      {/* Details Button */}
                       <Button
                         variant="outlined"
                         size="small"
@@ -302,10 +373,10 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                           mt: 0.5,
                           '&:hover': {
                             borderColor: Colors.blue,
-                            bgcolor: alpha(Colors.blue, 0.1)
-                          }
+                            bgcolor: alpha(Colors.blue, 0.1),
+                          },
                         }}
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           setDetailedRoomView(room);
                         }}
@@ -313,82 +384,101 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                         Details
                       </Button>
                     </Box>
-                    
+
                     {/* Price Section with Details Button - Compact */}
-                    <Box display="flex" alignItems="flex-start" gap={1} sx={{ ml: 1.5 }}>
-                   
-                      
+                    <Box
+                      display="flex"
+                      alignItems="flex-start"
+                      gap={1}
+                      sx={{ ml: 1.5 }}
+                    >
                       {/* Price Section */}
                       <Box textAlign="right">
                         {(() => {
-                          const promotion = calculatePromotionalPrice(room, undefined, undefined, undefined, kottage?.promotions);
-                          const finalPrice = promotion.isPromotionApplied ? promotion.finalPrice : room.pricePerNight;
+                          const promotion = calculatePromotionalPrice(
+                            room,
+                            undefined,
+                            undefined,
+                            undefined,
+                            kottage?.promotions
+                          );
+                          const finalPrice = promotion.isPromotionApplied
+                            ? promotion.finalPrice
+                            : room.pricePerNight;
                           const totalPrice = finalPrice * nights;
-                          
+
                           return (
                             <Box>
                               {promotion.isPromotionApplied ? (
                                 <Box>
-                                  <Typography 
-                                    variant="body2" 
-                                    sx={{ 
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
                                       color: 'text.secondary',
                                       textDecoration: 'line-through',
-                                      lineHeight: 1.2
+                                      lineHeight: 1.2,
                                     }}
                                   >
                                     ${promotion.originalPrice}
                                   </Typography>
-                                  <Typography 
-                                    variant="h6" 
+                                  <Typography
+                                    variant="h6"
                                     fontWeight={800}
-                                    sx={{ 
+                                    sx={{
                                       color: Colors.raspberry,
-                                      lineHeight: 1.2
+                                      lineHeight: 1.2,
                                     }}
                                   >
                                     ${promotion.finalPrice}
                                   </Typography>
-                                  <Typography variant="body2" sx={{ color: '#4caf50', fontWeight: 600 }}>
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ color: '#4caf50', fontWeight: 600 }}
+                                  >
                                     Save ${promotion.savings}
                                   </Typography>
                                 </Box>
                               ) : (
-                                <Typography 
-                                  variant="h6" 
+                                <Typography
+                                  variant="h6"
                                   fontWeight={800}
-                                  sx={{ 
+                                  sx={{
                                     color: Colors.raspberry,
-                                    lineHeight: 1.2
+                                    lineHeight: 1.2,
                                   }}
                                 >
                                   ${room.pricePerNight}
                                 </Typography>
                               )}
-                              <Typography variant="body2" color="text.secondary">
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 per night
                               </Typography>
-                              
+
                               {/* Total Price Display - Compact */}
-                              {(checkInDate && checkOutDate) && (
-                                <Box sx={{ 
-                                  mt: 0.5, 
-                                  pt: 0.5, 
-                                  borderTop: '1px solid',
-                                  borderColor: alpha(Colors.blue, 0.2)
-                                }}>
-                                  <Typography 
-                                    variant="body2" 
+                              {checkInDate && checkOutDate && (
+                                <Box
+                                  sx={{
+                                    mt: 0.5,
+                                    pt: 0.5,
+                                    borderTop: '1px solid',
+                                    borderColor: alpha(Colors.blue, 0.2),
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
                                     fontWeight={700}
-                                    sx={{ 
+                                    sx={{
                                       color: Colors.blue,
-                                      lineHeight: 1.2
+                                      lineHeight: 1.2,
                                     }}
                                   >
                                     Total: ${totalPrice}
                                   </Typography>
-                                  <Typography 
-                                    variant="caption" 
+                                  <Typography
+                                    variant="caption"
                                     color="text.secondary"
                                   >
                                     {nights} night{nights > 1 ? 's' : ''}
@@ -404,16 +494,21 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
 
                   {/* Dates Display - More Compact */}
                   {(checkInDate || checkOutDate) && (
-                    <Box 
-                      sx={{ 
+                    <Box
+                      sx={{
                         mb: 1.5,
                         p: 1,
                         bgcolor: alpha(Colors.blue, 0.05),
                         borderRadius: 1.5,
-                        border: `1px solid ${alpha(Colors.blue, 0.15)}`
+                        border: `1px solid ${alpha(Colors.blue, 0.15)}`,
                       }}
                     >
-                      <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 0.5 }}>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ mb: 0.5 }}
+                      >
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <Box
                             sx={{
@@ -422,61 +517,76 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                               bgcolor: Colors.blue,
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'center'
+                              justifyContent: 'center',
                             }}
                           >
                             <Hotel sx={{ color: 'white', fontSize: 16 }} />
                           </Box>
-                          <Typography 
-                            variant="body2" 
+                          <Typography
+                            variant="body2"
                             fontWeight={600}
                             sx={{ color: Colors.blue }}
                           >
                             Your Stay
                           </Typography>
                         </Box>
-                        
+
                         {guests && (
                           <Box display="flex" alignItems="center" gap={0.3}>
-                            <People sx={{ fontSize: 16, color: 'text.secondary' }} />
-                            <Typography variant="caption" color="text.secondary" >
+                            <People
+                              sx={{ fontSize: 16, color: 'text.secondary' }}
+                            />
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               {guests} guest{guests > 1 ? 's' : ''}
                             </Typography>
                           </Box>
                         )}
                       </Box>
-                      
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
+
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
                         <Box>
-                          <Typography variant="caption" color="text.secondary" >
+                          <Typography variant="caption" color="text.secondary">
                             Check-in
                           </Typography>
-                          <Typography 
-                            variant="body2" 
+                          <Typography
+                            variant="body2"
                             fontWeight={600}
-                            sx={{ color: Colors.blue,  lineHeight: 1.2 }}
+                            sx={{ color: Colors.blue, lineHeight: 1.2 }}
                           >
-                            {checkInDate ? formatDate(checkInDate) : 'Select date'}
+                            {checkInDate
+                              ? formatDate(checkInDate)
+                              : 'Select date'}
                           </Typography>
                         </Box>
-                        
-                        <Box sx={{ 
-                          height: '1px', 
-                          width: '15px', 
-                          bgcolor: alpha(Colors.blue, 0.3),
-                          mx: 0.5
-                        }} />
-                        
+
+                        <Box
+                          sx={{
+                            height: '1px',
+                            width: '15px',
+                            bgcolor: alpha(Colors.blue, 0.3),
+                            mx: 0.5,
+                          }}
+                        />
+
                         <Box textAlign="right">
-                          <Typography variant="caption" color="text.secondary" >
+                          <Typography variant="caption" color="text.secondary">
                             Check-out
                           </Typography>
-                          <Typography 
-                            variant="body2" 
+                          <Typography
+                            variant="body2"
                             fontWeight={600}
-                            sx={{ color: Colors.blue,  lineHeight: 1.2 }}
+                            sx={{ color: Colors.blue, lineHeight: 1.2 }}
                           >
-                            {checkOutDate ? formatDate(checkOutDate) : 'Select date'}
+                            {checkOutDate
+                              ? formatDate(checkOutDate)
+                              : 'Select date'}
                           </Typography>
                         </Box>
                       </Box>
@@ -484,19 +594,20 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                   )}
 
                   {/* Room Description - Compact */}
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
-                    sx={{ 
+                    sx={{
                       mb: 1,
                       display: '-webkit-box',
                       WebkitLineClamp: 1,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
-                      lineHeight: 1.3
+                      lineHeight: 1.3,
                     }}
                   >
-                    {room.description || 'Comfortable and well-appointed room with modern amenities.'}
+                    {room.description ||
+                      'Comfortable and well-appointed room with modern amenities.'}
                   </Typography>
 
                   {/* Room Amenities - Compact */}
@@ -517,13 +628,13 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                                 height: 18,
                                 borderColor: alpha(Colors.blue, 0.3),
                                 color: Colors.blue,
-                                '& .MuiChip-icon': { 
+                                '& .MuiChip-icon': {
                                   fontSize: 10,
-                                  color: Colors.blue
+                                  color: Colors.blue,
                                 },
                                 '& .MuiChip-label': {
-                                  px: 0.5
-                                }
+                                  px: 0.5,
+                                },
                               }}
                             />
                           );
@@ -538,8 +649,8 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                               bgcolor: alpha(Colors.raspberry, 0.1),
                               color: Colors.raspberry,
                               '& .MuiChip-label': {
-                                px: 0.5
-                              }
+                                px: 0.5,
+                              },
                             }}
                           />
                         )}
@@ -549,42 +660,80 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
 
                   {/* Promotion Info - More Compact */}
                   {room.promotion && room.promotion.isActive && (
-                    <Box sx={{ mb: 1, p: 0.8, bgcolor: alpha('#4caf50', 0.05), borderRadius: 1, border: `1px solid ${alpha('#4caf50', 0.2)}` }}>
+                    <Box
+                      sx={{
+                        mb: 1,
+                        p: 0.8,
+                        bgcolor: alpha('#4caf50', 0.05),
+                        borderRadius: 1,
+                        border: `1px solid ${alpha('#4caf50', 0.2)}`,
+                      }}
+                    >
                       <Box display="flex" alignItems="center" gap={0.4}>
                         <LocalOffer sx={{ fontSize: 10, color: '#4caf50' }} />
-                        <Typography variant="caption" fontWeight={700} sx={{ color: '#4caf50' }}>
+                        <Typography
+                          variant="caption"
+                          fontWeight={700}
+                          sx={{ color: '#4caf50' }}
+                        >
                           {room.promotion.name}
                         </Typography>
                       </Box>
                     </Box>
                   )}
-                  
+
                   {/* Property-level Promotion - More Compact */}
-                  {!room.promotion && kottage?.promotions && kottage.promotions.length > 0 && kottage.promotions.some(p => p.isActive) && (
-                    <Box sx={{ mb: 1, p: 0.8, bgcolor: alpha('#4caf50', 0.05), borderRadius: 1, border: `1px solid ${alpha('#4caf50', 0.2)}` }}>
-                      {kottage.promotions.filter(p => p.isActive).slice(0, 1).map((promotion, idx) => (
-                        <Box key={idx} display="flex" alignItems="center" gap={0.4}>
-                          <LocalOffer sx={{ fontSize: 10, color: '#4caf50' }} />
-                          <Typography variant="caption" fontWeight={700} sx={{ color: '#4caf50' }}>
-                            {promotion.name}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  )}
+                  {!room.promotion &&
+                    kottage?.promotions &&
+                    kottage.promotions.length > 0 &&
+                    kottage.promotions.some(p => p.isActive) && (
+                      <Box
+                        sx={{
+                          mb: 1,
+                          p: 0.8,
+                          bgcolor: alpha('#4caf50', 0.05),
+                          borderRadius: 1,
+                          border: `1px solid ${alpha('#4caf50', 0.2)}`,
+                        }}
+                      >
+                        {kottage.promotions
+                          .filter(p => p.isActive)
+                          .slice(0, 1)
+                          .map((promotion, idx) => (
+                            <Box
+                              key={idx}
+                              display="flex"
+                              alignItems="center"
+                              gap={0.4}
+                            >
+                              <LocalOffer
+                                sx={{ fontSize: 10, color: '#4caf50' }}
+                              />
+                              <Typography
+                                variant="caption"
+                                fontWeight={700}
+                                sx={{ color: '#4caf50' }}
+                              >
+                                {promotion.name}
+                              </Typography>
+                            </Box>
+                          ))}
+                      </Box>
+                    )}
 
                   {/* Action Buttons - Compact */}
                   <Box display="flex" gap={1} sx={{ mt: 'auto' }}>
                     {(() => {
-                      const canAccommodateGuests = !guests || guests <= room.maxOccupancy;
-                      
+                      const canAccommodateGuests =
+                        !guests || guests <= room.maxOccupancy;
+
                       return (
                         <Button
                           variant="contained"
                           size="small"
                           disabled={!canAccommodateGuests}
                           sx={{
-                            background: canAccommodateGuests 
+                            background: canAccommodateGuests
                               ? `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`
                               : '#e0e0e0',
                             color: canAccommodateGuests ? 'white' : '#9e9e9e',
@@ -593,32 +742,46 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                             py: 0.4,
                             minHeight: 28,
                             flex: 1,
-                            cursor: canAccommodateGuests ? 'pointer' : 'not-allowed',
-                            '&:hover': canAccommodateGuests ? {
-                              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                            } : {}
+                            cursor: canAccommodateGuests
+                              ? 'pointer'
+                              : 'not-allowed',
+                            '&:hover': canAccommodateGuests
+                              ? {
+                                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                }
+                              : {},
                           }}
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation();
-                            const promotion = calculatePromotionalPrice(room, undefined, undefined, undefined, kottage?.promotions);
-                            const finalPrice = promotion.isPromotionApplied ? promotion.finalPrice : room.pricePerNight;
+                            const promotion = calculatePromotionalPrice(
+                              room,
+                              undefined,
+                              undefined,
+                              undefined,
+                              kottage?.promotions
+                            );
+                            const finalPrice = promotion.isPromotionApplied
+                              ? promotion.finalPrice
+                              : room.pricePerNight;
                             const totalPrice = finalPrice * nights;
-                            
-                            navigate('/book-room', { 
-                              state: { 
-                                kottage, 
+
+                            navigate('/book-room', {
+                              state: {
+                                kottage,
                                 room,
                                 checkInDate,
                                 checkOutDate,
                                 guests,
                                 totalPrice,
                                 nights,
-                                pricePerNight: finalPrice
-                              } 
+                                pricePerNight: finalPrice,
+                              },
                             });
                           }}
                         >
-                          {canAccommodateGuests ? 'Book Now' : 'Too Many Guests'}
+                          {canAccommodateGuests
+                            ? 'Book Now'
+                            : 'Too Many Guests'}
                         </Button>
                       );
                     })()}
@@ -626,7 +789,7 @@ function RoomTypes({ kottage, selectedRoom, setSelectedRoom, setDetailedRoomView
                 </CardContent>
               </Card>
             </Fade>
-        ))}
+          ))}
       </Box>
     </Box>
   );
