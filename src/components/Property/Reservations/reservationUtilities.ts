@@ -22,6 +22,7 @@ export interface ConfirmPaymentParams {
   refetchBlockedDates: () => void;
   setPaymentSuccess: (success: boolean) => void;
   setPaymentError: (error: string) => void;
+  navigate: (path: string, options?: { state?: any }) => void;
 }
 
 /**
@@ -192,6 +193,20 @@ export const handleConfirmPayment = async (params: ConfirmPaymentParams): Promis
     );
     
     setPaymentSuccess(true);
+    
+    // Navigate to confirmation page
+    params.navigate('/booking-confirmation', {
+      state: {
+        reservationId: tempReservationId,
+        roomName: room.name,
+        propertyName: kottage.name,
+        checkInDate: startDate.toISOString(),
+        checkOutDate: endDate.toISOString(),
+        guests,
+        nights: calculateNights(startDate, endDate),
+        total,
+      },
+    });
     
   } catch (error) {
     setPaymentError(error instanceof Error ? error.message : 'Failed to create reservation. Please try again.');

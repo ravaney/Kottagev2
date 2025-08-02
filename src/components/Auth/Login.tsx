@@ -15,7 +15,8 @@ export default function Login() {
    useEffect(() => {
     if (!isPending && user) {
       const redirectTo = location.state?.from?.pathname || '/';
-      navigate(redirectTo, { replace: true });
+      const redirectState = location.state?.from?.state;
+      navigate(redirectTo, { replace: true, state: redirectState });
     }
   }, [user, isPending, navigate, location]);
   
@@ -23,7 +24,9 @@ export default function Login() {
     try {
        await loginMutation({ email, password });
       if (location.state?.from) {
-        navigate(location.state.from);
+        navigate(location.state.from.pathname, { 
+          state: location.state.from.state || location.state.bookingData 
+        });
       } else {
         navigate("/");
       }
