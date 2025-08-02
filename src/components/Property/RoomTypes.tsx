@@ -765,7 +765,7 @@ function RoomTypes({
                               : room.pricePerNight;
                             const totalPrice = finalPrice * nights;
 
-                            navigate('/book-room', {
+                            navigate(`/Kottages/${kottage.id}/book-room`, {
                               state: {
                                 kottage,
                                 room,

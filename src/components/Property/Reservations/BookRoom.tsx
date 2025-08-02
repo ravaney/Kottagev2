@@ -207,7 +207,7 @@ const BookRoom = () => {
         elevation={2}
         sx={{
           borderRadius: 3,
-          overflow: 'scroll',
+          overflow: 'hidden',
           boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
           height: 'calc(100vh - 80px)',
         }}
@@ -613,6 +613,7 @@ const BookRoom = () => {
                   refetchBlockedDates,
                   setPaymentSuccess,
                   setPaymentError,
+                  navigate,
                 });
               }}
               sx={{
