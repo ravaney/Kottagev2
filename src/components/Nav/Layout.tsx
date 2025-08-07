@@ -4,15 +4,33 @@ import BottomNav from './BottomNav';
 
 export default function Layout() {
   const location = useLocation();
-  const isBookRoomPage = location.pathname.includes('/book-room') || location.pathname.includes('/booking-confirmation');
+  const isBookRoomPage =
+    location.pathname.includes('/book-room') ||
+    location.pathname.includes('/booking-confirmation');
+  const isAuthPage =
+    location.pathname.includes('/Login') ||
+    location.pathname.includes('/signup') ||
+    location.pathname.includes('/host-login') ||
+    location.pathname.includes('/host-signup') ||
+    location.pathname.includes('/guest-signup') ||
+    location.pathname.includes('/signup-selection') ||
+    location.pathname.includes('/CreateAccount') ||
+    location.pathname.includes('/login-select');
+
+  const hideNavigation = isBookRoomPage || isAuthPage;
 
   return (
     <div>
-      {!isBookRoomPage && <NavBar />}
-      <main style={{ minHeight: !isBookRoomPage ? 'calc(100vh - 64px)' : '100vh', paddingTop: !isBookRoomPage ? '64px' : '0' }}>
+      {!hideNavigation && <NavBar />}
+      <main
+        style={{
+          minHeight: !hideNavigation ? 'calc(100vh - 64px)' : '100vh',
+          paddingTop: !hideNavigation ? '64px' : '0',
+        }}
+      >
         <Outlet />
       </main>
-      {!isBookRoomPage && <BottomNav />}
+      {!hideNavigation && <BottomNav />}
     </div>
   );
 }

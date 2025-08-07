@@ -7,6 +7,7 @@ import ReservationStatusCard from './ReservationStatusCard';
 import EarningsBreakdownCard from './Home/EarningsBreakdownCard';
 import BookingCalendar from './Home/BookingCalendar';
 import UpcomingReservations from './Home/UpcomingReservations';
+import MyReservations from './Home/MyReservations';
 import {
   ReservationStatus,
   useGetMyReservations,
@@ -78,7 +79,6 @@ export default function Dashboard() {
       <Grid item xs={12} lg={4}>
         <Box display="flex" flexDirection="column" gap={1}>
           <BookingCalendar events={upcomingReservations} />
-
           <UpcomingReservations reservations={upcomingReservations} />
         </Box>
       </Grid>

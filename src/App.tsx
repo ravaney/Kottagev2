@@ -5,15 +5,12 @@ import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
-  Routes,
-  Route,
 } from 'react-router-dom';
 import { ChatProvider } from './contexts/ChatContext';
-import { getSubdomain, isSubdomain } from './utils/subdomainRouter';
+import { isSubdomain } from './utils/subdomainRouter';
 import Splash from './components/Home/Splash';
 import SearchPage from './components/Home/SearchPage';
 import Login from './components/Auth/Login';
-import CreateAccount from './components/Auth/CreateAccount';
 import MyAccount from './components/MyAccount/MyAccount';
 import Profile from './components/MyAccount/Profile';
 import Settings from './components/MyAccount/Settings';
@@ -57,6 +54,17 @@ import ProtectedStaffRoute from './components/Staff/ProtectedStaffRoute';
 import AddProperty from './components/Dashboard/PropertyManagement/AddProperty';
 import Messages from './components/Dashboard/Messages/Messages';
 import ActionCenter from './components/Dashboard/ActionCenter/ActionCenter';
+// New Auth Components
+import HostSignup from './components/Host/HostSignup';
+import GuestSignup from './components/Auth/GuestSignup';
+import HostLogin from './components/Host/HostLogin';
+import ProtectedHostRoute from './components/Auth/ProtectedHostRoute';
+import ProtectedHostOnlyRoute from './components/Auth/ProtectedHostOnlyRoute';
+// Host Components
+import HostLanding from './components/Host/HostLanding';
+import HostLayout from './components/Host/HostLayout';
+import HostDashboardHome from './components/Host/HostDashboardHome';
+import HostRoot from './components/Host/HostRoot';
 
 function App() {
   setIconOptions({ disableWarnings: true });
@@ -70,6 +78,7 @@ function App() {
   // Check which subdomain we're on
   const isAdminSite = isSubdomain('admin');
   const isStaffSite = isSubdomain('staff');
+  const isHostSite = isSubdomain('host');
 
   // Create different routers based on subdomain
   const mainRouter = createBrowserRouter([
@@ -92,8 +101,8 @@ function App() {
           element: <Login />,
         },
         {
-          path: '/CreateAccount',
-          element: <CreateAccount />,
+          path: '/signup',
+          element: <GuestSignup />,
         },
 
         {
@@ -139,12 +148,25 @@ function App() {
                   element: <Messages />,
                 },
                 {
+                  path: 'myreservations',
+                  element: <MyBookings />,
+                },
+                // Host-only routes
+                {
                   path: 'reservations',
-                  element: <ManageReservations />,
+                  element: (
+                    <ProtectedHostOnlyRoute>
+                      <ManageReservations />
+                    </ProtectedHostOnlyRoute>
+                  ),
                 },
                 {
                   path: 'properties',
-                  element: <PropertyManagement />,
+                  element: (
+                    <ProtectedHostOnlyRoute>
+                      <PropertyManagement />
+                    </ProtectedHostOnlyRoute>
+                  ),
                   children: [
                     {
                       path: 'add-property',
@@ -158,7 +180,11 @@ function App() {
                 },
                 {
                   path: 'analytics/:propertyId',
-                  element: <PropertyAnalyticsPage />,
+                  element: (
+                    <ProtectedHostOnlyRoute>
+                      <PropertyAnalyticsPage />
+                    </ProtectedHostOnlyRoute>
+                  ),
                 },
               ],
             },
@@ -314,12 +340,109 @@ function App() {
     },
   ]);
 
+  //create host subdomain
+  const hostRouter = createBrowserRouter([
+    {
+      path: '/',
+      element: <HostRoot />,
+      errorElement: <PageNotFound />,
+    },
+    {
+      path: '/dashboard',
+      element: (
+        <ProtectedHostRoute>
+          <HostLayout />
+        </ProtectedHostRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: <HostDashboardHome />,
+        },
+        {
+          path: 'action-center',
+          element: <ActionCenter />,
+        },
+        {
+          path: 'messages',
+          element: <Messages />,
+        },
+        {
+          path: 'reservations',
+          element: <ManageReservations />,
+        },
+        {
+          path: 'properties',
+          element: <PropertyManagement />,
+        },
+        {
+          path: 'properties/add-property',
+          element: <AddProperty />,
+        },
+        {
+          path: 'properties/manage/:propertyId',
+          element: <ManageProperty />,
+        },
+        {
+          path: 'analytics/:propertyId',
+          element: <PropertyAnalyticsPage />,
+        },
+      ],
+    },
+    {
+      path: '/profile',
+      element: (
+        <ProtectedHostRoute>
+          <HostLayout />
+        </ProtectedHostRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: <Profile />,
+        },
+      ],
+    },
+    {
+      path: '/settings',
+      element: (
+        <ProtectedHostRoute>
+          <HostLayout />
+        </ProtectedHostRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: <Settings />,
+        },
+      ],
+    },
+    {
+      path: '/landing',
+      element: <HostLanding />,
+    },
+    {
+      path: '/signup',
+      element: <HostSignup />,
+    },
+    {
+      path: '/login',
+      element: <HostLogin />,
+    },
+    {
+      path: '*',
+      element: <Navigate to="/" replace />,
+    },
+  ]);
+
   // Select the appropriate router based on subdomain
   let router = mainRouter;
   if (isAdminSite) {
     router = adminRouter;
   } else if (isStaffSite) {
     router = staffRouter;
+  } else if (isHostSite) {
+    router = hostRouter;
   }
 
   return (

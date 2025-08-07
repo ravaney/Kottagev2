@@ -1,5 +1,13 @@
 import React from 'react';
-import { Box, Typography, Divider, Tabs, Tab, Badge } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Divider,
+  Tabs,
+  Tab,
+  Badge,
+  Chip,
+} from '@mui/material';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
@@ -10,12 +18,17 @@ import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
 import { Colors } from '../constants';
 import { useAuth } from '../../hooks';
 import { useChat } from '../../contexts/ChatContext';
+import { useUserClaims } from '../../hooks/useUserClaims';
 
 export default function DashboardMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const { appUser, firebaseUser } = useAuth();
   const { chats } = useChat();
+  const { claims } = useUserClaims();
+  // Check if user has host permissions
+  const isHost =
+    claims && (claims.role === 'host' || claims.userType === 'host');
 
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -29,25 +42,44 @@ export default function DashboardMenu() {
     const currentUserId = firebaseUser?.uid || '';
     return total + (chat.unreadCount?.[currentUserId] || 0);
   }, 0);
-
   const getActiveTab = () => {
     const path = location.pathname;
-    if (path.includes('action-center')) return 1;
-    if (path.includes('messages')) return 2;
-    if (path.includes('reservations')) return 3;
-    if (path.includes('properties')) return 4;
-    return 0; // Default to Home
+    if (isHost) {
+      // For hosts: Home=0, Action Center=1, Messages=2, Reservations=3, Properties=4
+      if (path.includes('action-center')) return 1;
+      if (path.includes('messages')) return 2;
+      if (path.includes('reservations')) return 3;
+      if (path.includes('properties')) return 4;
+      return 0; // Default to Home for hosts
+    } else {
+      // For guests: Action Center=0, Messages=1, My Reservations=2
+      if (path.includes('action-center')) return 0;
+      if (path.includes('messages')) return 1;
+      if (path.includes('myreservations')) return 2;
+      return 0; // Default to Action Center for guests
+    }
   };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    const routes = [
-      '/MyAccount/Dashboard',
-      '/MyAccount/Dashboard/action-center',
-      '/MyAccount/Dashboard/messages',
-      '/MyAccount/Dashboard/reservations',
-      '/MyAccount/Dashboard/properties',
-    ];
-    navigate(routes[newValue]);
+    if (isHost) {
+      // Host routes include all features
+      const routes = [
+        '/MyAccount/Dashboard',
+        '/MyAccount/Dashboard/action-center',
+        '/MyAccount/Dashboard/messages',
+        '/MyAccount/Dashboard/reservations',
+        '/MyAccount/Dashboard/properties',
+      ];
+      navigate(routes[newValue]);
+    } else {
+      // Guest routes exclude host-only features
+      const routes = [
+        '/MyAccount/Dashboard/action-center',
+        '/MyAccount/Dashboard/messages',
+        '/MyAccount/Dashboard/myreservations',
+      ];
+      navigate(routes[newValue]);
+    }
   };
 
   return (
@@ -82,13 +114,22 @@ export default function DashboardMenu() {
               >
                 Dashboard
               </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Property Management Overview
-              </Typography>
+              <Box display="flex" alignItems="center" gap={1} sx={{ mt: 0.5 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Property Management Overview
+                </Typography>
+                <Chip
+                  label={isHost ? 'Host' : 'Guest'}
+                  size="small"
+                  sx={{
+                    backgroundColor: isHost ? Colors.blue : Colors.raspberry,
+                    color: 'white',
+                    fontWeight: 600,
+                    fontSize: '0.75rem',
+                    height: 20,
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
           <Box textAlign="right">
@@ -123,14 +164,17 @@ export default function DashboardMenu() {
               },
             }}
           >
-            <Tab
-              icon={<HomeIcon sx={{ fontSize: 20 }} />}
-              label="Home"
-              iconPosition="start"
-              sx={{
-                color: getActiveTab() === 0 ? Colors.blue : 'text.secondary',
-              }}
-            />
+            {/* Home tab - only show for hosts */}
+            {isHost && (
+              <Tab
+                icon={<HomeIcon sx={{ fontSize: 20 }} />}
+                label="Home"
+                iconPosition="start"
+                sx={{
+                  color: getActiveTab() === 0 ? Colors.blue : 'text.secondary',
+                }}
+              />
+            )}
             <Tab
               icon={
                 <Badge
@@ -175,22 +219,40 @@ export default function DashboardMenu() {
                 color: getActiveTab() === 2 ? Colors.blue : 'text.secondary',
               }}
             />
-            <Tab
-              icon={<CalendarMonthIcon sx={{ fontSize: 20 }} />}
-              label="Manage Reservations"
-              iconPosition="start"
-              sx={{
-                color: getActiveTab() === 3 ? Colors.blue : 'text.secondary',
-              }}
-            />
-            <Tab
-              icon={<HolidayVillageIcon sx={{ fontSize: 20 }} />}
-              label="Property Management"
-              iconPosition="start"
-              sx={{
-                color: getActiveTab() === 4 ? Colors.blue : 'text.secondary',
-              }}
-            />
+            {/* Guest-only tab for My Reservations */}
+            {!isHost && (
+              <Tab
+                icon={<CalendarMonthIcon sx={{ fontSize: 20 }} />}
+                label="My Reservations"
+                iconPosition="start"
+                sx={{
+                  color: getActiveTab() === 3 ? Colors.blue : 'text.secondary',
+                }}
+              />
+            )}
+            {/* Host-only tabs */}
+            {isHost && (
+              <>
+                <Tab
+                  icon={<CalendarMonthIcon sx={{ fontSize: 20 }} />}
+                  label="Manage Reservations"
+                  iconPosition="start"
+                  sx={{
+                    color:
+                      getActiveTab() === 3 ? Colors.blue : 'text.secondary',
+                  }}
+                />
+                <Tab
+                  icon={<HolidayVillageIcon sx={{ fontSize: 20 }} />}
+                  label="Property Management"
+                  iconPosition="start"
+                  sx={{
+                    color:
+                      getActiveTab() === 4 ? Colors.blue : 'text.secondary',
+                  }}
+                />
+              </>
+            )}
           </Tabs>
         </Box>
       </Box>

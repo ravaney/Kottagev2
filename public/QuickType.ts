@@ -5,44 +5,45 @@
 //   "Set quicktype target language"
 
 export interface IUser {
-    email:           string;
-    uid:             string;
-    firstName:   string;
-    lastName:    string;
-    address:      IAddress | null;
-    phoneNumber: string;
-    dob?: string;
-    emailVerified?:   boolean;
-    isAnonymous?:     boolean;
-    photoURL?:    string;
-    bio?: string;
-    occupation?: string;
-    company?: string;
+  email: string;
+  uid: string;
+  firstName: string;
+  lastName: string;
+  address: IAddress | null;
+  phoneNumber: string;
+  dob?: string;
+  emailVerified?: boolean;
+  isAnonymous?: boolean;
+  photoURL?: string;
+  bio?: string;
+  occupation?: string;
+  company?: string;
 }
 export interface IInitUser {
-    email:           string;
-    phoneNumber: string;
-    firstName:   string;
-    lastName:    string;
-    address:     IAddress | null;
-    password:string;
-    dob: string;
-    image?:    File[];
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  address: IAddress | null;
+  password: string;
+  dob: string;
+  image?: File[];
+  role: 'guest' | 'host';
+  userType: 'customer' | 'employee';
 }
 
 //create an interface for address
 export interface IAddress {
-    address1: string;
-    address2?: string;
-    city: string;
-    state: string;
-    zip?: string;
-    postalCode?: string;
-    country: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  state: string;
+  zip?: string;
+  postalCode?: string;
+  country: string;
 }
 
-export interface PropertyIdAndImages  { 
-    propertyId: string;
-    images: File[];
+export interface PropertyIdAndImages {
+  propertyId: string;
+  images: File[];
 }
-

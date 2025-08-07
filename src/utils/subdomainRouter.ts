@@ -3,7 +3,7 @@
  */
 
 // Define valid subdomains
-export const VALID_SUBDOMAINS = ['admin', 'staff'];
+export const VALID_SUBDOMAINS = ['admin', 'staff', 'host'];
 
 /**
  * Extracts the subdomain from the current hostname
@@ -12,21 +12,21 @@ export const VALID_SUBDOMAINS = ['admin', 'staff'];
 export const getSubdomain = (): string | null => {
   // Get the hostname (e.g., admin.bluekottage.com)
   const hostname = window.location.hostname;
-  
+
   // Check if we're on localhost for development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     // For local development, check if subdomain is simulated in localStorage
     return localStorage.getItem('simulated_subdomain');
   }
-  
+
   // Split the hostname by dots
   const parts = hostname.split('.');
-  
+
   // If we have more than 2 parts (subdomain.domain.tld), the first part is the subdomain
   if (parts.length > 2) {
     return parts[0];
   }
-  
+
   return null;
 };
 
@@ -58,7 +58,7 @@ export const simulateSubdomain = (subdomain: string | null): void => {
   } else {
     localStorage.removeItem('simulated_subdomain');
   }
-  
+
   // Reload the page to apply the simulated subdomain
   window.location.reload();
 };
