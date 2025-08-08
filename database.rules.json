@@ -29,6 +29,10 @@
       ".read": "auth != null",
       ".write": "auth != null"
     },
+    "reservations": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
     "users": {
       "$uid": {
         ".read": "$uid === auth.uid || auth.token.role === 'admin'",

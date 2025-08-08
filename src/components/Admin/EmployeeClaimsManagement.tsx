@@ -4,7 +4,6 @@ import {
   Typography,
   Card,
   CardContent,
-
   Button,
   Table,
   TableBody,
@@ -35,7 +34,7 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
-  Fab
+  Fab,
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import {
@@ -49,27 +48,42 @@ import {
   LocationOn as LocationIcon,
   MoreVert as MoreVertIcon,
   Assessment as AssessmentIcon,
-  GroupWork as GroupWorkIcon
+  GroupWork as GroupWorkIcon,
 } from '@mui/icons-material';
 import { useClaimsManagement, useRoleChecker } from '../../hooks/useUserClaims';
 import { useEmployees } from '../../hooks/useEmployees';
-import { 
-  EmployeeClaims, 
-  EmployeePermission, 
-  PERMISSION_SETS, 
-  createEmployeeClaims 
+import {
+  EmployeeClaims,
+  EmployeePermission,
+  PERMISSION_SETS,
+  createEmployeeClaims,
 } from '../../utils/firebaseClaims';
 import { BulkClaimsOperation, PermissionAuditDialog } from './ClaimsDialogs';
 import { NewEmployeeWizard } from './NewEmployeeWizard';
 
 const JAMAICA_PARISHES = [
-  'Kingston', 'St. Andrew', 'St. Thomas', 'Portland', 'St. Mary', 'St. Ann',
-  'Trelawny', 'St. James', 'Hanover', 'Westmoreland', 'St. Elizabeth',
-  'Manchester', 'Clarendon', 'St. Catherine'
+  'Kingston',
+  'St. Andrew',
+  'St. Thomas',
+  'Portland',
+  'St. Mary',
+  'St. Ann',
+  'Trelawny',
+  'St. James',
+  'Hanover',
+  'Westmoreland',
+  'St. Elizabeth',
+  'Manchester',
+  'Clarendon',
+  'St. Catherine',
 ];
 
 const JAMAICA_REGIONS = [
-  'North Coast', 'South Coast', 'Eastern Region', 'Western Region', 'Central Region'
+  'North Coast',
+  'South Coast',
+  'Eastern Region',
+  'Western Region',
+  'Central Region',
 ];
 
 const EmployeeClaimsManagement = () => {
@@ -80,12 +94,21 @@ const EmployeeClaimsManagement = () => {
   const [auditDialogOpen, setAuditDialogOpen] = useState(false);
   const [newEmployeeWizardOpen, setNewEmployeeWizardOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'view' | 'edit' | 'create'>('view');
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  
-  const { setEmployeeClaims, updateUserClaims, batchUpdateClaims, loading: claimsLoading } = useClaimsManagement();
+
+  const {
+    setEmployeeClaims,
+    updateUserClaims,
+    batchUpdateClaims,
+    loading: claimsLoading,
+  } = useClaimsManagement();
   const roleChecker = useRoleChecker();
-  
+
   // Use the new employees hook
   const {
     employees,
@@ -97,10 +120,10 @@ const EmployeeClaimsManagement = () => {
     filterEmployees,
     getEmployeeById,
     getActiveEmployees,
-    getInactiveEmployees
+    getInactiveEmployees,
   } = useEmployees({
     realTimeUpdates: true,
-    pageSize: 50
+    pageSize: 50,
   });
 
   const loading = employeesLoading || claimsLoading;
@@ -117,38 +140,41 @@ const EmployeeClaimsManagement = () => {
     assignedRegions: [] as string[],
     assignedParishes: [] as string[],
     customPermissions: [] as EmployeePermission[],
-    isActive: true
+    isActive: true,
   });
 
   const handleBulkUpdate = async (updates: any) => {
     if (!roleChecker.hasPermission('manage_staff')) {
-      setSnackbar({ 
-        open: true, 
-        message: 'You do not have permission to manage staff', 
-        severity: 'error' 
+      setSnackbar({
+        open: true,
+        message: 'You do not have permission to manage staff',
+        severity: 'error',
       });
       return;
     }
 
     try {
-      const bulkUpdates = selectedEmployees.map(uid => ({ uid, claims: updates }));
+      const bulkUpdates = selectedEmployees.map(uid => ({
+        uid,
+        claims: updates,
+      }));
       await batchUpdateClaims(bulkUpdates);
-      
+
       // Refresh employees list
       await refreshEmployees();
 
-      setSnackbar({ 
-        open: true, 
-        message: `Bulk update applied to ${selectedEmployees.length} employees`, 
-        severity: 'success' 
+      setSnackbar({
+        open: true,
+        message: `Bulk update applied to ${selectedEmployees.length} employees`,
+        severity: 'success',
       });
       setSelectedEmployees([]);
     } catch (error) {
       console.error('Error applying bulk update:', error);
-      setSnackbar({ 
-        open: true, 
-        message: 'Failed to apply bulk update', 
-        severity: 'error' 
+      setSnackbar({
+        open: true,
+        message: 'Failed to apply bulk update',
+        severity: 'error',
       });
     }
   };
@@ -169,7 +195,10 @@ const EmployeeClaimsManagement = () => {
     }
   };
 
-  const handleOpenDialog = (mode: 'view' | 'edit' | 'create', employee?: any) => {
+  const handleOpenDialog = (
+    mode: 'view' | 'edit' | 'create',
+    employee?: any
+  ) => {
     setViewMode(mode);
     if (employee) {
       setSelectedEmployee(employee);
@@ -184,7 +213,7 @@ const EmployeeClaimsManagement = () => {
         assignedRegions: employee.assignedRegions || [],
         assignedParishes: employee.assignedParishes || [],
         customPermissions: employee.permissions || [],
-        isActive: employee.isActive !== false
+        isActive: employee.isActive !== false,
       });
     } else {
       setSelectedEmployee(null);
@@ -199,7 +228,7 @@ const EmployeeClaimsManagement = () => {
         assignedRegions: [],
         assignedParishes: [],
         customPermissions: [],
-        isActive: true
+        isActive: true,
       });
     }
     setDialogOpen(true);
@@ -212,10 +241,10 @@ const EmployeeClaimsManagement = () => {
 
   const handleSave = async () => {
     if (!roleChecker.hasPermission('manage_staff')) {
-      setSnackbar({ 
-        open: true, 
-        message: 'You do not have permission to manage staff', 
-        severity: 'error' 
+      setSnackbar({
+        open: true,
+        message: 'You do not have permission to manage staff',
+        severity: 'error',
       });
       return;
     }
@@ -228,7 +257,7 @@ const EmployeeClaimsManagement = () => {
         position: formData.position,
         accessLevel: formData.accessLevel,
         assignedRegions: formData.assignedRegions,
-        assignedParishes: formData.assignedParishes
+        assignedParishes: formData.assignedParishes,
       };
 
       if (viewMode === 'create') {
@@ -243,18 +272,20 @@ const EmployeeClaimsManagement = () => {
       // Refresh employees list
       await refreshEmployees();
 
-      setSnackbar({ 
-        open: true, 
-        message: `Employee ${viewMode === 'create' ? 'created' : 'updated'} successfully`, 
-        severity: 'success' 
+      setSnackbar({
+        open: true,
+        message: `Employee ${
+          viewMode === 'create' ? 'created' : 'updated'
+        } successfully`,
+        severity: 'success',
       });
       handleCloseDialog();
     } catch (error) {
       console.error('Error saving employee:', error);
-      setSnackbar({ 
-        open: true, 
-        message: 'Failed to save employee', 
-        severity: 'error' 
+      setSnackbar({
+        open: true,
+        message: 'Failed to save employee',
+        severity: 'error',
       });
     }
   };
@@ -262,36 +293,55 @@ const EmployeeClaimsManagement = () => {
   const handleEmployeeCreated = async (employee: any) => {
     // Refresh the employees list to show the new employee
     await refreshEmployees();
-    
+
     // Show success message
-    setSnackbar({ 
-      open: true, 
-      message: `Employee ${employee.displayName} created successfully!`, 
-      severity: 'success' 
+    setSnackbar({
+      open: true,
+      message: `Employee ${employee.displayName} created successfully!`,
+      severity: 'success',
     });
   };
 
   const getPermissionChips = (position: string, accessLevel: number) => {
-    const permissions = PERMISSION_SETS[position.toUpperCase() as keyof typeof PERMISSION_SETS] || PERMISSION_SETS.STAFF;
+    const permissions =
+      PERMISSION_SETS[position.toUpperCase() as keyof typeof PERMISSION_SETS] ||
+      PERMISSION_SETS.STAFF;
     return permissions.slice(0, 3); // Show first 3 permissions
   };
 
-  const getStatusColor = (isActive: boolean) => isActive ? 'success' : 'error';
+  const getStatusColor = (isActive: boolean) =>
+    isActive ? 'success' : 'error';
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'super_admin': return 'error';
-      case 'admin': return 'warning';
-      case 'staff': return 'primary';
-      default: return 'default';
+      case 'super_admin':
+        return 'error';
+      case 'admin':
+        return 'warning';
+      case 'staff':
+        return 'primary';
+      default:
+        return 'default';
     }
   };
 
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box
+        sx={{
+          mb: 4,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Box>
-          <Typography variant="h4" fontWeight={700} color="primary" gutterBottom>
+          <Typography
+            variant="h4"
+            fontWeight={700}
+            color="primary"
+            gutterBottom
+          >
             Employee Claims Management
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
@@ -333,7 +383,13 @@ const EmployeeClaimsManagement = () => {
                 <SecurityIcon sx={{ fontSize: 40, color: 'warning.main' }} />
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
-                    {employees.filter((emp: any) => emp.customClaims?.role === 'admin' || emp.customClaims?.role === 'super_admin').length}
+                    {
+                      employees.filter(
+                        (emp: any) =>
+                          emp.customClaims?.role === 'admin' ||
+                          emp.customClaims?.role === 'super_admin'
+                      ).length
+                    }
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Admins
@@ -350,7 +406,13 @@ const EmployeeClaimsManagement = () => {
                 <WorkIcon sx={{ fontSize: 40, color: 'info.main' }} />
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
-                    {new Set(employees.map((emp: any) => emp.customClaims?.department)).size}
+                    {
+                      new Set(
+                        employees.map(
+                          (emp: any) => emp.customClaims?.department
+                        )
+                      ).size
+                    }
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Departments
@@ -367,7 +429,13 @@ const EmployeeClaimsManagement = () => {
                 <LocationIcon sx={{ fontSize: 40, color: 'success.main' }} />
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
-                    {new Set(employees.flatMap((emp: any) => emp.customClaims?.assignedRegions || [])).size}
+                    {
+                      new Set(
+                        employees.flatMap(
+                          (emp: any) => emp.customClaims?.assignedRegions || []
+                        )
+                      ).size
+                    }
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Covered Regions
@@ -416,7 +484,7 @@ const EmployeeClaimsManagement = () => {
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Chip 
+                      <Chip
                         label={employee.customClaims?.role?.toUpperCase()}
                         color={getRoleColor(employee.customClaims?.role)}
                         size="small"
@@ -424,7 +492,9 @@ const EmployeeClaimsManagement = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2">
-                        {employee.customClaims?.department?.replace('_', ' ').toUpperCase()}
+                        {employee.customClaims?.department
+                          ?.replace('_', ' ')
+                          .toUpperCase()}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -433,7 +503,7 @@ const EmployeeClaimsManagement = () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Chip 
+                      <Chip
                         label={`Level ${employee.customClaims?.accessLevel}`}
                         variant="outlined"
                         size="small"
@@ -443,25 +513,43 @@ const EmployeeClaimsManagement = () => {
                       <Box>
                         {employee.customClaims?.assignedRegions?.length > 0 && (
                           <Typography variant="caption" display="block">
-                            Regions: {employee.customClaims.assignedRegions.join(', ')}
+                            Regions:{' '}
+                            {employee.customClaims.assignedRegions.join(', ')}
                           </Typography>
                         )}
-                        {employee.customClaims?.assignedParishes?.length > 0 && (
+                        {employee.customClaims?.assignedParishes?.length >
+                          0 && (
                           <Typography variant="caption" display="block">
-                            Parishes: {employee.customClaims.assignedParishes.slice(0, 2).join(', ')}
-                            {employee.customClaims.assignedParishes.length > 2 && ` +${employee.customClaims.assignedParishes.length - 2}`}
+                            Parishes:{' '}
+                            {employee.customClaims.assignedParishes
+                              .slice(0, 2)
+                              .join(', ')}
+                            {employee.customClaims.assignedParishes.length >
+                              2 &&
+                              ` +${
+                                employee.customClaims.assignedParishes.length -
+                                2
+                              }`}
                           </Typography>
                         )}
-                        {(!employee.customClaims?.assignedRegions?.length && !employee.customClaims?.assignedParishes?.length) && (
-                          <Typography variant="caption" color="text.secondary">
-                            National Access
-                          </Typography>
-                        )}
+                        {!employee.customClaims?.assignedRegions?.length &&
+                          !employee.customClaims?.assignedParishes?.length && (
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              National Access
+                            </Typography>
+                          )}
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Chip 
-                        label={employee.customClaims?.isActive ? 'Active' : 'Inactive'}
+                      <Chip
+                        label={
+                          employee.customClaims?.isActive
+                            ? 'Active'
+                            : 'Inactive'
+                        }
                         color={getStatusColor(employee.customClaims?.isActive)}
                         size="small"
                       />
@@ -469,7 +557,7 @@ const EmployeeClaimsManagement = () => {
                     <TableCell>
                       <Box sx={{ display: 'flex', gap: 1 }}>
                         <Tooltip title="View Details">
-                          <IconButton 
+                          <IconButton
                             size="small"
                             onClick={() => handleOpenDialog('view', employee)}
                           >
@@ -477,10 +565,12 @@ const EmployeeClaimsManagement = () => {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Edit Claims">
-                          <IconButton 
+                          <IconButton
                             size="small"
                             onClick={() => handleOpenDialog('edit', employee)}
-                            disabled={!roleChecker.hasPermission('manage_staff')}
+                            disabled={
+                              !roleChecker.hasPermission('manage_staff')
+                            }
                           >
                             <EditIcon />
                           </IconButton>
@@ -496,15 +586,18 @@ const EmployeeClaimsManagement = () => {
       </Card>
 
       {/* Employee Claims Dialog */}
-      <Dialog 
-        open={dialogOpen} 
+      <Dialog
+        open={dialogOpen}
         onClose={handleCloseDialog}
         maxWidth="md"
         fullWidth
       >
         <DialogTitle>
-          {viewMode === 'create' ? 'Add New Employee' : 
-           viewMode === 'edit' ? 'Edit Employee Claims' : 'Employee Details'}
+          {viewMode === 'create'
+            ? 'Add New Employee'
+            : viewMode === 'edit'
+            ? 'Edit Employee Claims'
+            : 'Employee Details'}
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={3} sx={{ mt: 1 }}>
@@ -514,36 +607,45 @@ const EmployeeClaimsManagement = () => {
                 Basic Information
               </Typography>
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Employee ID"
                 value={formData.employeeId}
-                onChange={(e) => setFormData(prev => ({ ...prev, employeeId: e.target.value }))}
+                onChange={e =>
+                  setFormData(prev => ({ ...prev, employeeId: e.target.value }))
+                }
                 disabled={viewMode === 'view'}
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={e =>
+                  setFormData(prev => ({ ...prev, email: e.target.value }))
+                }
                 disabled={viewMode === 'view' || viewMode === 'edit'}
                 required={viewMode === 'create'}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Display Name"
                 value={formData.displayName}
-                onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    displayName: e.target.value,
+                  }))
+                }
                 disabled={viewMode === 'view'}
                 required={viewMode === 'create'}
               />
@@ -554,7 +656,12 @@ const EmployeeClaimsManagement = () => {
                 control={
                   <Checkbox
                     checked={formData.isActive}
-                    onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+                    onChange={e =>
+                      setFormData(prev => ({
+                        ...prev,
+                        isActive: e.target.checked,
+                      }))
+                    }
                     disabled={viewMode === 'view'}
                   />
                 }
@@ -575,12 +682,19 @@ const EmployeeClaimsManagement = () => {
                 <Select
                   value={formData.role}
                   label="Role"
-                  onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as any }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      role: e.target.value as any,
+                    }))
+                  }
                   disabled={viewMode === 'view'}
                 >
                   <MenuItem value="staff">Staff</MenuItem>
                   <MenuItem value="admin">Admin</MenuItem>
                   <MenuItem value="super_admin">Super Admin</MenuItem>
+                  <MenuItem value="host">Host</MenuItem>
+                  <MenuItem value="guest">Guest</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -591,7 +705,12 @@ const EmployeeClaimsManagement = () => {
                 <Select
                   value={formData.department}
                   label="Department"
-                  onChange={(e) => setFormData(prev => ({ ...prev, department: e.target.value as any }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      department: e.target.value as any,
+                    }))
+                  }
                   disabled={viewMode === 'view'}
                 >
                   <MenuItem value="customer_service">Customer Service</MenuItem>
@@ -610,7 +729,12 @@ const EmployeeClaimsManagement = () => {
                 <Select
                   value={formData.position}
                   label="Position"
-                  onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value as any }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      position: e.target.value as any,
+                    }))
+                  }
                   disabled={viewMode === 'view'}
                 >
                   <MenuItem value="staff">Staff</MenuItem>
@@ -628,7 +752,12 @@ const EmployeeClaimsManagement = () => {
                 <Select
                   value={formData.accessLevel}
                   label="Access Level"
-                  onChange={(e) => setFormData(prev => ({ ...prev, accessLevel: Number(e.target.value) }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      accessLevel: Number(e.target.value),
+                    }))
+                  }
                   disabled={viewMode === 'view'}
                 >
                   <MenuItem value={1}>Level 1 - Basic Staff</MenuItem>
@@ -652,14 +781,20 @@ const EmployeeClaimsManagement = () => {
                 multiple
                 options={JAMAICA_REGIONS}
                 value={formData.assignedRegions}
-                onChange={(_, newValue) => setFormData(prev => ({ ...prev, assignedRegions: newValue }))}
+                onChange={(_, newValue) =>
+                  setFormData(prev => ({ ...prev, assignedRegions: newValue }))
+                }
                 disabled={viewMode === 'view'}
-                renderInput={(params) => (
+                renderInput={params => (
                   <TextField {...params} label="Assigned Regions" />
                 )}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
-                    <Chip label={option} {...getTagProps({ index })} size="small" />
+                    <Chip
+                      label={option}
+                      {...getTagProps({ index })}
+                      size="small"
+                    />
                   ))
                 }
               />
@@ -670,14 +805,20 @@ const EmployeeClaimsManagement = () => {
                 multiple
                 options={JAMAICA_PARISHES}
                 value={formData.assignedParishes}
-                onChange={(_, newValue) => setFormData(prev => ({ ...prev, assignedParishes: newValue }))}
+                onChange={(_, newValue) =>
+                  setFormData(prev => ({ ...prev, assignedParishes: newValue }))
+                }
                 disabled={viewMode === 'view'}
-                renderInput={(params) => (
+                renderInput={params => (
                   <TextField {...params} label="Assigned Parishes" />
                 )}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
-                    <Chip label={option} {...getTagProps({ index })} size="small" />
+                    <Chip
+                      label={option}
+                      {...getTagProps({ index })}
+                      size="small"
+                    />
                   ))
                 }
               />
@@ -690,16 +831,25 @@ const EmployeeClaimsManagement = () => {
                   Permissions Preview
                 </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {getPermissionChips(formData.position, formData.accessLevel).map((permission) => (
-                    <Chip 
+                  {getPermissionChips(
+                    formData.position,
+                    formData.accessLevel
+                  ).map(permission => (
+                    <Chip
                       key={permission}
                       label={permission.replace(/_/g, ' ').toUpperCase()}
                       variant="outlined"
                       size="small"
                     />
                   ))}
-                  <Chip 
-                    label={`+${(PERMISSION_SETS[formData.position.toUpperCase() as keyof typeof PERMISSION_SETS] || []).length - 3} more`}
+                  <Chip
+                    label={`+${
+                      (
+                        PERMISSION_SETS[
+                          formData.position.toUpperCase() as keyof typeof PERMISSION_SETS
+                        ] || []
+                      ).length - 3
+                    } more`}
                     variant="outlined"
                     size="small"
                     color="primary"
@@ -710,11 +860,9 @@ const EmployeeClaimsManagement = () => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>
-            Cancel
-          </Button>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
           {viewMode !== 'view' && (
-            <Button 
+            <Button
               onClick={handleSave}
               variant="contained"
               disabled={loading || !roleChecker.hasPermission('manage_staff')}
@@ -732,8 +880,8 @@ const EmployeeClaimsManagement = () => {
         autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
       >
-        <Alert 
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >

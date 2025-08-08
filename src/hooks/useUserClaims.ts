@@ -2,12 +2,17 @@
 import { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { auth } from '../firebase';
-import { ClaimsChecker, EmployeeClaims, GuestClaims, HostClaims, EmployeePermission } from '../utils/firebaseClaims';
+import {
+  ClaimsChecker,
+  EmployeeClaims,
+  HostClaims,
+  EmployeePermission,
+} from '../utils/firebaseClaims';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase';
 
 export type UserRole = 'guest' | 'host' | 'staff' | 'admin' | 'super_admin';
-export type UserClaims = EmployeeClaims | GuestClaims | HostClaims;
+export type UserClaims = EmployeeClaims | HostClaims;
 
 export const useUserClaims = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -16,7 +21,7 @@ export const useUserClaims = () => {
   const [claimsLoading, setClaimsLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
       setUser(user);
       setLoading(false);
     });
@@ -66,14 +71,17 @@ export const useUserClaims = () => {
     console.log('User Object:', user);
     console.log('Claims Object:', claims);
     console.log('Claims JSON:', JSON.stringify(claims, null, 2));
-    
+
     // Try to refresh token and get fresh claims
     if (user) {
       try {
         console.log('🔄 Refreshing token...');
         const freshToken = await user.getIdTokenResult(true);
         console.log('Fresh Claims:', freshToken.claims);
-        console.log('Fresh Claims JSON:', JSON.stringify(freshToken.claims, null, 2));
+        console.log(
+          'Fresh Claims JSON:',
+          JSON.stringify(freshToken.claims, null, 2)
+        );
       } catch (error) {
         console.error('Error refreshing token:', error);
       }
@@ -97,7 +105,7 @@ export const useUserClaims = () => {
     claims,
     loading: loading || claimsLoading,
     refreshClaims,
-    logClaims
+    logClaims,
   };
 };
 
@@ -111,33 +119,40 @@ export const useRoleChecker = () => {
     isAdmin: () => ClaimsChecker.isAdmin(claims),
     isStaff: () => claims?.role === 'staff',
     isSuperAdmin: () => claims?.role === 'super_admin',
-    
+
     canAccessAdminPortal: () => ClaimsChecker.canAccessAdminPortal(claims),
     canAccessStaffPortal: () => ClaimsChecker.canAccessStaffPortal(claims),
-    
-    hasPermission: (permission: string) => 
-      ClaimsChecker.isEmployee(claims) && ClaimsChecker.hasPermission(claims, permission as any),
-    
-    hasAccessLevel: (level: number) => 
-      ClaimsChecker.isEmployee(claims) && ClaimsChecker.hasAccessLevel(claims, level),
-    
-    hasRegionalAccess: (region: string) => 
-      ClaimsChecker.isEmployee(claims) && ClaimsChecker.hasRegionalAccess(claims, region),
-    
-    hasParishAccess: (parish: string) => 
-      ClaimsChecker.isEmployee(claims) && ClaimsChecker.hasParishAccess(claims, parish),
-    
-    isVerifiedHost: () => 
+
+    hasPermission: (permission: string) =>
+      ClaimsChecker.isEmployee(claims) &&
+      ClaimsChecker.hasPermission(claims, permission as any),
+
+    hasAccessLevel: (level: number) =>
+      ClaimsChecker.isEmployee(claims) &&
+      ClaimsChecker.hasAccessLevel(claims, level),
+
+    hasRegionalAccess: (region: string) =>
+      ClaimsChecker.isEmployee(claims) &&
+      ClaimsChecker.hasRegionalAccess(claims, region),
+
+    hasParishAccess: (parish: string) =>
+      ClaimsChecker.isEmployee(claims) &&
+      ClaimsChecker.hasParishAccess(claims, parish),
+
+    isVerifiedHost: () =>
       ClaimsChecker.isHost(claims) && ClaimsChecker.isVerifiedHost(claims),
-    
-    isVerifiedGuest: () => 
+
+    isVerifiedGuest: () =>
       ClaimsChecker.isGuest(claims) && ClaimsChecker.isVerifiedGuest(claims),
-    
+
     getRole: () => claims?.role || null,
     getUserType: () => claims?.userType || null,
-    getAccessLevel: () => ClaimsChecker.isEmployee(claims) ? claims.accessLevel : 0,
-    getDepartment: () => ClaimsChecker.isEmployee(claims) ? claims.department : null,
-    getPosition: () => ClaimsChecker.isEmployee(claims) ? claims.position : null
+    getAccessLevel: () =>
+      ClaimsChecker.isEmployee(claims) ? claims.accessLevel : 0,
+    getDepartment: () =>
+      ClaimsChecker.isEmployee(claims) ? claims.department : null,
+    getPosition: () =>
+      ClaimsChecker.isEmployee(claims) ? claims.position : null,
   };
 };
 
@@ -158,25 +173,11 @@ export const useClaimsManagement = () => {
     }
   };
 
-  const setGuestClaims = async (uid: string) => {
-    setLoading(true);
-    try {
-      const setGuestClaimsFn = httpsCallable(functions, 'setGuestClaims');
-      const result = await setGuestClaimsFn({ uid });
-      return result.data;
-    } catch (error) {
-      console.error('Error setting guest claims:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const setHostClaims = async (uid: string) => {
+  const setHostClaims = async (uid: string, role: string) => {
     setLoading(true);
     try {
       const setHostClaimsFn = httpsCallable(functions, 'setHostClaims');
-      const result = await setHostClaimsFn({ uid });
+      const result = await setHostClaimsFn({ uid, role });
       return result.data;
     } catch (error) {
       console.error('Error setting host claims:', error);
@@ -201,14 +202,21 @@ export const useClaimsManagement = () => {
   };
 
   const verifyHostDocumentation = async (
-    hostUid: string, 
-    verificationType: string, 
+    hostUid: string,
+    verificationType: string,
     approved: boolean
   ) => {
     setLoading(true);
     try {
-      const verifyHostDocFn = httpsCallable(functions, 'verifyHostDocumentation');
-      const result = await verifyHostDocFn({ hostUid, verificationType, approved });
+      const verifyHostDocFn = httpsCallable(
+        functions,
+        'verifyHostDocumentation'
+      );
+      const result = await verifyHostDocFn({
+        hostUid,
+        verificationType,
+        approved,
+      });
       return result.data;
     } catch (error) {
       console.error('Error verifying host documentation:', error);
@@ -218,7 +226,9 @@ export const useClaimsManagement = () => {
     }
   };
 
-  const batchUpdateClaims = async (updates: Array<{ uid: string; claims: any }>) => {
+  const batchUpdateClaims = async (
+    updates: Array<{ uid: string; claims: any }>
+  ) => {
     setLoading(true);
     try {
       const batchUpdateClaimsFn = httpsCallable(functions, 'batchUpdateClaims');
@@ -235,11 +245,10 @@ export const useClaimsManagement = () => {
   return {
     loading,
     setEmployeeClaims,
-    setGuestClaims,
     setHostClaims,
     updateUserClaims,
     verifyHostDocumentation,
-    batchUpdateClaims
+    batchUpdateClaims,
   };
 };
 
@@ -268,7 +277,7 @@ export const useCreateEmployee = () => {
         displayName: employeeData.displayName,
         photoURL: employeeData.photoURL || null,
         customClaims: employeeData.customClaims,
-        sendWelcomeEmail: employeeData.sendWelcomeEmail || true
+        sendWelcomeEmail: employeeData.sendWelcomeEmail || true,
       });
 
       return result.data;
@@ -278,12 +287,12 @@ export const useCreateEmployee = () => {
         message: error?.message,
         details: error?.details,
         code: error?.code,
-        fullError: error
+        fullError: error,
       });
-      
+
       // Extract the actual error message from Firebase Functions error
       let errorMessage = 'Failed to create employee';
-      
+
       // Firebase Functions errors can be structured differently
       if (error?.details && typeof error.details === 'string') {
         // Firebase Functions v2 error format
@@ -296,16 +305,19 @@ export const useCreateEmployee = () => {
       } else if (error?.toString) {
         errorMessage = error.toString();
       }
-      
+
       // If we still have a generic message, try to extract more info
-      if (errorMessage === 'INTERNAL' || errorMessage === 'Failed to create employee') {
+      if (
+        errorMessage === 'INTERNAL' ||
+        errorMessage === 'Failed to create employee'
+      ) {
         if (error?.code) {
           errorMessage = `Error code: ${error.code}`;
         } else if (error?.status) {
           errorMessage = `Error status: ${error.status}`;
         }
       }
-      
+
       console.log('Extracted error message:', errorMessage);
       setError(errorMessage);
       throw new Error(errorMessage);
@@ -352,18 +364,26 @@ export const useCreateEmployee = () => {
         assignedParishes: employeeDetails.assignedParishes || [],
         territorialAccess: employeeDetails.territorialAccess || 'parish',
         permissions: employeeDetails.permissions || [],
-        
+
         // Set default capabilities based on role
         canModerateReviews: employeeDetails.role !== 'staff',
         canManageBookings: employeeDetails.role !== 'staff',
-        canAccessFinancials: employeeDetails.role === 'admin' || employeeDetails.role === 'super_admin',
-        canManageUsers: employeeDetails.role === 'admin' || employeeDetails.role === 'super_admin',
+        canAccessFinancials:
+          employeeDetails.role === 'admin' ||
+          employeeDetails.role === 'super_admin',
+        canManageUsers:
+          employeeDetails.role === 'admin' ||
+          employeeDetails.role === 'super_admin',
         canManageProperties: employeeDetails.role !== 'staff',
         canAccessAnalytics: employeeDetails.role !== 'staff',
         canHandleDisputes: employeeDetails.role !== 'staff',
-        canProcessPayouts: employeeDetails.role === 'admin' || employeeDetails.role === 'super_admin',
-        canAssignStaff: employeeDetails.role === 'admin' || employeeDetails.role === 'super_admin',
-        canViewReports: employeeDetails.role !== 'staff'
+        canProcessPayouts:
+          employeeDetails.role === 'admin' ||
+          employeeDetails.role === 'super_admin',
+        canAssignStaff:
+          employeeDetails.role === 'admin' ||
+          employeeDetails.role === 'super_admin',
+        canViewReports: employeeDetails.role !== 'staff',
       };
 
       // Call the create employee function
@@ -373,7 +393,7 @@ export const useCreateEmployee = () => {
         displayName: employeeDetails.displayName,
         photoURL: employeeDetails.photoURL,
         customClaims: employeeClaims,
-        sendWelcomeEmail: employeeDetails.sendWelcomeEmail
+        sendWelcomeEmail: employeeDetails.sendWelcomeEmail,
       });
 
       return result;
@@ -383,12 +403,12 @@ export const useCreateEmployee = () => {
         message: error?.message,
         details: error?.details,
         code: error?.code,
-        fullError: error
+        fullError: error,
       });
-      
+
       // Extract the actual error message from Firebase Functions error
       let errorMessage = 'Failed to create employee';
-      
+
       // Firebase Functions errors can be structured differently
       if (error?.details && typeof error.details === 'string') {
         // Firebase Functions v2 error format
@@ -401,16 +421,19 @@ export const useCreateEmployee = () => {
       } else if (error?.toString) {
         errorMessage = error.toString();
       }
-      
+
       // If we still have a generic message, try to extract more info
-      if (errorMessage === 'INTERNAL' || errorMessage === 'Failed to create employee') {
+      if (
+        errorMessage === 'INTERNAL' ||
+        errorMessage === 'Failed to create employee'
+      ) {
         if (error?.code) {
           errorMessage = `Error code: ${error.code}`;
         } else if (error?.status) {
           errorMessage = `Error status: ${error.status}`;
         }
       }
-      
+
       console.log('Extracted error message:', errorMessage);
       setError(errorMessage);
       throw new Error(errorMessage);
@@ -426,7 +449,7 @@ export const useCreateEmployee = () => {
     error,
     createEmployee,
     createEmployeeWithEmailPassword,
-    clearError
+    clearError,
   };
 };
 
@@ -448,10 +471,16 @@ export const usePermissionGuard = () => {
 
   const requireRole = (role: UserRole | UserRole[]) => {
     const userRole = roleChecker.getRole();
-    const hasRole = Array.isArray(role) ? role.includes(userRole as UserRole) : userRole === role;
-    
+    const hasRole = Array.isArray(role)
+      ? role.includes(userRole as UserRole)
+      : userRole === role;
+
     if (!hasRole) {
-      throw new Error(`Insufficient role: ${Array.isArray(role) ? role.join(' or ') : role} required`);
+      throw new Error(
+        `Insufficient role: ${
+          Array.isArray(role) ? role.join(' or ') : role
+        } required`
+      );
     }
   };
 
@@ -463,7 +492,7 @@ export const usePermissionGuard = () => {
       adminPortal: roleChecker.canAccessAdminPortal(),
       staffPortal: roleChecker.canAccessStaffPortal(),
       hostFeatures: roleChecker.isVerifiedHost(),
-      guestFeatures: roleChecker.isVerifiedGuest()
-    }
+      guestFeatures: roleChecker.isVerifiedGuest(),
+    },
   };
 };

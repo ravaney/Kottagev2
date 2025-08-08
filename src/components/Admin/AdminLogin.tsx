@@ -9,7 +9,7 @@ import {
   Alert,
   CircularProgress,
   Container,
-  Paper
+  Paper,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLogin } from '../../hooks/useLogin';
@@ -33,14 +33,16 @@ export default function AdminLogin() {
   useEffect(() => {
     if (!claimsLoading && user && claims) {
       console.log('Admin Login - Checking user claims:', claims);
-      
+
       if (roleChecker.canAccessAdminPortal()) {
         // User is authenticated and has admin access, redirect to intended page or dashboard
         const redirectTo = location.state?.from?.pathname || '/dashboard';
         navigate(redirectTo, { replace: true });
       } else if (claims) {
         // User is authenticated but doesn't have admin access
-        setError('Access denied. You do not have administrative privileges. Please contact your system administrator.');
+        setError(
+          'Access denied. You do not have administrative privileges. Please contact your system administrator.'
+        );
       }
     }
   }, [user, claims, claimsLoading, roleChecker, navigate, location]);
@@ -91,8 +93,9 @@ export default function AdminLogin() {
       minHeight="100vh"
       sx={{
         background: 'linear-gradient(135deg, #d32f2f 0%, #c62828 100%)',
-        backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-        padding: 2
+        backgroundImage:
+          'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+        padding: 2,
       }}
     >
       <Container maxWidth="sm">
@@ -100,7 +103,7 @@ export default function AdminLogin() {
           sx={{
             borderRadius: 3,
             boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-            overflow: 'visible'
+            overflow: 'visible',
           }}
         >
           <CardContent sx={{ p: 4 }}>
@@ -111,7 +114,7 @@ export default function AdminLogin() {
                 alt="Yaad Admin Portal"
                 sx={{
                   height: 60,
-                  mb: 2
+                  mb: 2,
                 }}
               />
               <Typography
@@ -122,11 +125,7 @@ export default function AdminLogin() {
               >
                 Admin Portal
               </Typography>
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ mb: 3 }}
-              >
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 Administrative access for Yaad platform management
               </Typography>
               <Box
@@ -138,10 +137,12 @@ export default function AdminLogin() {
                   p: 2,
                   backgroundColor: '#ffebee',
                   borderRadius: 2,
-                  border: '1px solid #ffcdd2'
+                  border: '1px solid #ffcdd2',
                 }}
               >
-                <AdminPanelSettingsIcon sx={{ color: '#d32f2f', fontSize: 20 }} />
+                <AdminPanelSettingsIcon
+                  sx={{ color: '#d32f2f', fontSize: 20 }}
+                />
                 <Typography variant="body2" color="#d32f2f" fontWeight={600}>
                   Administrator credentials required
                 </Typography>
@@ -154,7 +155,7 @@ export default function AdminLogin() {
                 label="Administrator Email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 disabled={isPending}
                 sx={{ mb: 2 }}
                 InputProps={{
@@ -169,7 +170,7 @@ export default function AdminLogin() {
                 label="Password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 disabled={isPending}
                 sx={{ mb: 3 }}
                 InputProps={{
@@ -198,12 +199,15 @@ export default function AdminLogin() {
                   fontSize: '1.1rem',
                   fontWeight: 600,
                   textTransform: 'none',
-                  borderRadius: 2
+                  borderRadius: 2,
                 }}
               >
                 {isPending ? (
                   <>
-                    <CircularProgress size={20} sx={{ mr: 1, color: 'white' }} />
+                    <CircularProgress
+                      size={20}
+                      sx={{ mr: 1, color: 'white' }}
+                    />
                     Signing In...
                   </>
                 ) : (
@@ -227,8 +231,9 @@ export default function AdminLogin() {
 
             <Box mt={3} textAlign="center">
               <Typography variant="caption" color="text.secondary">
-                This is a highly restricted access portal for authorized administrators only.
-                All access attempts are logged and monitored.
+                This is a highly restricted access portal for authorized
+                administrators only. All access attempts are logged and
+                monitored.
               </Typography>
             </Box>
           </CardContent>

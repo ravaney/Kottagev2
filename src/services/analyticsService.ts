@@ -5,7 +5,15 @@ import { useEffect } from 'react';
 // Analytics service for tracking user interactions
 export class AnalyticsService {
   // Track completed booking
-  public trackBookingCompleted(propertyId: string, roomId: string, userId: string, totalPrice: number, guests: number, checkIn: string, checkOut: string): void {
+  public trackBookingCompleted(
+    propertyId: string,
+    roomId: string,
+    userId: string,
+    totalPrice: number,
+    guests: number,
+    checkIn: string,
+    checkOut: string
+  ): void {
     this.trackInteraction({
       propertyId,
       action: 'booking_completed',
@@ -16,8 +24,8 @@ export class AnalyticsService {
         guests,
         checkIn,
         checkOut,
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
   private static instance: AnalyticsService;
@@ -44,7 +52,11 @@ export class AnalyticsService {
     if (/tablet|ipad|playbook|silk/i.test(userAgent)) {
       return 'tablet';
     }
-    if (/mobile|iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(userAgent)) {
+    if (
+      /mobile|iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(
+        userAgent
+      )
+    ) {
       return 'mobile';
     }
     return 'desktop';
@@ -58,8 +70,8 @@ export class AnalyticsService {
       action: 'view',
       metadata: {
         referrer: referrer || document.referrer,
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
@@ -72,35 +84,43 @@ export class AnalyticsService {
         action: 'view',
         metadata: {
           timeOnPage,
-          deviceType: this.getDeviceType()
-        }
+          deviceType: this.getDeviceType(),
+        },
       });
     }
   }
 
   // Track search impression (property shown in search results)
-  public trackSearchImpression(propertyId: string, searchQuery: string, position: number): void {
+  public trackSearchImpression(
+    propertyId: string,
+    searchQuery: string,
+    position: number
+  ): void {
     this.trackInteraction({
       propertyId,
       action: 'search_impression',
       metadata: {
         searchQuery,
         searchPosition: position,
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
   // Track click from search results
-  public trackSearchClick(propertyId: string, searchQuery: string, position: number): void {
+  public trackSearchClick(
+    propertyId: string,
+    searchQuery: string,
+    position: number
+  ): void {
     this.trackInteraction({
       propertyId,
       action: 'click',
       metadata: {
         searchQuery,
         searchPosition: position,
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
@@ -111,8 +131,8 @@ export class AnalyticsService {
       action: 'photo_view',
       metadata: {
         photoIndex,
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
@@ -122,8 +142,8 @@ export class AnalyticsService {
       propertyId,
       action: 'inquiry',
       metadata: {
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
@@ -133,8 +153,8 @@ export class AnalyticsService {
       propertyId,
       action: 'wishlist',
       metadata: {
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
@@ -145,8 +165,8 @@ export class AnalyticsService {
       action: 'share',
       metadata: {
         platform,
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
@@ -156,8 +176,8 @@ export class AnalyticsService {
       propertyId,
       action: 'booking_attempt',
       metadata: {
-        deviceType: this.getDeviceType()
-      }
+        deviceType: this.getDeviceType(),
+      },
     });
   }
 
@@ -168,12 +188,21 @@ export class AnalyticsService {
     metadata?: any;
   }): Promise<void> {
     try {
-      const trackUserInteraction = httpsCallable(functions, 'trackUserInteraction');
-      
+      // Skip analytics in development to avoid CORS issues
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Analytics tracking skipped in development:', interaction);
+        return;
+      }
+
+      const trackUserInteraction = httpsCallable(
+        functions,
+        'trackUserInteraction'
+      );
+
       await trackUserInteraction({
         sessionId: this.sessionId,
         timestamp: new Date().toISOString(),
-        ...interaction
+        ...interaction,
       });
     } catch (error) {
       console.warn('Failed to track interaction:', error);
@@ -188,12 +217,12 @@ export class AnalyticsService {
   public enableBatchTracking(): void {
     // Override trackInteraction to use batching
     const originalTrack = this.trackInteraction.bind(this);
-    
+
     this.trackInteraction = async (interaction: any): Promise<void> => {
       this.interactionQueue.push({
         sessionId: this.sessionId,
         timestamp: new Date().toISOString(),
-        ...interaction
+        ...interaction,
       });
 
       // Clear existing timeout
@@ -215,9 +244,21 @@ export class AnalyticsService {
     this.interactionQueue = [];
 
     try {
+      // Skip analytics in development to avoid CORS issues
+      if (process.env.NODE_ENV === 'development') {
+        console.log(
+          'Analytics queue flushing skipped in development:',
+          interactions
+        );
+        return;
+      }
+
       // Send all interactions in batch
-      const trackUserInteraction = httpsCallable(functions, 'trackUserInteraction');
-      
+      const trackUserInteraction = httpsCallable(
+        functions,
+        'trackUserInteraction'
+      );
+
       await Promise.all(
         interactions.map(interaction => trackUserInteraction(interaction))
       );
@@ -234,7 +275,7 @@ export class AnalyticsService {
         // User left the page, track time spent
         const currentUrl = window.location.pathname;
         const propertyIdMatch = currentUrl.match(/\/property\/([^\/]+)/);
-        
+
         if (propertyIdMatch) {
           this.trackPropertyExit(propertyIdMatch[1]);
         }
@@ -246,7 +287,7 @@ export class AnalyticsService {
       if (this.pageStartTime > 0) {
         const currentUrl = window.location.pathname;
         const propertyIdMatch = currentUrl.match(/\/property\/([^\/]+)/);
-        
+
         if (propertyIdMatch) {
           this.trackPropertyExit(propertyIdMatch[1]);
         }
@@ -263,7 +304,7 @@ export const usePropertyAnalytics = (propertyId: string, referrer?: string) => {
   useEffect(() => {
     if (propertyId) {
       analyticsService.trackPropertyView(propertyId, referrer);
-      
+
       // Return cleanup function to track exit
       return () => {
         analyticsService.trackPropertyExit(propertyId);
@@ -272,20 +313,29 @@ export const usePropertyAnalytics = (propertyId: string, referrer?: string) => {
   }, [propertyId, referrer]);
 
   return {
-    trackPhotoView: (photoIndex: number) => analyticsService.trackPhotoView(propertyId, photoIndex),
+    trackPhotoView: (photoIndex: number) =>
+      analyticsService.trackPhotoView(propertyId, photoIndex),
     trackInquiry: () => analyticsService.trackInquiry(propertyId),
     trackWishlist: () => analyticsService.trackWishlist(propertyId),
-    trackShare: (platform?: string) => analyticsService.trackShare(propertyId, platform),
-    trackBookingAttempt: () => analyticsService.trackBookingAttempt(propertyId)
+    trackShare: (platform?: string) =>
+      analyticsService.trackShare(propertyId, platform),
+    trackBookingAttempt: () => analyticsService.trackBookingAttempt(propertyId),
   };
 };
 
 // Hook for search results tracking
 export const useSearchAnalytics = () => {
   return {
-    trackSearchImpression: (propertyId: string, searchQuery: string, position: number) => 
+    trackSearchImpression: (
+      propertyId: string,
+      searchQuery: string,
+      position: number
+    ) =>
       analyticsService.trackSearchImpression(propertyId, searchQuery, position),
-    trackSearchClick: (propertyId: string, searchQuery: string, position: number) => 
-      analyticsService.trackSearchClick(propertyId, searchQuery, position)
+    trackSearchClick: (
+      propertyId: string,
+      searchQuery: string,
+      position: number
+    ) => analyticsService.trackSearchClick(propertyId, searchQuery, position),
   };
 };

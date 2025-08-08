@@ -2,6 +2,11 @@ import { onCall } from 'firebase-functions/v2/https';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
 
+// Initialize Firebase Admin if not already initialized
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
+
 // Firebase Auth and Firestore instances
 const firebaseAuth = admin.auth();
 const firestore = admin.firestore();
@@ -34,26 +39,29 @@ export interface SearchEmployeesRequest {
 // Helper function to check if user has permission to view employees
 const checkViewPermission = (claims: any) => {
   console.log('🔍 Checking view permission for claims:', claims);
-  
-  const hasViewStaff = claims?.customPermissions?.includes('view_staff') || 
-                      claims?.permissions?.includes('view_staff');
-  const hasManageStaff = claims?.customPermissions?.includes('manage_staff') || 
-                        claims?.permissions?.includes('manage_staff');
+
+  const hasViewStaff =
+    claims?.customPermissions?.includes('view_staff') ||
+    claims?.permissions?.includes('view_staff');
+  const hasManageStaff =
+    claims?.customPermissions?.includes('manage_staff') ||
+    claims?.permissions?.includes('manage_staff');
   const hasReadUsers = claims?.permissions?.includes('read_users');
   const isAdmin = claims?.role === 'admin';
   const isSuperAdmin = claims?.role === 'super_admin';
-  
-  const hasPermission = hasViewStaff || hasManageStaff || hasReadUsers || isAdmin || isSuperAdmin;
-  
+
+  const hasPermission =
+    hasViewStaff || hasManageStaff || hasReadUsers || isAdmin || isSuperAdmin;
+
   console.log('🔍 Permission check results:', {
     hasViewStaff,
     hasManageStaff,
     hasReadUsers,
     isAdmin,
     isSuperAdmin,
-    hasPermission
+    hasPermission,
   });
-  
+
   return hasPermission;
 };
 
@@ -63,18 +71,28 @@ const mergeEmployeeData = async (uid: string): Promise<Employee | null> => {
     // Use getUser() to get auth record
     const authRecord = await admin.auth().getUser(uid);
     console.log('🔍 Processing auth record for:', authRecord.email);
-    
+
     // Check if this user is an employee by looking at their custom claims
     const customClaims = authRecord.customClaims || {};
     console.log('🔍 User custom claims:', authRecord.email, customClaims);
-    
+
     // Only return employee data if the user has employee claims
     if (!customClaims || customClaims.userType !== 'employee') {
-      console.log('🚫 Not an employee:', authRecord.email, 'userType:', customClaims.userType);
+      console.log(
+        '🚫 Not an employee:',
+        authRecord.email,
+        'userType:',
+        customClaims.userType
+      );
       return null;
     }
 
-    console.log('✅ Found employee:', authRecord.email, 'with claims:', customClaims);
+    console.log(
+      '✅ Found employee:',
+      authRecord.email,
+      'with claims:',
+      customClaims
+    );
 
     return {
       uid: authRecord.uid,
@@ -85,9 +103,9 @@ const mergeEmployeeData = async (uid: string): Promise<Employee | null> => {
       disabled: authRecord.disabled,
       metadata: {
         creationTime: authRecord.metadata.creationTime,
-        lastSignInTime: authRecord.metadata.lastSignInTime || ''
+        lastSignInTime: authRecord.metadata.lastSignInTime || '',
       },
-      customClaims: customClaims as any // Use custom claims from Firebase Auth
+      customClaims: customClaims as any, // Use custom claims from Firebase Auth
     };
   } catch (error) {
     logger.error(`Error merging employee data for uid:`, error);
@@ -121,18 +139,21 @@ interface Employee {
 }
 
 // Helper function to filter employees based on criteria
-const filterEmployee = (employee: Employee, filters: EmployeeFilters): boolean => {
+const filterEmployee = (
+  employee: Employee,
+  filters: EmployeeFilters
+): boolean => {
   const claims = employee.customClaims;
-  
+
   // Log each user being filtered for debugging
   logger.info('🔍 Filtering employee:', {
     uid: employee.uid,
     email: employee.email,
     claims: claims,
     userType: claims?.userType,
-    isEmployee: claims?.userType === 'employee'
+    isEmployee: claims?.userType === 'employee',
   });
-  
+
   // At this point, we know this is an employee (filtered in mergeEmployeeData)
   // So we only need to apply additional filters
 
@@ -140,40 +161,78 @@ const filterEmployee = (employee: Employee, filters: EmployeeFilters): boolean =
   logger.info(`🔍 ${employee.email}: Applied filters:`, filters);
 
   // Apply filters - only apply if filter value is provided (not null/undefined)
-  if (filters.department && filters.department !== null && claims.department !== filters.department) {
-    logger.info(`🚫 ${employee.email}: Filtered out by department. Expected: ${filters.department}, Got: ${claims.department}`);
+  if (
+    filters.department &&
+    filters.department !== null &&
+    claims.department !== filters.department
+  ) {
+    logger.info(
+      `🚫 ${employee.email}: Filtered out by department. Expected: ${filters.department}, Got: ${claims.department}`
+    );
     return false;
   }
 
   if (filters.role && filters.role !== null && claims.role !== filters.role) {
-    logger.info(`🚫 ${employee.email}: Filtered out by role. Expected: ${filters.role}, Got: ${claims.role}`);
+    logger.info(
+      `🚫 ${employee.email}: Filtered out by role. Expected: ${filters.role}, Got: ${claims.role}`
+    );
     return false;
   }
 
-  if (filters.position && filters.position !== null && claims.position !== filters.position) {
-    logger.info(`🚫 ${employee.email}: Filtered out by position. Expected: ${filters.position}, Got: ${claims.position}`);
+  if (
+    filters.position &&
+    filters.position !== null &&
+    claims.position !== filters.position
+  ) {
+    logger.info(
+      `🚫 ${employee.email}: Filtered out by position. Expected: ${filters.position}, Got: ${claims.position}`
+    );
     return false;
   }
 
-  if (filters.isActive !== undefined && filters.isActive !== null && claims.isActive !== filters.isActive) {
-    logger.info(`🚫 ${employee.email}: Filtered out by isActive. Expected: ${filters.isActive}, Got: ${claims.isActive}`);
+  if (
+    filters.isActive !== undefined &&
+    filters.isActive !== null &&
+    claims.isActive !== filters.isActive
+  ) {
+    logger.info(
+      `🚫 ${employee.email}: Filtered out by isActive. Expected: ${filters.isActive}, Got: ${claims.isActive}`
+    );
     return false;
   }
 
-  if (filters.assignedRegion && filters.assignedRegion !== null && 
-      (!claims.assignedRegions || !claims.assignedRegions.includes(filters.assignedRegion))) {
-    logger.info(`🚫 ${employee.email}: Filtered out by assignedRegion. Expected: ${filters.assignedRegion}, Got: ${claims.assignedRegions}`);
+  if (
+    filters.assignedRegion &&
+    filters.assignedRegion !== null &&
+    (!claims.assignedRegions ||
+      !claims.assignedRegions.includes(filters.assignedRegion))
+  ) {
+    logger.info(
+      `🚫 ${employee.email}: Filtered out by assignedRegion. Expected: ${filters.assignedRegion}, Got: ${claims.assignedRegions}`
+    );
     return false;
   }
 
-  if (filters.assignedParish && filters.assignedParish !== null && 
-      (!claims.assignedParishes || !claims.assignedParishes.includes(filters.assignedParish))) {
-    logger.info(`🚫 ${employee.email}: Filtered out by assignedParish. Expected: ${filters.assignedParish}, Got: ${claims.assignedParishes}`);
+  if (
+    filters.assignedParish &&
+    filters.assignedParish !== null &&
+    (!claims.assignedParishes ||
+      !claims.assignedParishes.includes(filters.assignedParish))
+  ) {
+    logger.info(
+      `🚫 ${employee.email}: Filtered out by assignedParish. Expected: ${filters.assignedParish}, Got: ${claims.assignedParishes}`
+    );
     return false;
   }
 
-  if (filters.accessLevel && filters.accessLevel !== null && claims.accessLevel !== filters.accessLevel) {
-    logger.info(`🚫 ${employee.email}: Filtered out by accessLevel. Expected: ${filters.accessLevel}, Got: ${claims.accessLevel}`);
+  if (
+    filters.accessLevel &&
+    filters.accessLevel !== null &&
+    claims.accessLevel !== filters.accessLevel
+  ) {
+    logger.info(
+      `🚫 ${employee.email}: Filtered out by accessLevel. Expected: ${filters.accessLevel}, Got: ${claims.accessLevel}`
+    );
     return false;
   }
 
@@ -184,11 +243,13 @@ const filterEmployee = (employee: Employee, filters: EmployeeFilters): boolean =
       employee.displayName || '',
       claims.employeeId || '',
       claims.department || '',
-      claims.position || ''
+      claims.position || '',
     ].map(field => field.toString().toLowerCase());
 
     if (!searchFields.some(field => field.includes(searchLower))) {
-      logger.info(`🚫 ${employee.email}: Filtered out by searchTerm. Term: ${filters.searchTerm}, SearchFields: ${searchFields}`);
+      logger.info(
+        `🚫 ${employee.email}: Filtered out by searchTerm. Term: ${filters.searchTerm}, SearchFields: ${searchFields}`
+      );
       return false;
     }
   }
@@ -198,7 +259,11 @@ const filterEmployee = (employee: Employee, filters: EmployeeFilters): boolean =
 };
 
 // Helper function to sort employees - Updated to use Employee type
-const sortEmployees = (employees: Employee[], orderBy: string, orderDirection: 'asc' | 'desc'): Employee[] => {
+const sortEmployees = (
+  employees: Employee[],
+  orderBy: string,
+  orderDirection: 'asc' | 'desc'
+): Employee[] => {
   return employees.sort((a: Employee, b: Employee) => {
     let aValue: any = (a as any)[orderBy];
     let bValue: any = (b as any)[orderBy];
@@ -219,14 +284,20 @@ const sortEmployees = (employees: Employee[], orderBy: string, orderDirection: '
 };
 
 // Internal function to get employees (shared logic)
-const getEmployeesInternal = async (filters: EmployeeFilters, pageSize: number, lastDocId?: string, orderBy: string = 'displayName', orderDirection: 'asc' | 'desc' = 'asc') => {
+const getEmployeesInternal = async (
+  filters: EmployeeFilters,
+  pageSize: number,
+  lastDocId?: string,
+  orderBy: string = 'displayName',
+  orderDirection: 'asc' | 'desc' = 'asc'
+) => {
   logger.info('🔍 getEmployeesInternal called with filters:', filters);
 
   // Get all users from Firebase Auth
   // Note: Firebase Auth doesn't support advanced querying, so we fetch and filter
   let authUsers: admin.auth.UserRecord[] = [];
   let nextPageToken: string | undefined;
-  
+
   do {
     const listUsersResult = await firebaseAuth.listUsers(1000, nextPageToken);
     authUsers = authUsers.concat(listUsersResult.users);
@@ -240,25 +311,25 @@ const getEmployeesInternal = async (filters: EmployeeFilters, pageSize: number, 
   for (const authUser of authUsers) {
     try {
       const employee = await mergeEmployeeData(authUser.uid);
-      
+
       // Skip if not an employee
       if (!employee) {
         console.log('🚫 Skipping non-employee:', authUser.email);
         continue;
       }
-      
+
       console.log('🔍 About to filter employee:', employee.email);
       const shouldInclude = filterEmployee(employee, filters);
       console.log('🔍 Filter result for', employee.email, ':', shouldInclude);
-      
+
       logger.info('🔍 Processing user for inclusion:', {
         email: employee.email,
         shouldInclude,
         hasUserType: !!employee.customClaims?.userType,
         userType: employee.customClaims?.userType,
-        isEmployee: employee.customClaims?.userType === 'employee'
+        isEmployee: employee.customClaims?.userType === 'employee',
       });
-      
+
       if (shouldInclude) {
         employees.push(employee);
         logger.info('✅ Added employee to list:', employee.email);
@@ -272,7 +343,7 @@ const getEmployeesInternal = async (filters: EmployeeFilters, pageSize: number, 
   logger.info('🔍 Employees after filtering:', {
     totalAuthUsers: authUsers.length,
     filteredEmployees: employees.length,
-    filters
+    filters,
   });
 
   // Sort employees using the helper function
@@ -289,33 +360,38 @@ const getEmployeesInternal = async (filters: EmployeeFilters, pageSize: number, 
     }
   }
 
-  const paginatedEmployees = sortedEmployees.slice(startIndex, startIndex + pageSize);
+  const paginatedEmployees = sortedEmployees.slice(
+    startIndex,
+    startIndex + pageSize
+  );
   const hasMore = startIndex + pageSize < sortedEmployees.length;
-  const lastDoc = paginatedEmployees.length > 0 ? 
-    paginatedEmployees[paginatedEmployees.length - 1] : null;
+  const lastDoc =
+    paginatedEmployees.length > 0
+      ? paginatedEmployees[paginatedEmployees.length - 1]
+      : null;
 
   const result = {
     employees: paginatedEmployees,
     hasMore,
     totalCount: sortedEmployees.length,
-    lastDocId: lastDoc?.uid
+    lastDocId: lastDoc?.uid,
   };
 
   logger.info('🔍 getEmployeesInternal result:', {
     employeesReturned: result.employees.length,
     hasMore: result.hasMore,
-    totalCount: result.totalCount
+    totalCount: result.totalCount,
   });
 
   return result;
 };
 
 // Cloud Function to get employees with pagination and filtering
-export const getEmployees = onCall(async (request) => {
+export const getEmployees = onCall(async request => {
   try {
-    logger.info('🔍 getEmployees called', { 
+    logger.info('🔍 getEmployees called', {
       authUid: request.auth?.uid,
-      hasAuth: !!request.auth 
+      hasAuth: !!request.auth,
     });
 
     // Check authentication
@@ -326,13 +402,13 @@ export const getEmployees = onCall(async (request) => {
     // Check permissions
     const userClaims = request.auth.token;
     logger.info('🔍 User claims for permission check:', userClaims);
-    
+
     if (!checkViewPermission(userClaims)) {
       logger.warn('🚫 Insufficient permissions for user:', {
         uid: request.auth.uid,
         email: userClaims.email,
         role: userClaims.role,
-        permissions: userClaims.permissions
+        permissions: userClaims.permissions,
       });
       throw new Error('Insufficient permissions to view employees');
     }
@@ -342,7 +418,7 @@ export const getEmployees = onCall(async (request) => {
       pageSize = 50,
       lastDocId,
       orderBy = 'displayName',
-      orderDirection = 'asc'
+      orderDirection = 'asc',
     }: GetEmployeesRequest = request.data;
 
     logger.info('🔍 getEmployees parameters:', {
@@ -350,23 +426,32 @@ export const getEmployees = onCall(async (request) => {
       pageSize,
       lastDocId,
       orderBy,
-      orderDirection
+      orderDirection,
     });
 
-    const result = await getEmployeesInternal(filters, pageSize, lastDocId, orderBy, orderDirection);
-    
-    logger.info('🔍 getEmployees final result before return:', result);
-    
-    return result;
+    const result = await getEmployeesInternal(
+      filters,
+      pageSize,
+      lastDocId,
+      orderBy,
+      orderDirection
+    );
 
+    logger.info('🔍 getEmployees final result before return:', result);
+
+    return result;
   } catch (error) {
     logger.error('❌ Error in getEmployees function:', error);
-    throw new Error(`Failed to get employees: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to get employees: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`
+    );
   }
 });
 
 // Cloud Function to search employees
-export const searchEmployees = onCall(async (request) => {
+export const searchEmployees = onCall(async request => {
   try {
     // Check authentication
     if (!request.auth) {
@@ -382,7 +467,7 @@ export const searchEmployees = onCall(async (request) => {
     const {
       searchTerm,
       filters = {},
-      pageSize = 50
+      pageSize = 50,
     }: SearchEmployeesRequest = request.data;
 
     if (!searchTerm || searchTerm.trim().length === 0) {
@@ -394,25 +479,34 @@ export const searchEmployees = onCall(async (request) => {
     // Add search term to filters
     const searchFilters = {
       ...filters,
-      searchTerm: searchTerm.trim()
+      searchTerm: searchTerm.trim(),
     };
 
     // Use the internal function
-    const result = await getEmployeesInternal(searchFilters, pageSize, undefined, 'displayName', 'asc');
+    const result = await getEmployeesInternal(
+      searchFilters,
+      pageSize,
+      undefined,
+      'displayName',
+      'asc'
+    );
 
     return {
       employees: result.employees,
-      totalCount: result.totalCount
+      totalCount: result.totalCount,
     };
-
   } catch (error) {
     logger.error('Error in searchEmployees function:', error);
-    throw new Error(`Failed to search employees: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to search employees: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`
+    );
   }
 });
 
 // Cloud Function to get employee statistics
-export const getEmployeeStats = onCall(async (request) => {
+export const getEmployeeStats = onCall(async request => {
   try {
     // Check authentication
     if (!request.auth) {
@@ -434,44 +528,72 @@ export const getEmployeeStats = onCall(async (request) => {
     // Calculate statistics
     const stats = {
       total: employees.length,
-      active: employees.filter((emp: Employee) => emp.customClaims?.isActive !== false && !emp.disabled).length,
-      inactive: employees.filter((emp: Employee) => emp.customClaims?.isActive === false || emp.disabled).length,
+      active: employees.filter(
+        (emp: Employee) => emp.customClaims?.isActive !== false && !emp.disabled
+      ).length,
+      inactive: employees.filter(
+        (emp: Employee) => emp.customClaims?.isActive === false || emp.disabled
+      ).length,
       byRole: {
-        staff: employees.filter((emp: Employee) => emp.customClaims?.role === 'staff').length,
-        admin: employees.filter((emp: Employee) => emp.customClaims?.role === 'admin').length,
-        super_admin: employees.filter((emp: Employee) => emp.customClaims?.role === 'super_admin').length
+        staff: employees.filter(
+          (emp: Employee) => emp.customClaims?.role === 'staff'
+        ).length,
+        admin: employees.filter(
+          (emp: Employee) => emp.customClaims?.role === 'admin'
+        ).length,
+        super_admin: employees.filter(
+          (emp: Employee) => emp.customClaims?.role === 'super_admin'
+        ).length,
       },
-      byDepartment: employees.reduce((acc: Record<string, number>, emp: Employee) => {
-        const dept = emp.customClaims?.department || 'unknown';
-        acc[dept] = (acc[dept] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>),
-      byPosition: employees.reduce((acc: Record<string, number>, emp: Employee) => {
-        const pos = emp.customClaims?.position || 'unknown';
-        acc[pos] = (acc[pos] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>),
-      byRegion: employees.reduce((acc: Record<string, number>, emp: Employee) => {
-        const regions = emp.customClaims?.assignedRegions || [];
-        regions.forEach((region: string) => {
-          acc[region] = (acc[region] || 0) + 1;
-        });
-        return acc;
-      }, {} as Record<string, number>),
-      averageAccessLevel: employees.length > 0 ? 
-        employees.reduce((sum: number, emp: Employee) => sum + (emp.customClaims?.accessLevel || 1), 0) / employees.length : 0
+      byDepartment: employees.reduce(
+        (acc: Record<string, number>, emp: Employee) => {
+          const dept = emp.customClaims?.department || 'unknown';
+          acc[dept] = (acc[dept] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+      byPosition: employees.reduce(
+        (acc: Record<string, number>, emp: Employee) => {
+          const pos = emp.customClaims?.position || 'unknown';
+          acc[pos] = (acc[pos] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+      byRegion: employees.reduce(
+        (acc: Record<string, number>, emp: Employee) => {
+          const regions = emp.customClaims?.assignedRegions || [];
+          regions.forEach((region: string) => {
+            acc[region] = (acc[region] || 0) + 1;
+          });
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+      averageAccessLevel:
+        employees.length > 0
+          ? employees.reduce(
+              (sum: number, emp: Employee) =>
+                sum + (emp.customClaims?.accessLevel || 1),
+              0
+            ) / employees.length
+          : 0,
     };
 
     return { stats };
-
   } catch (error) {
     logger.error('Error in getEmployeeStats function:', error);
-    throw new Error(`Failed to get employee statistics: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to get employee statistics: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`
+    );
   }
 });
 
 // Cloud Function to get employee by ID
-export const getEmployeeById = onCall(async (request) => {
+export const getEmployeeById = onCall(async request => {
   try {
     // Check authentication
     if (!request.auth) {
@@ -501,18 +623,24 @@ export const getEmployeeById = onCall(async (request) => {
     }
 
     return { employee };
-
   } catch (error) {
     logger.error('Error in getEmployeeById function:', error);
-    throw new Error(`Failed to get employee: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to get employee: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`
+    );
   }
 });
 
 // Create new employee function
-export const createEmployee = onCall({ cors: true }, async (request) => {
+export const createEmployee = onCall({ cors: true }, async request => {
   try {
-    logger.info('createEmployee function called', { data: request.data, authUid: request.auth?.uid });
-    
+    logger.info('createEmployee function called', {
+      data: request.data,
+      authUid: request.auth?.uid,
+    });
+
     const { auth, data } = request;
 
     // Check if user is authenticated and has permission to create employees
@@ -528,22 +656,29 @@ export const createEmployee = onCall({ cors: true }, async (request) => {
 
     // TODO: Re-enable permission check later
     // Check if caller has permission to create employees
-    // if (!callerClaims.canManageUsers && 
+    // if (!callerClaims.canManageUsers &&
     //     !callerClaims.permissions?.includes('manage_staff') &&
-    //     callerClaims.role !== 'admin' && 
+    //     callerClaims.role !== 'admin' &&
     //     callerClaims.role !== 'super_admin') {
     //   throw new Error('Insufficient permissions to create employees');
     // }
 
-    const { email, password, displayName, photoURL, customClaims, sendWelcomeEmail = true } = data;
+    const {
+      email,
+      password,
+      displayName,
+      photoURL,
+      customClaims,
+      sendWelcomeEmail = true,
+    } = data;
 
-    logger.info('createEmployee data received', { 
-      email, 
-      displayName, 
+    logger.info('createEmployee data received', {
+      email,
+      displayName,
       hasPassword: !!password,
       hasCustomClaims: !!customClaims,
       customClaimsKeys: customClaims ? Object.keys(customClaims) : [],
-      sendWelcomeEmail 
+      sendWelcomeEmail,
     });
 
     // Validate required fields
@@ -552,7 +687,7 @@ export const createEmployee = onCall({ cors: true }, async (request) => {
       if (!email) missingFields.push('email');
       if (!displayName) missingFields.push('displayName');
       if (!customClaims) missingFields.push('customClaims');
-      
+
       logger.error('Missing required fields', { missingFields, data });
       throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
     }
@@ -568,7 +703,7 @@ export const createEmployee = onCall({ cors: true }, async (request) => {
       email,
       displayName,
       photoURL: photoURL || undefined,
-      emailVerified: false
+      emailVerified: false,
     };
 
     // Add password if provided, otherwise Firebase will handle email verification
@@ -583,16 +718,22 @@ export const createEmployee = onCall({ cors: true }, async (request) => {
       logger.info(`Created user account for employee: ${userRecord.uid}`);
     } catch (authError: any) {
       logger.error('Failed to create user account:', authError);
-      
+
       // Handle specific Firebase Auth errors
       if (authError.code === 'auth/email-already-exists') {
-        throw new Error(`Email address ${email} is already in use by another account`);
+        throw new Error(
+          `Email address ${email} is already in use by another account`
+        );
       } else if (authError.code === 'auth/invalid-email') {
         throw new Error(`Invalid email address: ${email}`);
       } else if (authError.code === 'auth/weak-password') {
         throw new Error('Password is too weak. Please use a stronger password');
       } else {
-        throw new Error(`Failed to create user account: ${authError.message || 'Unknown error'}`);
+        throw new Error(
+          `Failed to create user account: ${
+            authError.message || 'Unknown error'
+          }`
+        );
       }
     }
 
@@ -602,36 +743,50 @@ export const createEmployee = onCall({ cors: true }, async (request) => {
 
     // Try to store claims in Firestore for easier querying (optional - graceful failure)
     try {
-      await firestore.collection('userClaims').doc(userRecord.uid).set({
-        ...customClaims,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedBy: auth.uid
-      });
-      logger.info(`Stored user claims in Firestore for employee: ${userRecord.uid}`);
+      await firestore
+        .collection('userClaims')
+        .doc(userRecord.uid)
+        .set({
+          ...customClaims,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedBy: auth.uid,
+        });
+      logger.info(
+        `Stored user claims in Firestore for employee: ${userRecord.uid}`
+      );
     } catch (firestoreError: any) {
-      logger.warn(`Failed to store claims in Firestore (this is non-critical): ${firestoreError.message}`);
+      logger.warn(
+        `Failed to store claims in Firestore (this is non-critical): ${firestoreError.message}`
+      );
       // Continue execution - this is not a critical failure
     }
 
     // Try to create employee profile document (optional - graceful failure)
     try {
-      await firestore.collection('employees').doc(userRecord.uid).set({
-        uid: userRecord.uid,
-        email: userRecord.email,
-        displayName: userRecord.displayName,
-        photoURL: userRecord.photoURL,
-        employeeId: customClaims.employeeId,
-        department: customClaims.department,
-        position: customClaims.position,
-        role: customClaims.role,
-        startDate: customClaims.createdAt || admin.firestore.FieldValue.serverTimestamp(),
-        isActive: customClaims.isActive,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        createdBy: auth.uid
-      });
+      await firestore
+        .collection('employees')
+        .doc(userRecord.uid)
+        .set({
+          uid: userRecord.uid,
+          email: userRecord.email,
+          displayName: userRecord.displayName,
+          photoURL: userRecord.photoURL,
+          employeeId: customClaims.employeeId,
+          department: customClaims.department,
+          position: customClaims.position,
+          role: customClaims.role,
+          startDate:
+            customClaims.createdAt ||
+            admin.firestore.FieldValue.serverTimestamp(),
+          isActive: customClaims.isActive,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          createdBy: auth.uid,
+        });
       logger.info(`Created employee profile document for: ${userRecord.uid}`);
     } catch (firestoreError: any) {
-      logger.warn(`Failed to create employee profile document (this is non-critical): ${firestoreError.message}`);
+      logger.warn(
+        `Failed to create employee profile document (this is non-critical): ${firestoreError.message}`
+      );
       // Continue execution - this is not a critical failure
     }
 
@@ -639,19 +794,20 @@ export const createEmployee = onCall({ cors: true }, async (request) => {
     if (sendWelcomeEmail) {
       try {
         let emailContent = '';
-        
+
         if (password) {
           // If password was provided, include it in the welcome email
           emailContent = `Welcome email would be sent to ${email} with temporary password: ${password}`;
         } else {
           // Generate password reset link for initial login
-          const passwordResetLink = await firebaseAuth.generatePasswordResetLink(email);
+          const passwordResetLink =
+            await firebaseAuth.generatePasswordResetLink(email);
           emailContent = `Welcome email would be sent to ${email} with password reset link: ${passwordResetLink}`;
         }
-        
+
         // In a real application, you would send an email here
         logger.info(emailContent);
-        
+
         // You can integrate with your email service here
         // await sendWelcomeEmail(email, displayName, password || passwordResetLink);
       } catch (emailError) {
@@ -668,11 +824,14 @@ export const createEmployee = onCall({ cors: true }, async (request) => {
     return {
       success: true,
       employee,
-      message: `Employee ${displayName} created successfully`
+      message: `Employee ${displayName} created successfully`,
     };
-
   } catch (error) {
     logger.error('Error in createEmployee function:', error);
-    throw new Error(`Failed to create employee: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to create employee: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`
+    );
   }
 });

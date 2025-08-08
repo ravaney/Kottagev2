@@ -18,6 +18,7 @@ import {
   Receipt,
 } from '@mui/icons-material';
 import { Colors } from '../../constants';
+import { useUserClaims } from '../../../hooks/useUserClaims';
 
 interface BookingConfirmationData {
   reservationId: string;
@@ -33,7 +34,12 @@ interface BookingConfirmationData {
 const BookingConfirmation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { claims } = useUserClaims();
   const bookingData = location.state as BookingConfirmationData;
+
+  // Get user role from claims
+  const userRole = claims?.role || 'guest';
+  const isGuest = userRole === 'guest';
 
   if (!bookingData) {
     navigate('/');
@@ -91,12 +97,7 @@ const BookingConfirmation: React.FC = () => {
             textAlign: 'left',
           }}
         >
-          <Box
-            display="flex"
-            alignItems="center"
-            gap={1}
-            sx={{ mb: 2 }}
-          >
+          <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
             <Receipt sx={{ color: Colors.raspberry }} />
             <Typography variant="h6" fontWeight={600}>
               Reservation Details
@@ -130,7 +131,8 @@ const BookingConfirmation: React.FC = () => {
               <CalendarToday sx={{ color: Colors.blue }} />
               <Box>
                 <Typography variant="body1" fontWeight={600}>
-                  {new Date(bookingData.checkInDate).toLocaleDateString()} - {new Date(bookingData.checkOutDate).toLocaleDateString()}
+                  {new Date(bookingData.checkInDate).toLocaleDateString()} -{' '}
+                  {new Date(bookingData.checkOutDate).toLocaleDateString()}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {bookingData.nights} night{bookingData.nights > 1 ? 's' : ''}
@@ -148,7 +150,11 @@ const BookingConfirmation: React.FC = () => {
 
           <Divider sx={{ my: 2 }} />
 
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="h6" fontWeight={700}>
               Total Paid
             </Typography>
@@ -183,7 +189,13 @@ const BookingConfirmation: React.FC = () => {
           <Button
             variant="contained"
             size="large"
-            onClick={() => navigate('/MyAccount/Dashboard/reservations')}
+            onClick={() =>
+              navigate(
+                isGuest
+                  ? '/MyAccount/Dashboard/myreservations'
+                  : '/MyAccount/Dashboard/reservations'
+              )
+            }
             sx={{
               backgroundColor: Colors.blue,
               px: 4,
