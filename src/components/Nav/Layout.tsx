@@ -24,7 +24,7 @@ export default function Layout() {
       {!hideNavigation && <NavBar />}
       <main
         style={{
-          minHeight: !hideNavigation ? 'calc(100vh - 64px)' : '100vh',
+          minHeight: '100vh',
           paddingTop: !hideNavigation ? '64px' : '0',
         }}
       >

@@ -52,11 +52,12 @@ export default function DashboardMenu() {
       if (path.includes('properties')) return 4;
       return 0; // Default to Home for hosts
     } else {
-      // For guests: Action Center=0, Messages=1, My Reservations=2
-      if (path.includes('action-center')) return 0;
-      if (path.includes('messages')) return 1;
-      if (path.includes('myreservations')) return 2;
-      return 0; // Default to Action Center for guests
+      // For guests: Messages=0, My Reservations=1
+      if (path.includes('messages')) return 0;
+      if (path.includes('myreservations')) return 1;
+      // If on dashboard root, highlight My Reservations
+      if (path === '/MyAccount/Dashboard') return 1;
+      return 0; // Default to Messages for guests
     }
   };
 
@@ -72,9 +73,8 @@ export default function DashboardMenu() {
       ];
       navigate(routes[newValue]);
     } else {
-      // Guest routes exclude host-only features
+      // Guest routes exclude action center and host-only features
       const routes = [
-        '/MyAccount/Dashboard/action-center',
         '/MyAccount/Dashboard/messages',
         '/MyAccount/Dashboard/myreservations',
       ];
@@ -175,28 +175,31 @@ export default function DashboardMenu() {
                 }}
               />
             )}
-            <Tab
-              icon={
-                <Badge
-                  badgeContent={3}
-                  color="error"
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      fontSize: '0.6rem',
-                      minWidth: 16,
-                      height: 16,
-                    },
-                  }}
-                >
-                  <NotificationsIcon sx={{ fontSize: 20 }} />
-                </Badge>
-              }
-              label="Action Center"
-              iconPosition="start"
-              sx={{
-                color: getActiveTab() === 1 ? Colors.blue : 'text.secondary',
-              }}
-            />
+            {/* Action Center tab - only show for hosts */}
+            {isHost && (
+              <Tab
+                icon={
+                  <Badge
+                    badgeContent={3}
+                    color="error"
+                    sx={{
+                      '& .MuiBadge-badge': {
+                        fontSize: '0.6rem',
+                        minWidth: 16,
+                        height: 16,
+                      },
+                    }}
+                  >
+                    <NotificationsIcon sx={{ fontSize: 20 }} />
+                  </Badge>
+                }
+                label="Action Center"
+                iconPosition="start"
+                sx={{
+                  color: getActiveTab() === 1 ? Colors.blue : 'text.secondary',
+                }}
+              />
+            )}
             <Tab
               icon={
                 <Badge
@@ -216,7 +219,10 @@ export default function DashboardMenu() {
               label="Messages"
               iconPosition="start"
               sx={{
-                color: getActiveTab() === 2 ? Colors.blue : 'text.secondary',
+                color:
+                  getActiveTab() === (isHost ? 2 : 0)
+                    ? Colors.blue
+                    : 'text.secondary',
               }}
             />
             {/* Guest-only tab for My Reservations */}
@@ -226,7 +232,7 @@ export default function DashboardMenu() {
                 label="My Reservations"
                 iconPosition="start"
                 sx={{
-                  color: getActiveTab() === 3 ? Colors.blue : 'text.secondary',
+                  color: getActiveTab() === 1 ? Colors.blue : 'text.secondary',
                 }}
               />
             )}

@@ -16,6 +16,9 @@ import * as admin from 'firebase-admin';
 // Import employee management functions
 export * from './employeeManagement';
 
+// Import popularity engine functions
+export * from './popularityEngine';
+
 // Initialize Firebase Admin if not already initialized
 if (admin.apps.length === 0) {
   admin.initializeApp();

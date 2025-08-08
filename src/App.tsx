@@ -14,7 +14,6 @@ import Login from './components/Auth/Login';
 import MyAccount from './components/MyAccount/MyAccount';
 import Profile from './components/MyAccount/Profile';
 import Settings from './components/MyAccount/Settings';
-import MyBookings from './components/Property/Reservations/MyBookings';
 import Favourites from './components/MyAccount/Favourites';
 import PageNotFound from './components/Nav/PageNotFound';
 import ProtectedRoute from './ProtectedRoute';
@@ -26,7 +25,6 @@ import { QueryProvider } from './providers/QueryProvider';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import DashboardMenu from './components/Dashboard/DashboardMenu';
-import Dashboard from './components/Dashboard/Dashboard';
 import { analyticsService } from './services/analyticsService';
 import ManageReservations from './components/Dashboard/ManageReservations/ManageReservations';
 import PropertyManagement from './components/Dashboard/PropertyManagement/PropertyManagement';
@@ -128,7 +126,7 @@ function App() {
 
           children: [
             {
-              element: <Navigate to="/MyAccount/Dashboard" />,
+              element: <Navigate to="/MyAccount/Dashboard/myreservations" />,
               index: true,
             },
             {
@@ -137,7 +135,7 @@ function App() {
               children: [
                 {
                   index: true,
-                  element: <Dashboard />,
+                  element: <Navigate to="myreservations" replace />,
                 },
                 {
                   path: 'action-center',
@@ -149,9 +147,9 @@ function App() {
                 },
                 {
                   path: 'myreservations',
-                  element: <MyBookings />,
+                  element: <ManageReservations />,
                 },
-                // Host-only routes
+                // Host-only routes moved to host subdomain
                 {
                   path: 'reservations',
                   element: (
@@ -160,41 +158,11 @@ function App() {
                     </ProtectedHostOnlyRoute>
                   ),
                 },
-                {
-                  path: 'properties',
-                  element: (
-                    <ProtectedHostOnlyRoute>
-                      <PropertyManagement />
-                    </ProtectedHostOnlyRoute>
-                  ),
-                  children: [
-                    {
-                      path: 'add-property',
-                      element: <AddProperty />,
-                    },
-                    {
-                      path: 'manage/:propertyId',
-                      element: <ManageProperty />,
-                    },
-                  ],
-                },
-                {
-                  path: 'analytics/:propertyId',
-                  element: (
-                    <ProtectedHostOnlyRoute>
-                      <PropertyAnalyticsPage />
-                    </ProtectedHostOnlyRoute>
-                  ),
-                },
               ],
             },
             {
               path: '/MyAccount/Profile',
               element: <Profile />,
-            },
-            {
-              path: '/MyAccount/MyBookings',
-              element: <MyBookings />,
             },
             {
               path: '/MyAccount/Favourites',
@@ -374,14 +342,16 @@ function App() {
         {
           path: 'properties',
           element: <PropertyManagement />,
-        },
-        {
-          path: 'properties/add-property',
-          element: <AddProperty />,
-        },
-        {
-          path: 'properties/manage/:propertyId',
-          element: <ManageProperty />,
+          children: [
+            {
+              path: 'add-property',
+              element: <AddProperty />,
+            },
+            {
+              path: 'manage/:propertyId',
+              element: <ManageProperty />,
+            },
+          ],
         },
         {
           path: 'analytics/:propertyId',

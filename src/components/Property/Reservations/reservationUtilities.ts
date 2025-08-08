@@ -2,7 +2,12 @@
  * Utility functions for reservation management
  */
 
-import { Kottage, Reservation, ReservationStatus, RoomType } from '../../../hooks';
+import {
+  Kottage,
+  Reservation,
+  ReservationStatus,
+  RoomType,
+} from '../../../hooks';
 import { analyticsService } from '../../../services/analyticsService';
 import { blockDatesForReservation } from '../../../utils/blockingUtils';
 
@@ -40,27 +45,27 @@ export const calculateNights = (startDate?: Date, endDate?: Date): number => {
  * Check if a date range has blocked dates in between
  */
 export const hasBlockedDatesInRange = (
-  start: Date, 
-  end: Date, 
+  start: Date,
+  end: Date,
   blockedDates: string[]
 ): boolean => {
   if (!start || !end || start >= end) return false;
-  
+
   const startStr = start.toISOString().split('T')[0];
   const endStr = end.toISOString().split('T')[0];
-  
+
   // Generate all dates between start and end (exclusive of end date)
   const datesInRange: string[] = [];
   const currentDate = new Date(start);
-  
+
   while (currentDate < end) {
     datesInRange.push(currentDate.toISOString().split('T')[0]);
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  
+
   // Check if any date in the range is blocked
   const hasBlocked = datesInRange.some(date => blockedDates.includes(date));
-  
+
   return hasBlocked;
 };
 
@@ -68,19 +73,19 @@ export const hasBlockedDatesInRange = (
  * Find the next available checkout date after a given checkin date
  */
 export const getMaxCheckoutDate = (
-  checkinDate: Date, 
+  checkinDate: Date,
   blockedDates: string[]
 ): Date | undefined => {
   if (!checkinDate) return undefined;
-  
+
   const nextDay = new Date(checkinDate);
   nextDay.setDate(nextDay.getDate() + 1);
-  
+
   // Find the first blocked date after checkin
   let currentDate = new Date(nextDay);
   const maxDate = new Date(checkinDate);
   maxDate.setMonth(maxDate.getMonth() + 3); // Search up to 3 months ahead
-  
+
   while (currentDate <= maxDate) {
     const dateStr = currentDate.toISOString().split('T')[0];
     if (blockedDates.includes(dateStr)) {
@@ -91,14 +96,16 @@ export const getMaxCheckoutDate = (
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  
+
   return maxDate; // No blocked dates found within 3 months
 };
 
 /**
  * Handle the confirmation and payment process for a reservation
  */
-export const handleConfirmPayment = async (params: ConfirmPaymentParams): Promise<void> => {
+export const handleConfirmPayment = async (
+  params: ConfirmPaymentParams
+): Promise<void> => {
   const {
     startDate,
     endDate,
@@ -112,13 +119,13 @@ export const handleConfirmPayment = async (params: ConfirmPaymentParams): Promis
     updateProperty,
     refetchBlockedDates,
     setPaymentSuccess,
-    setPaymentError
+    setPaymentError,
   } = params;
 
   try {
     // Track booking attempt
     analyticsService.trackBookingAttempt(kottage.id);
-    
+
     // Generate a temporary reservation ID
     const tempReservationId = `BK-${Date.now()}-RES`;
 
@@ -130,7 +137,7 @@ export const handleConfirmPayment = async (params: ConfirmPaymentParams): Promis
       guests: [
         {
           name: appUser?.firstName + ' ' + appUser?.lastName || '',
-          email: appUser?.email || ''
+          email: appUser?.email || '',
         },
       ],
       rooms: [room.id],
@@ -143,44 +150,62 @@ export const handleConfirmPayment = async (params: ConfirmPaymentParams): Promis
         paid: true,
         amount: total,
       },
-      property:{
+      property: {
         id: kottage.id,
         name: kottage.name,
       },
       // Add required fields for date blocking
       propertyId: kottage.id,
-      roomTypeId: room.id
+      roomTypeId: room.id,
     };
 
-    // Block dates for the reservation
-    await blockDatesForReservation(
-      kottage.id,
-      room.id,
-      startDate,
-      endDate,
-      tempReservationId,
-      String(uid)
-    );
-
-    // Create the reservation
+    // Create the reservation first
     await createReservation(reservationData);
     console.log('Reservation created successfully');
-    
+
+    // Only if reservation creation succeeds, then block dates
+    try {
+      await blockDatesForReservation(
+        kottage.id,
+        room.id,
+        startDate,
+        endDate,
+        tempReservationId,
+        String(uid)
+      );
+      console.log('Dates blocked successfully');
+    } catch (e) {
+      console.error('Failed to block dates (reservation still exists):', e);
+      // Don't throw here - the reservation was successful
+    }
+
     // Decrement room quantityAvailable
     try {
-      const updatedRoomTypes = kottage.roomTypes?.map(rt =>
-        rt.id === room.id
-          ? { ...rt, quantityAvailable: Math.max(0, rt.quantityAvailable - 1) }
-          : rt
-      ) || [];
-      await updateProperty.mutateAsync({ id: kottage.id, roomTypes: updatedRoomTypes });
+      const updatedRoomTypes =
+        kottage.roomTypes?.map(rt =>
+          rt.id === room.id
+            ? {
+                ...rt,
+                quantityAvailable: Math.max(0, rt.quantityAvailable - 1),
+              }
+            : rt
+        ) || [];
+      await updateProperty.mutateAsync({
+        id: kottage.id,
+        roomTypes: updatedRoomTypes,
+      });
+      console.log('Room quantity updated successfully');
     } catch (e) {
-      console.error('Failed to update room quantity:', e);
+      console.error(
+        'Failed to update room quantity (reservation still exists):',
+        e
+      );
+      // Don't throw here - the reservation was successful
     }
-    
+
     // Refetch blocked dates to update the UI
     refetchBlockedDates();
-    
+
     // Track completed booking
     analyticsService.trackBookingCompleted(
       kottage.id,
@@ -191,9 +216,9 @@ export const handleConfirmPayment = async (params: ConfirmPaymentParams): Promis
       startDate.toISOString(),
       endDate.toISOString()
     );
-    
+
     setPaymentSuccess(true);
-    
+
     // Navigate to confirmation page
     params.navigate('/booking-confirmation', {
       state: {
@@ -207,9 +232,11 @@ export const handleConfirmPayment = async (params: ConfirmPaymentParams): Promis
         total,
       },
     });
-    
   } catch (error) {
-    setPaymentError(error instanceof Error ? error.message : 'Failed to create reservation. Please try again.');
+    setPaymentError(
+      error instanceof Error
+        ? error.message
+        : 'Failed to create reservation. Please try again.'
+    );
   }
 };
-

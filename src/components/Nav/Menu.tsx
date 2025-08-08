@@ -1,19 +1,25 @@
-import { IconButton, Menu, MenuItem, Divider, ListItemIcon, ListItemText, Typography, Box } from "@mui/material";
-import React from "react";
-import { auth } from "../../firebase";
-import Avatar from "@mui/material/Avatar";
-import { Stack } from "@fluentui/react";
-import { Link, useNavigate } from "react-router-dom";
-import { MdOutlineManageAccounts } from "react-icons/md";
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  Box,
+} from '@mui/material';
+import React from 'react';
+import { auth } from '../../firebase';
+import Avatar from '@mui/material/Avatar';
+import { Stack } from '@fluentui/react';
+import { Link, useNavigate } from 'react-router-dom';
+import { MdOutlineManageAccounts } from 'react-icons/md';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import SettingsIcon from '@mui/icons-material/Settings';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import HistoryIcon from '@mui/icons-material/History';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useFirebaseUser } from "../../hooks/useFirebaseUser";
-import { useSignOut } from "../../hooks/useSignOut";
-import { useAuth } from "../../hooks";
+import { useSignOut } from '../../hooks/useSignOut';
+import { useAuth } from '../../hooks';
 
 export default function CommandMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -29,7 +35,7 @@ export default function CommandMenu() {
   const navigate = useNavigate();
   const handleLogout = async () => {
     await signOutMutation.mutateAsync();
-    navigate("/");
+    navigate('/');
   };
 
   const { appUser } = useAuth();
@@ -37,13 +43,13 @@ export default function CommandMenu() {
     <>
       <IconButton
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         style={{
-          color: "black",
-          border: "none",
-          cursor: "pointer",
-          backgroundColor: "transparent",
+          color: 'black',
+          border: 'none',
+          cursor: 'pointer',
+          backgroundColor: 'transparent',
         }}
       >
         <MdOutlineManageAccounts />
@@ -58,8 +64,8 @@ export default function CommandMenu() {
           horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: 'top',
+          horizontal: 'center',
         }}
         PaperProps={{
           sx: {
@@ -67,13 +73,13 @@ export default function CommandMenu() {
             borderRadius: 2,
             boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
             border: '1px solid rgba(0,0,0,0.08)',
-            mt: 1
-          }
+            mt: 1,
+          },
         }}
       >
         <Box sx={{ p: 2, textAlign: 'center' }}>
-          <Avatar 
-            src={auth?.currentUser?.photoURL as string} 
+          <Avatar
+            src={auth?.currentUser?.photoURL as string}
             sx={{ width: 56, height: 56, mx: 'auto', mb: 1 }}
           />
           <Typography variant="subtitle1" fontWeight={600}>
@@ -83,46 +89,36 @@ export default function CommandMenu() {
             {auth?.currentUser?.email}
           </Typography>
         </Box>
-        
+
         <Divider />
-        
+
         <MenuItem component={Link} to="/MyAccount" onClick={handleClose}>
           <ListItemIcon>
             <AccountCircleIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>My Account</ListItemText>
         </MenuItem>
-        
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <BookmarkIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>My Bookings</ListItemText>
-        </MenuItem>
-        
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <HistoryIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Booking History</ListItemText>
-        </MenuItem>
-        
-        <MenuItem component={Link} onClick={handleClose} to='/MyAccount/Settings'>
+
+        <MenuItem
+          component={Link}
+          onClick={handleClose}
+          to="/MyAccount/Settings"
+        >
           <ListItemIcon>
             <SettingsIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Settings</ListItemText>
         </MenuItem>
-        
+
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <HelpCenterIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Help Center</ListItemText>
         </MenuItem>
-        
+
         <Divider />
-        
+
         <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" sx={{ color: 'error.main' }} />

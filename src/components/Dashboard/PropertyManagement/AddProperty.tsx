@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   TextField,
-
   FormControl,
   InputLabel,
   Select,
@@ -27,7 +26,7 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Checkbox
+  Checkbox,
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import {
@@ -43,18 +42,43 @@ import {
   Add,
   Delete,
   Hotel,
-  CheckCircle
+  CheckCircle,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Colors } from '../../constants';
-import { useAddProperty, useAddPropertyImages, RoomType, Kottage, ApprovalDocument } from '../../../hooks/propertyHooks';
+import {
+  useAddProperty,
+  useAddPropertyImages,
+  RoomType,
+  Kottage,
+  ApprovalDocument,
+} from '../../../hooks/propertyHooks';
+import { isSubdomain } from '../../../utils/subdomainRouter';
 
-const steps = ['Basic Information', 'Property Details', 'Pricing & Rooms', 'Images & Documents'];
+const steps = [
+  'Basic Information',
+  'Property Details',
+  'Pricing & Rooms',
+  'Images & Documents',
+];
 
 const amenitiesList = [
-  'WiFi', 'Pool', 'Kitchen', 'Parking', 'Beach Access', 'Hot Tub', 
-  'Air Conditioning', 'Gym', 'Garden', 'Balcony', 'Pet Friendly',
-  'Washing Machine', 'Dryer', 'Fireplace', 'BBQ Grill', 'Security System'
+  'WiFi',
+  'Pool',
+  'Kitchen',
+  'Parking',
+  'Beach Access',
+  'Hot Tub',
+  'Air Conditioning',
+  'Gym',
+  'Garden',
+  'Balcony',
+  'Pet Friendly',
+  'Washing Machine',
+  'Dryer',
+  'Fireplace',
+  'BBQ Grill',
+  'Security System',
 ];
 
 const propertyTypes = [
@@ -64,53 +88,53 @@ const propertyTypes = [
   { value: 'cabin', label: 'Cabin' },
   { value: 'cottage', label: 'Cottage' },
   { value: 'resort', label: 'Resort' },
-  { value: 'other', label: 'Other' }
+  { value: 'other', label: 'Other' },
 ];
 
 const documentTypes = [
-  { 
-    id: 'title_deed', 
-    label: 'Title Deed', 
+  {
+    id: 'title_deed',
+    label: 'Title Deed',
     description: 'Legal proof of property ownership',
-    required: true 
+    required: true,
   },
-  { 
-    id: 'utility_bill', 
-    label: 'Recent Utility Bill', 
-    description: 'With property address and host\'s name',
-    required: true 
+  {
+    id: 'utility_bill',
+    label: 'Recent Utility Bill',
+    description: "With property address and host's name",
+    required: true,
   },
-  { 
-    id: 'property_tax', 
-    label: 'Property Tax Receipt', 
+  {
+    id: 'property_tax',
+    label: 'Property Tax Receipt',
     description: 'Current year tax payment proof',
-    required: true 
+    required: true,
   },
-  { 
-    id: 'lease_agreement', 
-    label: 'Lease Agreement', 
+  {
+    id: 'lease_agreement',
+    label: 'Lease Agreement',
     description: 'If subletting is allowed',
-    required: false 
+    required: false,
   },
-  { 
-    id: 'authorization_letter', 
-    label: 'Notarized Letter of Authorization', 
+  {
+    id: 'authorization_letter',
+    label: 'Notarized Letter of Authorization',
     description: 'If property is managed by someone else',
-    required: false 
+    required: false,
   },
-  { 
-    id: 'other', 
-    label: 'Other Documents', 
+  {
+    id: 'other',
+    label: 'Other Documents',
     description: 'Additional supporting documents',
-    required: false 
-  }
+    required: false,
+  },
 ];
 
 export default function AddProperty() {
   const navigate = useNavigate();
   const addPropertyMutation = useAddProperty();
   const addPropertyImagesMutation = useAddPropertyImages();
-  
+
   const [activeStep, setActiveStep] = React.useState(0);
   const [propertyData, setPropertyData] = React.useState<Partial<Kottage>>({
     name: '',
@@ -121,7 +145,7 @@ export default function AddProperty() {
       city: '',
       state: '',
       zip: '',
-      country: 'Jamaica'
+      country: 'Jamaica',
     },
     propertyType: 'villa',
     amenities: [],
@@ -131,34 +155,45 @@ export default function AddProperty() {
     isListed: false,
     rating: 0,
     roomTypes: [],
-    images: []
+    images: [],
   });
-  
+
   const [images, setImages] = React.useState<File[]>([]);
-  const [documents, setDocuments] = React.useState<{ file: File; type: string }[]>([]);
+  const [documents, setDocuments] = React.useState<
+    { file: File; type: string }[]
+  >([]);
   const [rooms, setRooms] = React.useState<RoomType[]>([]);
-  const [roomImages, setRoomImages] = React.useState<{ [roomId: string]: File[] }>({});
-  const [selectedDocumentTypes, setSelectedDocumentTypes] = React.useState<string[]>([]);
+  const [roomImages, setRoomImages] = React.useState<{
+    [roomId: string]: File[];
+  }>({});
+  const [selectedDocumentTypes, setSelectedDocumentTypes] = React.useState<
+    string[]
+  >([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [uploadProgress, setUploadProgress] = React.useState({
     property: false,
     images: false,
     roomImages: false,
-    documents: false
+    documents: false,
   });
 
   const handleBack = () => {
-    navigate('/MyAccount/Dashboard/properties');
+    // Use the existing subdomain detection utility
+    if (isSubdomain('host')) {
+      navigate('/dashboard/properties');
+    } else {
+      navigate('/MyAccount/Dashboard/properties');
+    }
   };
 
   const handleNext = () => {
     if (validateCurrentStep()) {
-      setActiveStep((prev) => prev + 1);
+      setActiveStep(prev => prev + 1);
     }
   };
 
   const handlePrevious = () => {
-    setActiveStep((prev) => prev - 1);
+    setActiveStep(prev => prev - 1);
   };
 
   const handleInputChange = (field: string, value: any) => {
@@ -168,13 +203,13 @@ export default function AddProperty() {
         ...prev,
         [parent]: {
           ...(prev[parent as keyof typeof prev] as any),
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
       setPropertyData(prev => ({
         ...prev,
-        [field]: value
+        [field]: value,
       }));
     }
   };
@@ -183,7 +218,7 @@ export default function AddProperty() {
     const value = event.target.value;
     setPropertyData(prev => ({
       ...prev,
-      amenities: typeof value === 'string' ? value.split(',') : value
+      amenities: typeof value === 'string' ? value.split(',') : value,
     }));
   };
 
@@ -192,9 +227,12 @@ export default function AddProperty() {
     setImages(prev => [...prev, ...files]);
   };
 
-  const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>, documentType?: string) => {
+  const handleDocumentUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    documentType?: string
+  ) => {
     const files = Array.from(event.target.files || []);
-    
+
     if (documentType) {
       // If specific document type is provided, associate all files with that type
       const newDocuments = files.map(file => ({ file, type: documentType }));
@@ -208,9 +246,11 @@ export default function AddProperty() {
   };
 
   const updateDocumentType = (documentIndex: number, newType: string) => {
-    setDocuments(prev => prev.map((doc, index) => 
-      index === documentIndex ? { ...doc, type: newType } : doc
-    ));
+    setDocuments(prev =>
+      prev.map((doc, index) =>
+        index === documentIndex ? { ...doc, type: newType } : doc
+      )
+    );
   };
 
   const removeDocument = (documentIndex: number) => {
@@ -218,8 +258,8 @@ export default function AddProperty() {
   };
 
   const handleDocumentTypeToggle = (documentTypeId: string) => {
-    setSelectedDocumentTypes(prev => 
-      prev.includes(documentTypeId) 
+    setSelectedDocumentTypes(prev =>
+      prev.includes(documentTypeId)
         ? prev.filter(id => id !== documentTypeId)
         : [...prev, documentTypeId]
     );
@@ -235,16 +275,18 @@ export default function AddProperty() {
       quantityAvailable: 1,
       amenities: [],
       images: [],
-      listStatus: 'listed'
+      listStatus: 'listed',
     };
     setRooms(prev => [...prev, newRoom]);
     setRoomImages(prev => ({ ...prev, [newRoom.id]: [] }));
   };
 
   const updateRoom = (roomId: string, field: keyof RoomType, value: any) => {
-    setRooms(prev => prev.map(room => 
-      room.id === roomId ? { ...room, [field]: value } : room
-    ));
+    setRooms(prev =>
+      prev.map(room =>
+        room.id === roomId ? { ...room, [field]: value } : room
+      )
+    );
   };
 
   const deleteRoom = (roomId: string) => {
@@ -259,18 +301,21 @@ export default function AddProperty() {
     updateRoom(roomId, 'amenities', amenities);
   };
 
-  const handleRoomImageUpload = (roomId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRoomImageUpload = (
+    roomId: string,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = Array.from(event.target.files || []);
     setRoomImages(prev => ({
       ...prev,
-      [roomId]: [...(prev[roomId] || []), ...files]
+      [roomId]: [...(prev[roomId] || []), ...files],
     }));
   };
 
   const removeRoomImage = (roomId: string, imageIndex: number) => {
     setRoomImages(prev => ({
       ...prev,
-      [roomId]: prev[roomId]?.filter((_, index) => index !== imageIndex) || []
+      [roomId]: prev[roomId]?.filter((_, index) => index !== imageIndex) || [],
     }));
   };
 
@@ -296,76 +341,112 @@ export default function AddProperty() {
   };
 
   const validateStep2 = (): boolean => {
-    const hasValidBasePrice = Array.isArray(propertyData.roomTypes) && propertyData.roomTypes.length > 0 && Math.min(...propertyData.roomTypes.map(rt => rt.pricePerNight || 0)) > 0;
-    const hasValidRooms = rooms.length === 0 || rooms.every(room => 
-      room.name?.trim() &&
-      room.description?.trim() &&
-      room.maxOccupancy > 0 &&
-      room.pricePerNight > 0 &&
-      room.quantityAvailable > 0
-    );
-    return !!(hasValidBasePrice && hasValidRooms);
+    // Check if at least one room is added with valid pricing
+    const hasValidRooms =
+      rooms.length > 0 &&
+      rooms.every(
+        room =>
+          room.name?.trim() &&
+          room.description?.trim() &&
+          room.maxOccupancy > 0 &&
+          room.pricePerNight > 0 &&
+          room.quantityAvailable > 0
+      );
+    return hasValidRooms;
   };
 
   const validateStep3 = (): boolean => {
     const hasImages = images.length > 0;
     // Check that required document types are covered
-    const requiredTypes = documentTypes.filter(doc => doc.required).map(doc => doc.id);
+    const requiredTypes = documentTypes
+      .filter(doc => doc.required)
+      .map(doc => doc.id);
     const uploadedTypes = documents.map(doc => doc.type);
-    const hasAllRequiredDocs = requiredTypes.every(type => uploadedTypes.includes(type));
+    const hasAllRequiredDocs = requiredTypes.every(type =>
+      uploadedTypes.includes(type)
+    );
     const hasDocuments = documents.length > 0;
     return hasImages && hasDocuments && hasAllRequiredDocs;
   };
 
   const validateCurrentStep = (): boolean => {
     switch (activeStep) {
-      case 0: return validateStep0();
-      case 1: return validateStep1();
-      case 2: return validateStep2();
-      case 3: return validateStep3();
-      default: return true;
+      case 0:
+        return validateStep0();
+      case 1:
+        return validateStep1();
+      case 2:
+        return validateStep2();
+      case 3:
+        return validateStep3();
+      default:
+        return true;
     }
   };
 
   const getStepErrors = (): string[] => {
     const errors: string[] = [];
-    
+
     switch (activeStep) {
       case 0:
-        if (!propertyData.name?.trim()) errors.push('Property name is required');
-        if (!propertyData.description?.trim()) errors.push('Property description is required');
-        if (!propertyData.phone?.trim()) errors.push('Phone number is required');
-        if (!propertyData.propertyType) errors.push('Property type is required');
+        if (!propertyData.name?.trim())
+          errors.push('Property name is required');
+        if (!propertyData.description?.trim())
+          errors.push('Property description is required');
+        if (!propertyData.phone?.trim())
+          errors.push('Phone number is required');
+        if (!propertyData.propertyType)
+          errors.push('Property type is required');
         break;
       case 1:
-        if (!propertyData.address?.address1?.trim()) errors.push('Street address is required');
-        if (!propertyData.address?.city?.trim()) errors.push('City is required');
-        if (!propertyData.address?.state?.trim()) errors.push('Parish/State is required');
-        if (!propertyData.maxGuests || propertyData.maxGuests < 1) errors.push('Max guests must be at least 1');
-        if (!propertyData.bedrooms || propertyData.bedrooms < 1) errors.push('Bedrooms must be at least 1');
-        if (!propertyData.bathrooms || propertyData.bathrooms < 0.5) errors.push('Bathrooms must be at least 0.5');
+        if (!propertyData.address?.address1?.trim())
+          errors.push('Street address is required');
+        if (!propertyData.address?.city?.trim())
+          errors.push('City is required');
+        if (!propertyData.address?.state?.trim())
+          errors.push('Parish/State is required');
+        if (!propertyData.maxGuests || propertyData.maxGuests < 1)
+          errors.push('Max guests must be at least 1');
+        if (!propertyData.bedrooms || propertyData.bedrooms < 1)
+          errors.push('Bedrooms must be at least 1');
+        if (!propertyData.bathrooms || propertyData.bathrooms < 0.5)
+          errors.push('Bathrooms must be at least 0.5');
         break;
       case 2:
-        if (!propertyData.roomTypes || (Array.isArray(propertyData.roomTypes) && propertyData.roomTypes.length === 0) || Math.min(...(propertyData.roomTypes as RoomType[]).map(rt => rt.pricePerNight || 0)) <= 0) {
-          errors.push('Base price must be greater than 0');
+        if (rooms.length === 0) {
+          errors.push('At least one room must be added');
+        } else {
+          rooms.forEach((room, index) => {
+            if (!room.name?.trim())
+              errors.push(`Room ${index + 1}: Name is required`);
+            if (!room.description?.trim())
+              errors.push(`Room ${index + 1}: Description is required`);
+            if (!room.maxOccupancy || room.maxOccupancy < 1)
+              errors.push(
+                `Room ${index + 1}: Max occupancy must be at least 1`
+              );
+            if (!room.pricePerNight || room.pricePerNight <= 0)
+              errors.push(`Room ${index + 1}: Price must be greater than 0`);
+            if (!room.quantityAvailable || room.quantityAvailable < 1)
+              errors.push(`Room ${index + 1}: Quantity must be at least 1`);
+          });
         }
-        rooms.forEach((room, index) => {
-          if (!room.name?.trim()) errors.push(`Room ${index + 1}: Name is required`);
-          if (!room.description?.trim()) errors.push(`Room ${index + 1}: Description is required`);
-          if (!room.maxOccupancy || room.maxOccupancy < 1) errors.push(`Room ${index + 1}: Max occupancy must be at least 1`);
-          if (!room.pricePerNight || room.pricePerNight <= 0) errors.push(`Room ${index + 1}: Price must be greater than 0`);
-          if (!room.quantityAvailable || room.quantityAvailable < 1) errors.push(`Room ${index + 1}: Quantity must be at least 1`);
-        });
         break;
       case 3:
-        if (images.length === 0) errors.push('At least one property image is required');
-        if (documents.length === 0) errors.push('At least one document must be uploaded');
-        
+        if (images.length === 0)
+          errors.push('At least one property image is required');
+        if (documents.length === 0)
+          errors.push('At least one document must be uploaded');
+
         // Check for required document types
-        const requiredTypes = documentTypes.filter(doc => doc.required).map(doc => doc.id);
+        const requiredTypes = documentTypes
+          .filter(doc => doc.required)
+          .map(doc => doc.id);
         const uploadedTypes = documents.map(doc => doc.type);
-        const missingRequiredTypes = requiredTypes.filter(type => !uploadedTypes.includes(type));
-        
+        const missingRequiredTypes = requiredTypes.filter(
+          type => !uploadedTypes.includes(type)
+        );
+
         missingRequiredTypes.forEach(type => {
           const docType = documentTypes.find(doc => doc.id === type);
           if (docType) {
@@ -374,12 +455,17 @@ export default function AddProperty() {
         });
         break;
     }
-    
+
     return errors;
   };
 
   const handleSubmit = async () => {
-    if (!validateStep0() || !validateStep1() || !validateStep2() || !validateStep3()) {
+    if (
+      !validateStep0() ||
+      !validateStep1() ||
+      !validateStep2() ||
+      !validateStep3()
+    ) {
       console.error('Please fill out all required fields before submitting');
       return;
     }
@@ -390,17 +476,25 @@ export default function AddProperty() {
       // Step 1: Upload room images and get their URLs
       setUploadProgress(prev => ({ ...prev, roomImages: true }));
       const roomsWithImages = await Promise.all(
-        rooms.map(async (room) => {
+        rooms.map(async room => {
           const roomImageFiles = roomImages[room.id] || [];
           if (roomImageFiles.length === 0) {
             return room;
           }
 
           // Upload each room image and get download URLs
-          const { getStorage, ref: storageRef, uploadBytesResumable, getDownloadURL } = await import('firebase/storage');
+          const {
+            getStorage,
+            ref: storageRef,
+            uploadBytesResumable,
+            getDownloadURL,
+          } = await import('firebase/storage');
           const roomImageUrls = await Promise.all(
-            roomImageFiles.map(async (imageFile) => {
-              const fileRef = storageRef(getStorage(), `roomImages/${room.id}/${imageFile.name}`);
+            roomImageFiles.map(async imageFile => {
+              const fileRef = storageRef(
+                getStorage(),
+                `roomImages/${room.id}/${imageFile.name}`
+              );
               const snapshot = await uploadBytesResumable(fileRef, imageFile);
               return await getDownloadURL(snapshot.ref);
             })
@@ -408,7 +502,7 @@ export default function AddProperty() {
 
           return {
             ...room,
-            images: roomImageUrls
+            images: roomImageUrls,
           };
         })
       );
@@ -418,12 +512,15 @@ export default function AddProperty() {
       setUploadProgress(prev => ({ ...prev, property: true }));
       const propertyWithRooms = {
         ...propertyData,
-        roomTypes: roomsWithImages
+        roomTypes: roomsWithImages,
       };
 
       const propertyId = await addPropertyMutation.mutateAsync({
-        property: propertyWithRooms as Omit<Kottage, 'id' | 'createdAt' | 'approval'>,
-        approvalDocuments: documents.map(doc => doc.file)
+        property: propertyWithRooms as Omit<
+          Kottage,
+          'id' | 'createdAt' | 'approval'
+        >,
+        approvalDocuments: documents.map(doc => doc.file),
       });
       setUploadProgress(prev => ({ ...prev, property: false }));
 
@@ -432,7 +529,7 @@ export default function AddProperty() {
         setUploadProgress(prev => ({ ...prev, images: true }));
         await addPropertyImagesMutation.mutateAsync({
           images: images,
-          propertyId: propertyId
+          propertyId: propertyId,
         });
         setUploadProgress(prev => ({ ...prev, images: false }));
       }
@@ -440,16 +537,24 @@ export default function AddProperty() {
       // Step 4: Upload and categorize documents
       if (documents.length > 0) {
         setUploadProgress(prev => ({ ...prev, documents: true }));
-        const { getStorage, ref: storageRef, uploadBytesResumable, getDownloadURL } = await import('firebase/storage');
+        const {
+          getStorage,
+          ref: storageRef,
+          uploadBytesResumable,
+          getDownloadURL,
+        } = await import('firebase/storage');
         const { ref: dbRef, update } = await import('firebase/database');
         const { database } = await import('../../../firebase');
 
         const approvalDocuments = await Promise.all(
           documents.map(async ({ file, type }, index) => {
-            const fileRef = storageRef(getStorage(), `approvalDocuments/${propertyId}/${file.name}`);
+            const fileRef = storageRef(
+              getStorage(),
+              `approvalDocuments/${propertyId}/${file.name}`
+            );
             const snapshot = await uploadBytesResumable(fileRef, file);
             const downloadURL = await getDownloadURL(snapshot.ref);
-            
+
             // Create ApprovalDocument object
             const approvalDocument = {
               id: `doc_${index}_${Date.now()}`,
@@ -457,7 +562,7 @@ export default function AddProperty() {
               type: type,
               url: downloadURL,
               uploadedAt: new Date().toISOString(),
-              status: 'pending' as const
+              status: 'pending' as const,
             };
 
             return approvalDocument;
@@ -470,23 +575,26 @@ export default function AddProperty() {
           return acc;
         }, {} as Record<string, any>);
 
-        await update(
-          dbRef(database, `properties/${propertyId}/approval`),
-          { submittedDocuments: documentsObject }
-        );
-        
+        await update(dbRef(database, `properties/${propertyId}/approval`), {
+          submittedDocuments: documentsObject,
+        });
+
         setUploadProgress(prev => ({ ...prev, documents: false }));
       }
-      
+
       // Navigate back to properties list
-      navigate('/MyAccount/Dashboard/properties');
+      if (isSubdomain('host')) {
+        navigate('/dashboard/properties');
+      } else {
+        navigate('/MyAccount/Dashboard/properties');
+      }
     } catch (error) {
       console.error('Error adding property:', error);
       setUploadProgress({
         property: false,
         images: false,
         roomImages: false,
-        documents: false
+        documents: false,
       });
     } finally {
       setIsSubmitting(false);
@@ -498,25 +606,32 @@ export default function AddProperty() {
       case 0:
         return (
           <Box>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              color={Colors.blue}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+            >
               <HomeIcon />
               Basic Property Information
             </Typography>
-            
-            <Box sx={{ 
-              p: 3, 
-              backgroundColor: '#f8f9fa', 
-              borderRadius: 2, 
-              border: '1px solid #e0e0e0',
-              mb: 3
-            }}>
+
+            <Box
+              sx={{
+                p: 3,
+                backgroundColor: '#f8f9fa',
+                borderRadius: 2,
+                border: '1px solid #e0e0e0',
+                mb: 3,
+              }}
+            >
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Property Name"
                     value={propertyData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    onChange={e => handleInputChange('name', e.target.value)}
                     required
                     size="small"
                   />
@@ -528,7 +643,9 @@ export default function AddProperty() {
                     multiline
                     rows={4}
                     value={propertyData.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    onChange={e =>
+                      handleInputChange('description', e.target.value)
+                    }
                     required
                     size="small"
                   />
@@ -538,7 +655,7 @@ export default function AddProperty() {
                     fullWidth
                     label="Phone Number"
                     value={propertyData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    onChange={e => handleInputChange('phone', e.target.value)}
                     required
                     size="small"
                   />
@@ -548,10 +665,12 @@ export default function AddProperty() {
                     <InputLabel>Property Type</InputLabel>
                     <Select
                       value={propertyData.propertyType}
-                      onChange={(e) => handleInputChange('propertyType', e.target.value)}
+                      onChange={e =>
+                        handleInputChange('propertyType', e.target.value)
+                      }
                       label="Property Type"
                     >
-                      {propertyTypes.map((type) => (
+                      {propertyTypes.map(type => (
                         <MenuItem key={type.value} value={type.value}>
                           {type.label}
                         </MenuItem>
@@ -567,20 +686,32 @@ export default function AddProperty() {
       case 1:
         return (
           <Box>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              color={Colors.blue}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+            >
               <HomeIcon />
               Property Details & Location
             </Typography>
-            
+
             {/* Address Information */}
-            <Box sx={{ 
-              p: 3, 
-              backgroundColor: '#f8f9fa', 
-              borderRadius: 2, 
-              border: '1px solid #e0e0e0',
-              mb: 3
-            }}>
-              <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ mb: 2 }}>
+            <Box
+              sx={{
+                p: 3,
+                backgroundColor: '#f8f9fa',
+                borderRadius: 2,
+                border: '1px solid #e0e0e0',
+                mb: 3,
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                fontWeight={600}
+                gutterBottom
+                sx={{ mb: 2 }}
+              >
                 Address Information
               </Typography>
               <Grid container spacing={3}>
@@ -589,7 +720,9 @@ export default function AddProperty() {
                     fullWidth
                     label="Street Address"
                     value={propertyData.address?.address1}
-                    onChange={(e) => handleInputChange('address.address1', e.target.value)}
+                    onChange={e =>
+                      handleInputChange('address.address1', e.target.value)
+                    }
                     required
                     size="small"
                   />
@@ -599,7 +732,9 @@ export default function AddProperty() {
                     fullWidth
                     label="City"
                     value={propertyData.address?.city}
-                    onChange={(e) => handleInputChange('address.city', e.target.value)}
+                    onChange={e =>
+                      handleInputChange('address.city', e.target.value)
+                    }
                     required
                     size="small"
                   />
@@ -609,7 +744,9 @@ export default function AddProperty() {
                     fullWidth
                     label="Parish/State"
                     value={propertyData.address?.state}
-                    onChange={(e) => handleInputChange('address.state', e.target.value)}
+                    onChange={e =>
+                      handleInputChange('address.state', e.target.value)
+                    }
                     required
                     size="small"
                   />
@@ -619,7 +756,9 @@ export default function AddProperty() {
                     fullWidth
                     label="Postal Code"
                     value={propertyData.address?.zip}
-                    onChange={(e) => handleInputChange('address.zip', e.target.value)}
+                    onChange={e =>
+                      handleInputChange('address.zip', e.target.value)
+                    }
                     size="small"
                   />
                 </Grid>
@@ -628,7 +767,9 @@ export default function AddProperty() {
                     fullWidth
                     label="Country"
                     value={propertyData.address?.country}
-                    onChange={(e) => handleInputChange('address.country', e.target.value)}
+                    onChange={e =>
+                      handleInputChange('address.country', e.target.value)
+                    }
                     disabled
                     size="small"
                   />
@@ -637,14 +778,21 @@ export default function AddProperty() {
             </Box>
 
             {/* Property Features */}
-            <Box sx={{ 
-              p: 3, 
-              backgroundColor: '#fff3cd', 
-              borderRadius: 2, 
-              border: '1px solid #ffeaa7',
-              mb: 3
-            }}>
-              <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ mb: 2 }}>
+            <Box
+              sx={{
+                p: 3,
+                backgroundColor: '#fff3cd',
+                borderRadius: 2,
+                border: '1px solid #ffeaa7',
+                mb: 3,
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                fontWeight={600}
+                gutterBottom
+                sx={{ mb: 2 }}
+              >
                 Property Features
               </Typography>
               <Grid container spacing={3}>
@@ -654,7 +802,9 @@ export default function AddProperty() {
                     type="number"
                     label="Max Guests"
                     value={propertyData.maxGuests}
-                    onChange={(e) => handleInputChange('maxGuests', parseInt(e.target.value))}
+                    onChange={e =>
+                      handleInputChange('maxGuests', parseInt(e.target.value))
+                    }
                     inputProps={{ min: 1 }}
                     size="small"
                   />
@@ -665,7 +815,9 @@ export default function AddProperty() {
                     type="number"
                     label="Bedrooms"
                     value={propertyData.bedrooms}
-                    onChange={(e) => handleInputChange('bedrooms', parseInt(e.target.value))}
+                    onChange={e =>
+                      handleInputChange('bedrooms', parseInt(e.target.value))
+                    }
                     inputProps={{ min: 1 }}
                     size="small"
                   />
@@ -676,7 +828,9 @@ export default function AddProperty() {
                     type="number"
                     label="Bathrooms"
                     value={propertyData.bathrooms}
-                    onChange={(e) => handleInputChange('bathrooms', parseFloat(e.target.value))}
+                    onChange={e =>
+                      handleInputChange('bathrooms', parseFloat(e.target.value))
+                    }
                     inputProps={{ min: 0.5, step: 0.5 }}
                     size="small"
                   />
@@ -689,11 +843,16 @@ export default function AddProperty() {
       case 2:
         return (
           <Box>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              color={Colors.blue}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+            >
               <Hotel />
               Rooms & Pricing
             </Typography>
-            
+
             {/* Base Property Pricing */}
             <Card elevation={2} sx={{ mb: 3 }}>
               <CardContent>
@@ -703,14 +862,16 @@ export default function AddProperty() {
                     Base Property Information
                   </Typography>
                 </Box>
-                
+
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <FormControlLabel
                       control={
                         <Switch
                           checked={propertyData.isListed}
-                          onChange={(e) => handleInputChange('isListed', e.target.checked)}
+                          onChange={e =>
+                            handleInputChange('isListed', e.target.checked)
+                          }
                         />
                       }
                       label="List property publicly"
@@ -724,15 +885,17 @@ export default function AddProperty() {
                         value={propertyData.amenities || []}
                         onChange={handleAmenitiesChange}
                         input={<OutlinedInput label="Property Amenities" />}
-                        renderValue={(selected) => (
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => (
+                        renderValue={selected => (
+                          <Box
+                            sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
+                          >
+                            {selected.map(value => (
                               <Chip key={value} label={value} size="small" />
                             ))}
                           </Box>
                         )}
                       >
-                        {amenitiesList.map((amenity) => (
+                        {amenitiesList.map(amenity => (
                           <MenuItem key={amenity} value={amenity}>
                             {amenity}
                           </MenuItem>
@@ -747,61 +910,81 @@ export default function AddProperty() {
             {/* Room Management */}
             <Card elevation={2}>
               <CardContent>
-                <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{ mb: 3 }}
+                >
                   <Box display="flex" alignItems="center" gap={1}>
                     <Bed sx={{ color: Colors.raspberry }} />
                     <Typography variant="h6" fontWeight={600}>
                       Room Types
                     </Typography>
-                    <Chip 
-                      label={rooms.length} 
-                      color="secondary" 
-                      size="small"
-                    />
+                    <Chip label={rooms.length} color="secondary" size="small" />
                   </Box>
                   <Button
                     variant="contained"
                     startIcon={<Add />}
                     onClick={addRoom}
-                    sx={{ 
+                    sx={{
                       backgroundColor: Colors.blue,
                       borderRadius: 2,
                       textTransform: 'none',
-                      fontWeight: 600
+                      fontWeight: 600,
                     }}
                   >
                     Add Room
                   </Button>
                 </Box>
 
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                  Define different room types with individual pricing and amenities. This allows guests to choose specific rooms when booking.
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 3 }}
+                >
+                  Define different room types with individual pricing and
+                  amenities. This allows guests to choose specific rooms when
+                  booking.
                 </Typography>
 
                 {rooms.length === 0 ? (
-                  <Box sx={{ 
-                    p: 4, 
-                    textAlign: 'center', 
-                    backgroundColor: '#f8f9fa', 
-                    borderRadius: 2,
-                    border: '2px dashed #e0e0e0'
-                  }}>
-                    <Hotel sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                  <Box
+                    sx={{
+                      p: 4,
+                      textAlign: 'center',
+                      backgroundColor: '#f8f9fa',
+                      borderRadius: 2,
+                      border: '2px dashed #e0e0e0',
+                    }}
+                  >
+                    <Hotel
+                      sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }}
+                    />
+                    <Typography
+                      variant="h6"
+                      color="text.secondary"
+                      gutterBottom
+                    >
                       No Rooms Added Yet
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      Start by adding your first room type. You can specify different pricing and amenities for each room.
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
+                      Start by adding your first room type. You can specify
+                      different pricing and amenities for each room.
                     </Typography>
                     <Button
                       variant="contained"
                       startIcon={<Add />}
                       onClick={addRoom}
-                      sx={{ 
+                      sx={{
                         backgroundColor: Colors.blue,
                         borderRadius: 2,
                         textTransform: 'none',
-                        fontWeight: 600
+                        fontWeight: 600,
                       }}
                     >
                       Add Your First Room
@@ -811,9 +994,17 @@ export default function AddProperty() {
                   <Grid container spacing={2}>
                     {rooms.map((room, index) => (
                       <Grid item xs={12} key={room.id}>
-                        <Card variant="outlined" sx={{ backgroundColor: '#fafafa' }}>
+                        <Card
+                          variant="outlined"
+                          sx={{ backgroundColor: '#fafafa' }}
+                        >
                           <CardContent>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+                            <Box
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="space-between"
+                              sx={{ mb: 2 }}
+                            >
                               <Typography variant="subtitle1" fontWeight={600}>
                                 Room {index + 1}
                               </Typography>
@@ -827,14 +1018,16 @@ export default function AddProperty() {
                                 Remove
                               </Button>
                             </Box>
-                            
+
                             <Grid container spacing={2}>
                               <Grid item xs={12} md={6}>
                                 <TextField
                                   fullWidth
                                   label="Room Name"
                                   value={room.name}
-                                  onChange={(e) => updateRoom(room.id, 'name', e.target.value)}
+                                  onChange={e =>
+                                    updateRoom(room.id, 'name', e.target.value)
+                                  }
                                   size="small"
                                   placeholder="e.g., Ocean View Suite"
                                 />
@@ -844,21 +1037,33 @@ export default function AddProperty() {
                                   fullWidth
                                   label="Room Description"
                                   value={room.description}
-                                  onChange={(e) => updateRoom(room.id, 'description', e.target.value)}
+                                  onChange={e =>
+                                    updateRoom(
+                                      room.id,
+                                      'description',
+                                      e.target.value
+                                    )
+                                  }
                                   size="small"
                                   multiline
                                   rows={2}
                                   placeholder="Describe the room features, view, and special amenities..."
                                 />
                               </Grid>
-                             
+
                               <Grid item xs={12} md={3}>
                                 <TextField
                                   fullWidth
                                   type="number"
                                   label="Max Occupancy"
                                   value={room.maxOccupancy}
-                                  onChange={(e) => updateRoom(room.id, 'maxOccupancy', parseInt(e.target.value))}
+                                  onChange={e =>
+                                    updateRoom(
+                                      room.id,
+                                      'maxOccupancy',
+                                      parseInt(e.target.value)
+                                    )
+                                  }
                                   inputProps={{ min: 1 }}
                                   size="small"
                                 />
@@ -869,7 +1074,13 @@ export default function AddProperty() {
                                   type="number"
                                   label="Quantity Available"
                                   value={room.quantityAvailable}
-                                  onChange={(e) => updateRoom(room.id, 'quantityAvailable', parseInt(e.target.value))}
+                                  onChange={e =>
+                                    updateRoom(
+                                      room.id,
+                                      'quantityAvailable',
+                                      parseInt(e.target.value)
+                                    )
+                                  }
                                   inputProps={{ min: 1 }}
                                   size="small"
                                 />
@@ -880,11 +1091,17 @@ export default function AddProperty() {
                                   type="number"
                                   label="Price per Night (JMD)"
                                   value={room.pricePerNight}
-                                  onChange={(e) => updateRoom(room.id, 'pricePerNight', parseFloat(e.target.value))}
+                                  onChange={e =>
+                                    updateRoom(
+                                      room.id,
+                                      'pricePerNight',
+                                      parseFloat(e.target.value)
+                                    )
+                                  }
                                   inputProps={{ min: 0 }}
                                   size="small"
                                   InputProps={{
-                                    startAdornment: <AttachMoney />
+                                    startAdornment: <AttachMoney />,
                                   }}
                                 />
                               </Grid>
@@ -893,11 +1110,19 @@ export default function AddProperty() {
                                   <InputLabel>Listing Status</InputLabel>
                                   <Select
                                     value={room.listStatus}
-                                    onChange={(e) => updateRoom(room.id, 'listStatus', e.target.value as 'listed' | 'unlisted')}
+                                    onChange={e =>
+                                      updateRoom(
+                                        room.id,
+                                        'listStatus',
+                                        e.target.value as 'listed' | 'unlisted'
+                                      )
+                                    }
                                     label="Listing Status"
                                   >
                                     <MenuItem value="listed">Listed</MenuItem>
-                                    <MenuItem value="unlisted">Unlisted</MenuItem>
+                                    <MenuItem value="unlisted">
+                                      Unlisted
+                                    </MenuItem>
                                   </Select>
                                 </FormControl>
                               </Grid>
@@ -907,17 +1132,34 @@ export default function AddProperty() {
                                   <Select
                                     multiple
                                     value={room.amenities}
-                                    onChange={(e) => handleRoomAmenitiesChange(room.id, e.target.value as string[])}
-                                    input={<OutlinedInput label="Room Amenities" />}
-                                    renderValue={(selected) => (
-                                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        {selected.map((value) => (
-                                          <Chip key={value} label={value} size="small" />
+                                    onChange={e =>
+                                      handleRoomAmenitiesChange(
+                                        room.id,
+                                        e.target.value as string[]
+                                      )
+                                    }
+                                    input={
+                                      <OutlinedInput label="Room Amenities" />
+                                    }
+                                    renderValue={selected => (
+                                      <Box
+                                        sx={{
+                                          display: 'flex',
+                                          flexWrap: 'wrap',
+                                          gap: 0.5,
+                                        }}
+                                      >
+                                        {selected.map(value => (
+                                          <Chip
+                                            key={value}
+                                            label={value}
+                                            size="small"
+                                          />
                                         ))}
                                       </Box>
                                     )}
                                   >
-                                    {amenitiesList.map((amenity) => (
+                                    {amenitiesList.map(amenity => (
                                       <MenuItem key={amenity} value={amenity}>
                                         {amenity}
                                       </MenuItem>
@@ -925,24 +1167,43 @@ export default function AddProperty() {
                                   </Select>
                                 </FormControl>
                               </Grid>
-                              
+
                               {/* Room Images Section */}
                               <Grid item xs={12}>
-                                <Box sx={{ 
-                                  p: 2, 
-                                  backgroundColor: '#f0f8ff', 
-                                  borderRadius: 2, 
-                                  border: '1px solid #e3f2fd'
-                                }}>
-                                  <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                      <Image sx={{ color: Colors.blue, fontSize: 20 }} />
-                                      <Typography variant="subtitle2" fontWeight={600}>
+                                <Box
+                                  sx={{
+                                    p: 2,
+                                    backgroundColor: '#f0f8ff',
+                                    borderRadius: 2,
+                                    border: '1px solid #e3f2fd',
+                                  }}
+                                >
+                                  <Box
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="space-between"
+                                    sx={{ mb: 2 }}
+                                  >
+                                    <Box
+                                      display="flex"
+                                      alignItems="center"
+                                      gap={1}
+                                    >
+                                      <Image
+                                        sx={{
+                                          color: Colors.blue,
+                                          fontSize: 20,
+                                        }}
+                                      />
+                                      <Typography
+                                        variant="subtitle2"
+                                        fontWeight={600}
+                                      >
                                         Room Images
                                       </Typography>
-                                      <Chip 
-                                        label={roomImages[room.id]?.length || 0} 
-                                        size="small" 
+                                      <Chip
+                                        label={roomImages[room.id]?.length || 0}
+                                        size="small"
                                         color="primary"
                                       />
                                     </Box>
@@ -951,9 +1212,9 @@ export default function AddProperty() {
                                       component="label"
                                       startIcon={<PhotoLibrary />}
                                       size="small"
-                                      sx={{ 
+                                      sx={{
                                         textTransform: 'none',
-                                        borderRadius: 2
+                                        borderRadius: 2,
                                       }}
                                     >
                                       Add Images
@@ -962,69 +1223,127 @@ export default function AddProperty() {
                                         accept="image/*"
                                         multiple
                                         type="file"
-                                        onChange={(e) => handleRoomImageUpload(room.id, e)}
+                                        onChange={e =>
+                                          handleRoomImageUpload(room.id, e)
+                                        }
                                       />
                                     </Button>
                                   </Box>
-                                  
-                                  {roomImages[room.id] && roomImages[room.id].length > 0 ? (
+
+                                  {roomImages[room.id] &&
+                                  roomImages[room.id].length > 0 ? (
                                     <Grid container spacing={1}>
-                                      {roomImages[room.id].map((image, imageIndex) => (
-                                        <Grid item xs={12} sm={6} md={4} key={imageIndex}>
-                                          <Box sx={{ 
-                                            position: 'relative',
-                                            backgroundColor: 'white',
-                                            borderRadius: 1,
-                                            border: '1px solid #e0e0e0',
-                                            p: 1
-                                          }}>
-                                            <Box display="flex" alignItems="center" gap={1}>
-                                              <Image sx={{ fontSize: 16, color: Colors.blue }} />
-                                              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                                                <Typography 
-                                                  variant="caption" 
-                                                  fontWeight={500}
-                                                  sx={{ 
-                                                    display: 'block',
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap'
+                                      {roomImages[room.id].map(
+                                        (image, imageIndex) => (
+                                          <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            key={imageIndex}
+                                          >
+                                            <Box
+                                              sx={{
+                                                position: 'relative',
+                                                backgroundColor: 'white',
+                                                borderRadius: 1,
+                                                border: '1px solid #e0e0e0',
+                                                p: 1,
+                                              }}
+                                            >
+                                              <Box
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={1}
+                                              >
+                                                <Image
+                                                  sx={{
+                                                    fontSize: 16,
+                                                    color: Colors.blue,
+                                                  }}
+                                                />
+                                                <Box
+                                                  sx={{
+                                                    flexGrow: 1,
+                                                    minWidth: 0,
                                                   }}
                                                 >
-                                                  {image.name}
-                                                </Typography>
-                                                <Typography variant="caption" color="text.secondary">
-                                                  {(image.size / 1024 / 1024).toFixed(2)} MB
-                                                </Typography>
+                                                  <Typography
+                                                    variant="caption"
+                                                    fontWeight={500}
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                      whiteSpace: 'nowrap',
+                                                    }}
+                                                  >
+                                                    {image.name}
+                                                  </Typography>
+                                                  <Typography
+                                                    variant="caption"
+                                                    color="text.secondary"
+                                                  >
+                                                    {(
+                                                      image.size /
+                                                      1024 /
+                                                      1024
+                                                    ).toFixed(2)}{' '}
+                                                    MB
+                                                  </Typography>
+                                                </Box>
+                                                <Button
+                                                  size="small"
+                                                  color="error"
+                                                  onClick={() =>
+                                                    removeRoomImage(
+                                                      room.id,
+                                                      imageIndex
+                                                    )
+                                                  }
+                                                  sx={{
+                                                    minWidth: 'auto',
+                                                    p: 0.5,
+                                                    '& .MuiButton-startIcon': {
+                                                      m: 0,
+                                                    },
+                                                  }}
+                                                >
+                                                  <Delete
+                                                    sx={{ fontSize: 16 }}
+                                                  />
+                                                </Button>
                                               </Box>
-                                              <Button
-                                                size="small"
-                                                color="error"
-                                                onClick={() => removeRoomImage(room.id, imageIndex)}
-                                                sx={{ 
-                                                  minWidth: 'auto',
-                                                  p: 0.5,
-                                                  '& .MuiButton-startIcon': { m: 0 }
-                                                }}
-                                              >
-                                                <Delete sx={{ fontSize: 16 }} />
-                                              </Button>
                                             </Box>
-                                          </Box>
-                                        </Grid>
-                                      ))}
+                                          </Grid>
+                                        )
+                                      )}
                                     </Grid>
                                   ) : (
-                                    <Box sx={{ 
-                                      textAlign: 'center', 
-                                      py: 2,
-                                      color: 'text.secondary'
-                                    }}>
-                                      <Image sx={{ fontSize: 32, mb: 1, opacity: 0.5 }} />
-                                      <Typography variant="caption" display="block">
+                                    <Box
+                                      sx={{
+                                        textAlign: 'center',
+                                        py: 2,
+                                        color: 'text.secondary',
+                                      }}
+                                    >
+                                      <Image
+                                        sx={{
+                                          fontSize: 32,
+                                          mb: 1,
+                                          opacity: 0.5,
+                                        }}
+                                      />
+                                      <Typography
+                                        variant="caption"
+                                        display="block"
+                                      >
                                         No images added yet
                                       </Typography>
-                                      <Typography variant="caption" display="block">
+                                      <Typography
+                                        variant="caption"
+                                        display="block"
+                                      >
                                         Add images to showcase this room type
                                       </Typography>
                                     </Box>
@@ -1046,44 +1365,59 @@ export default function AddProperty() {
       case 3:
         return (
           <Box>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              color={Colors.blue}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+            >
               <PhotoLibrary />
               Images & Documents
             </Typography>
-            
+
             <Grid container spacing={3}>
               {/* Property Images Card */}
               <Grid item xs={12} md={6}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      sx={{ mb: 2 }}
+                    >
                       <Image sx={{ color: Colors.blue }} />
                       <Typography variant="h6" fontWeight={600}>
                         Property Images
                       </Typography>
-                      <Chip 
-                        label={images.length} 
-                        color="primary" 
-                        size="small" 
+                      <Chip
+                        label={images.length}
+                        color="primary"
+                        size="small"
                         sx={{ ml: 'auto' }}
                       />
                     </Box>
-                    
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      Upload high-quality images of your property. The first image will be used as the main photo.
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 3 }}
+                    >
+                      Upload high-quality images of your property. The first
+                      image will be used as the main photo.
                     </Typography>
-                    
+
                     <Button
                       variant="outlined"
                       component="label"
                       startIcon={<PhotoLibrary />}
                       fullWidth
-                      sx={{ 
+                      sx={{
                         mb: 2,
                         borderRadius: 2,
                         textTransform: 'none',
                         fontWeight: 600,
-                        py: 1.5
+                        py: 1.5,
                       }}
                     >
                       Upload Images
@@ -1095,13 +1429,15 @@ export default function AddProperty() {
                         onChange={handleImageUpload}
                       />
                     </Button>
-                    
+
                     {images.length > 0 && (
                       <List dense>
                         {images.slice(0, 3).map((image, index) => (
                           <ListItem key={index} sx={{ px: 0, py: 0.5 }}>
                             <ListItemIcon>
-                              <Image sx={{ fontSize: 20, color: Colors.blue }} />
+                              <Image
+                                sx={{ fontSize: 20, color: Colors.blue }}
+                              />
                             </ListItemIcon>
                             <ListItemText
                               primary={
@@ -1109,7 +1445,9 @@ export default function AddProperty() {
                                   {image.name}
                                 </Typography>
                               }
-                              secondary={`${(image.size / 1024 / 1024).toFixed(2)} MB`}
+                              secondary={`${(image.size / 1024 / 1024).toFixed(
+                                2
+                              )} MB`}
                             />
                           </ListItem>
                         ))}
@@ -1117,7 +1455,11 @@ export default function AddProperty() {
                           <ListItem sx={{ px: 0, py: 0.5 }}>
                             <ListItemText
                               primary={
-                                <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  fontStyle="italic"
+                                >
                                   +{images.length - 3} more images...
                                 </Typography>
                               }
@@ -1134,136 +1476,234 @@ export default function AddProperty() {
               <Grid item xs={12} md={6}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      sx={{ mb: 2 }}
+                    >
                       <Description sx={{ color: Colors.raspberry }} />
                       <Typography variant="h6" fontWeight={600}>
                         Documents
                       </Typography>
-                      <Chip 
-                        label={selectedDocumentTypes.length} 
-                        color="secondary" 
-                        size="small" 
+                      <Chip
+                        label={selectedDocumentTypes.length}
+                        color="secondary"
+                        size="small"
                         sx={{ ml: 'auto' }}
                       />
                     </Box>
-                    
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      Select the document types you will provide and upload the relevant files.
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 3 }}
+                    >
+                      Select the document types you will provide and upload the
+                      relevant files.
                     </Typography>
 
                     {/* Document Type Selection & Upload */}
                     <Box sx={{ mb: 3 }}>
-                      <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={600}
+                        gutterBottom
+                      >
                         Required Documents
                       </Typography>
-                      {documentTypes.filter(doc => doc.required).map((docType) => {
-                        const hasThisType = documents.some(doc => doc.type === docType.id);
-                        return (
-                          <Box key={docType.id} sx={{ mb: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
-                            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
-                              <Typography variant="body2" fontWeight={500}>
-                                {docType.label}
-                              </Typography>
-                              {hasThisType && (
-                                <CheckCircle sx={{ fontSize: 16, color: 'success.main' }} />
-                              )}
-                            </Box>
-                            <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
-                              {docType.description}
-                            </Typography>
-                            <Button
-                              variant="outlined"
-                              component="label"
-                              startIcon={<Upload />}
-                              size="small"
-                              sx={{ 
-                                textTransform: 'none',
-                                borderRadius: 2
+                      {documentTypes
+                        .filter(doc => doc.required)
+                        .map(docType => {
+                          const hasThisType = documents.some(
+                            doc => doc.type === docType.id
+                          );
+                          return (
+                            <Box
+                              key={docType.id}
+                              sx={{
+                                mb: 2,
+                                p: 2,
+                                border: '1px solid #e0e0e0',
+                                borderRadius: 2,
                               }}
                             >
-                              {hasThisType ? 'Add More Files' : 'Upload Files'}
-                              <input
-                                hidden
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                multiple
-                                type="file"
-                                onChange={(e) => handleDocumentUpload(e, docType.id)}
-                              />
-                            </Button>
-                          </Box>
-                        );
-                      })}
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                gap={1}
+                                sx={{ mb: 1 }}
+                              >
+                                <Typography variant="body2" fontWeight={500}>
+                                  {docType.label}
+                                </Typography>
+                                {hasThisType && (
+                                  <CheckCircle
+                                    sx={{ fontSize: 16, color: 'success.main' }}
+                                  />
+                                )}
+                              </Box>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                display="block"
+                                sx={{ mb: 2 }}
+                              >
+                                {docType.description}
+                              </Typography>
+                              <Button
+                                variant="outlined"
+                                component="label"
+                                startIcon={<Upload />}
+                                size="small"
+                                sx={{
+                                  textTransform: 'none',
+                                  borderRadius: 2,
+                                }}
+                              >
+                                {hasThisType
+                                  ? 'Add More Files'
+                                  : 'Upload Files'}
+                                <input
+                                  hidden
+                                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                  multiple
+                                  type="file"
+                                  onChange={e =>
+                                    handleDocumentUpload(e, docType.id)
+                                  }
+                                />
+                              </Button>
+                            </Box>
+                          );
+                        })}
 
-                      <Typography variant="subtitle2" fontWeight={600} gutterBottom sx={{ mt: 3 }}>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={600}
+                        gutterBottom
+                        sx={{ mt: 3 }}
+                      >
                         Optional Documents
                       </Typography>
-                      {documentTypes.filter(doc => !doc.required).map((docType) => {
-                        const hasThisType = documents.some(doc => doc.type === docType.id);
-                        return (
-                          <Box key={docType.id} sx={{ mb: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 2, backgroundColor: '#f8f9fa' }}>
-                            <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
-                              <Typography variant="body2" fontWeight={500}>
-                                {docType.label}
-                              </Typography>
-                              {hasThisType && (
-                                <CheckCircle sx={{ fontSize: 16, color: 'success.main' }} />
-                              )}
-                            </Box>
-                            <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
-                              {docType.description}
-                            </Typography>
-                            <Button
-                              variant="outlined"
-                              component="label"
-                              startIcon={<Upload />}
-                              size="small"
-                              sx={{ 
-                                textTransform: 'none',
-                                borderRadius: 2
+                      {documentTypes
+                        .filter(doc => !doc.required)
+                        .map(docType => {
+                          const hasThisType = documents.some(
+                            doc => doc.type === docType.id
+                          );
+                          return (
+                            <Box
+                              key={docType.id}
+                              sx={{
+                                mb: 2,
+                                p: 2,
+                                border: '1px solid #e0e0e0',
+                                borderRadius: 2,
+                                backgroundColor: '#f8f9fa',
                               }}
                             >
-                              {hasThisType ? 'Add More Files' : 'Upload Files'}
-                              <input
-                                hidden
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                multiple
-                                type="file"
-                                onChange={(e) => handleDocumentUpload(e, docType.id)}
-                              />
-                            </Button>
-                          </Box>
-                        );
-                      })}
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                gap={1}
+                                sx={{ mb: 1 }}
+                              >
+                                <Typography variant="body2" fontWeight={500}>
+                                  {docType.label}
+                                </Typography>
+                                {hasThisType && (
+                                  <CheckCircle
+                                    sx={{ fontSize: 16, color: 'success.main' }}
+                                  />
+                                )}
+                              </Box>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                display="block"
+                                sx={{ mb: 2 }}
+                              >
+                                {docType.description}
+                              </Typography>
+                              <Button
+                                variant="outlined"
+                                component="label"
+                                startIcon={<Upload />}
+                                size="small"
+                                sx={{
+                                  textTransform: 'none',
+                                  borderRadius: 2,
+                                }}
+                              >
+                                {hasThisType
+                                  ? 'Add More Files'
+                                  : 'Upload Files'}
+                                <input
+                                  hidden
+                                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                  multiple
+                                  type="file"
+                                  onChange={e =>
+                                    handleDocumentUpload(e, docType.id)
+                                  }
+                                />
+                              </Button>
+                            </Box>
+                          );
+                        })}
                     </Box>
-                    
+
                     {documents.length > 0 && (
                       <Box sx={{ mt: 3 }}>
-                        <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                        <Typography
+                          variant="subtitle2"
+                          fontWeight={600}
+                          gutterBottom
+                        >
                           Uploaded Documents ({documents.length})
                         </Typography>
                         <List dense>
                           {documents.map((document, index) => {
-                            const docType = documentTypes.find(dt => dt.id === document.type);
+                            const docType = documentTypes.find(
+                              dt => dt.id === document.type
+                            );
                             return (
                               <ListItem key={index} sx={{ px: 0, py: 0.5 }}>
                                 <ListItemIcon>
-                                  <Description sx={{ fontSize: 20, color: Colors.raspberry }} />
+                                  <Description
+                                    sx={{
+                                      fontSize: 20,
+                                      color: Colors.raspberry,
+                                    }}
+                                  />
                                 </ListItemIcon>
                                 <ListItemText
                                   primary={
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                      <Typography variant="body2" fontWeight={500}>
+                                    <Box
+                                      display="flex"
+                                      alignItems="center"
+                                      gap={1}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        fontWeight={500}
+                                      >
                                         {document.file.name}
                                       </Typography>
-                                      <Chip 
-                                        label={docType?.label || document.type} 
-                                        size="small" 
+                                      <Chip
+                                        label={docType?.label || document.type}
+                                        size="small"
                                         color="primary"
                                         variant="outlined"
                                       />
                                     </Box>
                                   }
-                                  secondary={`${(document.file.size / 1024 / 1024).toFixed(2)} MB • ${document.file.type}`}
+                                  secondary={`${(
+                                    document.file.size /
+                                    1024 /
+                                    1024
+                                  ).toFixed(2)} MB • ${document.file.type}`}
                                 />
                                 <Button
                                   size="small"
@@ -1285,16 +1725,19 @@ export default function AddProperty() {
             </Grid>
 
             <Grid item xs={12}>
-              <Box sx={{ 
-                p: 2, 
-                backgroundColor: '#d4edda', 
-                borderRadius: 2, 
-                border: '1px solid #c3e6cb',
-                mt: 2 
-              }}>
+              <Box
+                sx={{
+                  p: 2,
+                  backgroundColor: '#d4edda',
+                  borderRadius: 2,
+                  border: '1px solid #c3e6cb',
+                  mt: 2,
+                }}
+              >
                 <Typography variant="caption" color="#155724">
-                  <strong>Note:</strong> All property information will be reviewed before listing. 
-                  High-quality images and complete documentation help speed up the approval process.
+                  <strong>Note:</strong> All property information will be
+                  reviewed before listing. High-quality images and complete
+                  documentation help speed up the approval process.
                 </Typography>
               </Box>
             </Grid>
@@ -1307,26 +1750,31 @@ export default function AddProperty() {
   };
 
   return (
-    <Box sx={{ width: '100%', backgroundColor:'white',pt:3,pb:3 }}>
+    <Box sx={{ width: '100%', backgroundColor: 'white', pt: 3, pb: 3 }}>
       <Container maxWidth="lg">
-        <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <AddBusiness />
-            Add New Kottage
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Create a new property listing for your accommodation
-          </Typography>
-        
+        <Typography
+          variant="h6"
+          gutterBottom
+          color={Colors.blue}
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+        >
+          <AddBusiness />
+          Add New Kottage
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Create a new property listing for your accommodation
+        </Typography>
+
         {/* Back Button */}
         <Box sx={{ mb: 3 }}>
           <Button
             startIcon={<ArrowBack />}
             onClick={handleBack}
             variant="outlined"
-            sx={{ 
+            sx={{
               borderRadius: 2,
               textTransform: 'none',
-              fontWeight: 600
+              fontWeight: 600,
             }}
           >
             Back to Properties
@@ -1335,19 +1783,26 @@ export default function AddProperty() {
 
         <Paper sx={{ borderRadius: 3 }}>
           {/* Progress Stepper */}
-          <Box sx={{ 
-            p: 3, 
-            backgroundColor: '#f8f9fa', 
-            borderRadius: '12px 12px 0 0', 
-            border: '1px solid #e0e0e0',
-            borderBottom: 'none'
-          }}>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+          <Box
+            sx={{
+              p: 3,
+              backgroundColor: '#f8f9fa',
+              borderRadius: '12px 12px 0 0',
+              border: '1px solid #e0e0e0',
+              borderBottom: 'none',
+            }}
+          >
+            <Typography
+              variant="h6"
+              gutterBottom
+              color={Colors.blue}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+            >
               <HomeIcon />
               Property Creation Progress
             </Typography>
             <Stepper activeStep={activeStep} alternativeLabel>
-              {steps.map((label) => (
+              {steps.map(label => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
                 </Step>
@@ -1367,27 +1822,55 @@ export default function AddProperty() {
                 </Typography>
                 <Box sx={{ mt: 1 }}>
                   {uploadProgress.roomImages && (
-                    <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      sx={{ mb: 1 }}
+                    >
                       <CircularProgress size={16} />
-                      <Typography variant="caption">Uploading room images...</Typography>
+                      <Typography variant="caption">
+                        Uploading room images...
+                      </Typography>
                     </Box>
                   )}
                   {uploadProgress.property && (
-                    <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      sx={{ mb: 1 }}
+                    >
                       <CircularProgress size={16} />
-                      <Typography variant="caption">Creating property record...</Typography>
+                      <Typography variant="caption">
+                        Creating property record...
+                      </Typography>
                     </Box>
                   )}
                   {uploadProgress.images && (
-                    <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      sx={{ mb: 1 }}
+                    >
                       <CircularProgress size={16} />
-                      <Typography variant="caption">Uploading property images...</Typography>
+                      <Typography variant="caption">
+                        Uploading property images...
+                      </Typography>
                     </Box>
                   )}
                   {uploadProgress.documents && (
-                    <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      sx={{ mb: 1 }}
+                    >
                       <CircularProgress size={16} />
-                      <Typography variant="caption">Uploading approval documents...</Typography>
+                      <Typography variant="caption">
+                        Uploading approval documents...
+                      </Typography>
                     </Box>
                   )}
                 </Box>
@@ -1418,10 +1901,10 @@ export default function AddProperty() {
                 onClick={handlePrevious}
                 disabled={activeStep === 0}
                 variant="outlined"
-                sx={{ 
+                sx={{
                   borderRadius: 2,
                   textTransform: 'none',
-                  fontWeight: 600
+                  fontWeight: 600,
                 }}
               >
                 Previous
@@ -1434,29 +1917,32 @@ export default function AddProperty() {
                     onClick={handleSubmit}
                     disabled={
                       isSubmitting ||
-                      addPropertyMutation.isPending || 
+                      addPropertyMutation.isPending ||
                       addPropertyImagesMutation.isPending ||
-                      !validateStep0() || 
-                      !validateStep1() || 
-                      !validateStep2() || 
+                      !validateStep0() ||
+                      !validateStep1() ||
+                      !validateStep2() ||
                       !validateStep3()
                     }
-                    sx={{ 
+                    sx={{
                       backgroundColor: Colors.blue,
                       borderRadius: 2,
                       textTransform: 'none',
                       fontWeight: 600,
-                      px: 4
+                      px: 4,
                     }}
                   >
                     {isSubmitting ? (
                       <>
                         <CircularProgress size={20} sx={{ mr: 1 }} />
-                        {uploadProgress.roomImages && 'Uploading Room Images...'}
+                        {uploadProgress.roomImages &&
+                          'Uploading Room Images...'}
                         {uploadProgress.property && 'Creating Property...'}
-                        {uploadProgress.images && 'Uploading Property Images...'}
+                        {uploadProgress.images &&
+                          'Uploading Property Images...'}
                         {uploadProgress.documents && 'Uploading Documents...'}
-                        {!Object.values(uploadProgress).some(Boolean) && 'Processing...'}
+                        {!Object.values(uploadProgress).some(Boolean) &&
+                          'Processing...'}
                       </>
                     ) : (
                       'Create Property'
@@ -1467,12 +1953,12 @@ export default function AddProperty() {
                     variant="contained"
                     onClick={handleNext}
                     disabled={!validateCurrentStep()}
-                    sx={{ 
+                    sx={{
                       backgroundColor: Colors.blue,
                       borderRadius: 2,
                       textTransform: 'none',
                       fontWeight: 600,
-                      px: 4
+                      px: 4,
                     }}
                   >
                     Next
@@ -1482,8 +1968,6 @@ export default function AddProperty() {
             </Box>
           </Box>
         </Paper>
-
-       
 
         {/* Error Display */}
         {(addPropertyMutation.isError || addPropertyImagesMutation.isError) && (

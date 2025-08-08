@@ -73,6 +73,7 @@ const BookRoom = () => {
   // Payment state
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
   const [paymentError, setPaymentError] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Use the reservation hook
   const {
@@ -594,27 +595,36 @@ const BookRoom = () => {
                 !endDate ||
                 nights <= 0 ||
                 !isDateRangeValid ||
-                isProcessing
+                isProcessing ||
+                isSubmitting
               }
               onClick={async () => {
-                if (!startDate || !endDate || !room || !kottage) return;
+                if (!startDate || !endDate || !room || !kottage || isSubmitting)
+                  return;
 
-                await handleConfirmPayment({
-                  startDate,
-                  endDate,
-                  room,
-                  kottage,
-                  uid: String(uid),
-                  appUser,
-                  total,
-                  guests,
-                  createReservation,
-                  updateProperty,
-                  refetchBlockedDates,
-                  setPaymentSuccess,
-                  setPaymentError,
-                  navigate,
-                });
+                setIsSubmitting(true);
+                setPaymentError('');
+
+                try {
+                  await handleConfirmPayment({
+                    startDate,
+                    endDate,
+                    room,
+                    kottage,
+                    uid: String(uid),
+                    appUser,
+                    total,
+                    guests,
+                    createReservation,
+                    updateProperty,
+                    refetchBlockedDates,
+                    setPaymentSuccess,
+                    setPaymentError,
+                    navigate,
+                  });
+                } finally {
+                  setIsSubmitting(false);
+                }
               }}
               sx={{
                 backgroundColor: Colors.raspberry,
@@ -637,7 +647,7 @@ const BookRoom = () => {
                 transition: 'all 0.3s ease',
               }}
             >
-              {isProcessing ? (
+              {isProcessing || isSubmitting ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <CircularProgress size={20} sx={{ color: 'white' }} />
                   Processing...
