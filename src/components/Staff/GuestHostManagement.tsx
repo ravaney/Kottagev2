@@ -174,6 +174,16 @@ const faqCategories = [
   },
 ];
 
+const tableColumns = [
+  'User',
+  'Type',
+  'Contact',
+  'Location',
+  'Status',
+  'Rating',
+  'Activity',
+  'Actions',
+];
 export default function GuestHostManagement() {
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
@@ -444,17 +454,7 @@ export default function GuestHostManagement() {
               variant="outlined"
               fullWidth
               startIcon={<ChatIcon />}
-              sx={{
-                borderColor: '#1976d2',
-                color: '#1976d2',
-                '&:hover': {
-                  borderColor: '#1565c0',
-                  backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                },
-                textTransform: 'none',
-                fontWeight: 500,
-                py: 1.5,
-              }}
+              className="chatButton"
             >
               Live Chat
             </Button>
@@ -532,46 +532,14 @@ export default function GuestHostManagement() {
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    User
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    Type
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    Contact
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    Location
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    Status
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    Rating
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    Activity
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
-                  >
-                    Actions
-                  </TableCell>
+                  {tableColumns.map(column => (
+                    <TableCell
+                      key={column}
+                      sx={{ fontWeight: 600, backgroundColor: '#f9f9f9' }}
+                    >
+                      {column}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
