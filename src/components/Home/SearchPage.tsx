@@ -10,48 +10,64 @@ import {
   Chip,
   Card,
   CardContent,
-  Skeleton
+  Skeleton,
 } from '@mui/material';
-import Grid from "@mui/material/GridLegacy";
+import Grid from '@mui/material/GridLegacy';
 import {
   ArrowBack,
   Search as SearchIcon,
   FilterList,
   Sort,
   ViewModule,
-  ViewList
+  ViewList,
 } from '@mui/icons-material';
 import { SearchBar } from './SearchBar';
 import { SearchData } from '../../hooks/usePropertySearch';
 import SearchResults from './SearchResults';
-import { useSearchProperties, SearchFilters, KottageWithId } from '../../hooks/usePropertySearch';
+import {
+  useSearchProperties,
+  SearchFilters,
+  KottageWithId,
+} from '../../hooks/usePropertySearch';
 
 const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  
+
   const [searchData, setSearchData] = useState<SearchData>({
     location: searchParams.get('location') || '',
-    checkIn: searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined,
-    checkOut: searchParams.get('checkOut') ? new Date(searchParams.get('checkOut')!) : undefined,
-    guests: parseInt(searchParams.get('guests') || '1')
+    checkIn: searchParams.get('checkIn')
+      ? new Date(searchParams.get('checkIn')!)
+      : undefined,
+    checkOut: searchParams.get('checkOut')
+      ? new Date(searchParams.get('checkOut')!)
+      : undefined,
+    guests: parseInt(searchParams.get('guests') || '1'),
   });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({
     sortBy: 'popularity',
-    sortOrder: 'desc'
+    sortOrder: 'desc',
   });
 
   // Use the Firebase-backed search hook
-  const { data: searchResults = [], isLoading, error } = useSearchProperties(searchData, searchFilters);
+  const {
+    data: searchResults = [],
+    isLoading,
+    error,
+  } = useSearchProperties(searchData, searchFilters);
 
   // Update search data when URL params change
   useEffect(() => {
     const newSearchData = {
       location: searchParams.get('location') || '',
-      checkIn: searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined,
-      checkOut: searchParams.get('checkOut') ? new Date(searchParams.get('checkOut')!) : undefined,
-      guests: parseInt(searchParams.get('guests') || '1')
+      checkIn: searchParams.get('checkIn')
+        ? new Date(searchParams.get('checkIn')!)
+        : undefined,
+      checkOut: searchParams.get('checkOut')
+        ? new Date(searchParams.get('checkOut')!)
+        : undefined,
+      guests: parseInt(searchParams.get('guests') || '1'),
     };
     setSearchData(newSearchData);
   }, [searchParams]);
@@ -63,7 +79,7 @@ const SearchPage: React.FC = () => {
     if (data.checkIn) params.set('checkIn', data.checkIn.toISOString());
     if (data.checkOut) params.set('checkOut', data.checkOut.toISOString());
     if (data.guests > 1) params.set('guests', data.guests.toString());
-    
+
     setSearchParams(params);
     setSearchData(data);
   };
@@ -79,19 +95,19 @@ const SearchPage: React.FC = () => {
   const handlePropertyClick = (property: KottageWithId) => {
     // Navigate to property detail page with property data in state
     navigate(`/Kottages/${property.key}`, {
-      state: { 
+      state: {
         kottage: property,
-        searchCriteria: searchData 
-      }
+        searchCriteria: searchData,
+      },
     });
   };
 
   const getSearchSummary = () => {
     if (!searchData.location && !searchParams.toString()) {
-      return "Browse all properties";
+      return 'Browse all properties';
     }
-    
-    let summary = "";
+
+    let summary = '';
     if (searchData.location) {
       summary += `"${searchData.location}"`;
     }
@@ -103,21 +119,30 @@ const SearchPage: React.FC = () => {
       const checkOut = searchData.checkOut.toLocaleDateString();
       summary += ` • ${checkIn} - ${checkOut}`;
     }
-    
-    return summary || "All properties";
+
+    return summary || 'All properties';
   };
 
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       {/* Search Header */}
-      <Box sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0', py: 3 }}>
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          borderBottom: '1px solid #e0e0e0',
+          py: 3,
+        }}
+      >
         <Container maxWidth="lg">
-         
-
           {/* Page Title */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-            
-            
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: 3,
+            }}
+          >
             <Button
               startIcon={<ArrowBack />}
               onClick={handleBackToHome}
@@ -126,82 +151,72 @@ const SearchPage: React.FC = () => {
             >
               Back to Home
             </Button>
-            {/* //add #of resultds found here instead of "Search Properties" */}
-            
           </Box>
 
-          {/* Search Bar */}
-          <Paper
-            elevation={2}
+          <SearchBar
+            onSearch={handleNewSearch}
+            initialLocation={searchData.location}
+            initialCheckIn={searchData.checkIn}
+            initialCheckOut={searchData.checkOut}
+            initialGuests={searchData.guests}
+          />
+
+          {/* Search Filters */}
+          <Box
             sx={{
-              p: 3,
-              borderRadius: 3,
-              border: '1px solid #e0e0e0'
-            }}
-          >
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                Refine Your Search
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#666' }}>
-                Adjust your search criteria to find the perfect property
-              </Typography>
-            </Box>
-            
-            <SearchBar 
-              onSearch={handleNewSearch}
-              initialLocation={searchData.location}
-              initialCheckIn={searchData.checkIn}
-              initialCheckOut={searchData.checkOut}
-              initialGuests={searchData.guests}
-            />
-            
-            {/* Search Filters */}
-            <Box sx={{ 
-              display: 'flex', 
-              gap: 2, 
+              display: 'flex',
+              gap: 2,
               mt: 3,
               flexWrap: 'wrap',
-              alignItems: 'center'
-            }}>
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              startIcon={<FilterList />}
+              variant="outlined"
+              size="small"
+              sx={{ borderRadius: 2 }}
+            >
+              Filters
+            </Button>
+            <Button
+              startIcon={<Sort />}
+              variant="outlined"
+              size="small"
+              sx={{ borderRadius: 2 }}
+            >
+              Sort
+            </Button>
+
+            {/* View Mode Toggle */}
+            <Box sx={{ display: 'flex', ml: 'auto' }}>
               <Button
-                startIcon={<FilterList />}
-                variant="outlined"
+                onClick={() => setViewMode('grid')}
+                variant={viewMode === 'grid' ? 'contained' : 'outlined'}
                 size="small"
-                sx={{ borderRadius: 2 }}
+                sx={{
+                  minWidth: 'auto',
+                  px: 2,
+                  borderRadius: '20px 0 0 20px',
+                }}
               >
-                Filters
+                <ViewModule />
               </Button>
               <Button
-                startIcon={<Sort />}
-                variant="outlined"
+                onClick={() => setViewMode('list')}
+                variant={viewMode === 'list' ? 'contained' : 'outlined'}
                 size="small"
-                sx={{ borderRadius: 2 }}
+                sx={{
+                  minWidth: 'auto',
+                  px: 2,
+                  borderRadius: '0 20px 20px 0',
+                  ml: -0.5,
+                }}
               >
-                Sort
+                <ViewList />
               </Button>
-              
-              {/* View Mode Toggle */}
-              <Box sx={{ display: 'flex', ml: 'auto' }}>
-                <Button
-                  onClick={() => setViewMode('grid')}
-                  variant={viewMode === 'grid' ? 'contained' : 'outlined'}
-                  size="small"
-                  sx={{ minWidth: 'auto', px: 2, borderRadius: '20px 0 0 20px' }}
-                >
-                  <ViewModule />
-                </Button>
-                <Button
-                  onClick={() => setViewMode('list')}
-                  variant={viewMode === 'list' ? 'contained' : 'outlined'}
-                  size="small"
-                  sx={{ minWidth: 'auto', px: 2, borderRadius: '0 20px 20px 0', ml: -0.5 }}
-                >
-                  <ViewList />
-                </Button>
-              </Box>
             </Box>
-          </Paper>
+          </Box>
         </Container>
       </Box>
 
@@ -212,16 +227,30 @@ const SearchPage: React.FC = () => {
             <Box>
               {/* Loading Header */}
               <Box sx={{ mb: 4, textAlign: 'center' }}>
-                <Skeleton variant="text" width="300px" height={40} sx={{ mx: 'auto', mb: 2 }} />
-                <Skeleton variant="text" width="200px" height={20} sx={{ mx: 'auto' }} />
+                <Skeleton
+                  variant="text"
+                  width="300px"
+                  height={40}
+                  sx={{ mx: 'auto', mb: 2 }}
+                />
+                <Skeleton
+                  variant="text"
+                  width="200px"
+                  height={20}
+                  sx={{ mx: 'auto' }}
+                />
               </Box>
-              
+
               {/* Loading Cards */}
               <Grid container spacing={3}>
                 {Array.from({ length: 6 }).map((_, index) => (
                   <Grid item xs={12} sm={6} lg={4} key={index}>
                     <Card>
-                      <Skeleton variant="rectangular" width="100%" height={250} />
+                      <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height={250}
+                      />
                       <CardContent>
                         <Skeleton variant="text" width="80%" height={30} />
                         <Skeleton variant="text" width="60%" height={20} />
@@ -239,15 +268,20 @@ const SearchPage: React.FC = () => {
               {error ? (
                 <Box sx={{ textAlign: 'center', py: 8 }}>
                   <Paper sx={{ p: 6, maxWidth: 500, mx: 'auto' }}>
-                    <SearchIcon sx={{ fontSize: 80, color: '#f44336', mb: 3 }} />
-                    <Typography variant="h5" sx={{ mb: 2, fontWeight: 600, color: '#f44336' }}>
+                    <SearchIcon
+                      sx={{ fontSize: 80, color: '#f44336', mb: 3 }}
+                    />
+                    <Typography
+                      variant="h5"
+                      sx={{ mb: 2, fontWeight: 600, color: '#f44336' }}
+                    >
                       Search Error
                     </Typography>
                     <Typography variant="body1" sx={{ color: '#666', mb: 4 }}>
                       Unable to load properties. Please try again later.
                     </Typography>
-                    <Button 
-                      variant="contained" 
+                    <Button
+                      variant="contained"
                       onClick={() => window.location.reload()}
                       sx={{ mt: 2 }}
                     >
@@ -257,37 +291,6 @@ const SearchPage: React.FC = () => {
                 </Box>
               ) : searchResults.length > 0 ? (
                 <>
-                  {/* Results Header */}
-                  <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center', 
-                    mb: 4,
-                    p: 2,
-                    backgroundColor: 'white',
-                    borderRadius: 3,
-                    boxShadow: 1
-                  }}>
-                    <Box>
-                      <Typography variant="h5" sx={{ fontWeight: 600, color: '#333' }}>
-                        {searchResults.length} Properties Found
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-                        Showing results for {getSearchSummary()}
-                      </Typography>
-                    </Box>
-                    
-                    {/* Quick Actions */}
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <Chip
-                        icon={<SearchIcon />}
-                        label="Search Results"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </Box>
-                  </Box>
-
                   {/* Results Grid */}
                   <SearchResults
                     properties={searchResults}
@@ -305,19 +308,24 @@ const SearchPage: React.FC = () => {
                       No Properties Found
                     </Typography>
                     <Typography variant="body1" sx={{ color: '#666', mb: 4 }}>
-                      We couldn't find any properties matching your search criteria. Try adjusting your filters or search terms.
+                      We couldn't find any properties matching your search
+                      criteria. Try adjusting your filters or search terms.
                     </Typography>
                     <Button
                       variant="contained"
-                      onClick={() => handleNewSearch({ location: '', checkIn: undefined, checkOut: undefined, guests: 1 })}
+                      onClick={() =>
+                        handleNewSearch({
+                          location: '',
+                          checkIn: undefined,
+                          checkOut: undefined,
+                          guests: 1,
+                        })
+                      }
                       sx={{ mr: 2 }}
                     >
                       Clear Search
                     </Button>
-                    <Button
-                      variant="outlined"
-                      onClick={handleBackToHome}
-                    >
+                    <Button variant="outlined" onClick={handleBackToHome}>
                       Back to Home
                     </Button>
                   </Paper>
