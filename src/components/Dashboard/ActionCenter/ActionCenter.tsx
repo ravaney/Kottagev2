@@ -35,7 +35,7 @@ export default function ActionCenter() {
   const getIcon = (type: string) => {
     switch (type) {
       case 'warning': return <WarningIcon sx={{ color: '#ff9800' }} />;
-      case 'info': return <InfoIcon sx={{ color: Colors.blue }} />;
+      case 'info': return <InfoIcon sx={{ color: Colors.cerulean }} />;
       case 'success': return <CheckCircleIcon sx={{ color: '#4caf50' }} />;
       default: return <NotificationsIcon />;
     }
@@ -82,8 +82,8 @@ export default function ActionCenter() {
               onUpdateStatus={(id, status) => console.log(`Update status for ${id}: ${status}`)}
             />
         <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
-          <NotificationsIcon sx={{ color: Colors.blue, fontSize: 28 }} />
-          <Typography variant="h5" fontWeight={600} color={Colors.blue}>
+          <NotificationsIcon sx={{ color: Colors.cerulean, fontSize: 28 }} />
+          <Typography variant="h5" fontWeight={600} color={Colors.cerulean}>
             Action Center
           </Typography>
           <Chip label="3 New" color="error" size="small" />

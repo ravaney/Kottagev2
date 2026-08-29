@@ -5,6 +5,7 @@ import { useFirebaseUser, useLogin } from '../../hooks';
 import { useUserClaims } from '../../hooks/useUserClaims';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Alert, Button } from '@mui/material';
+import { navigateToPortal } from '../../utils/subdomainRouter';
 
 export default function Login() {
   const [email, setEmail] = useState<string>('');
@@ -35,11 +36,11 @@ export default function Login() {
         // Guest users go to main site or their intended destination
         redirectTo = location.state?.from?.pathname || '/';
       } else if (claims.role === 'admin' || claims.role === 'super_admin') {
-        // Admin users go to admin area
-        redirectTo = '/admin/dashboard';
+        navigateToPortal('admin', '/dashboard');
+        return;
       } else if (claims.role === 'staff') {
-        // Staff users go to staff area
-        redirectTo = '/staff/dashboard';
+        navigateToPortal('staff', '/dashboard');
+        return;
       } else {
         // Default fallback
         redirectTo = location.state?.from?.pathname || '/';
@@ -157,23 +158,7 @@ export default function Login() {
                       color="inherit"
                       size="small"
                       onClick={() => {
-                        // Handle both development and production
-                        if (process.env.NODE_ENV === 'development') {
-                          // Development: Use subdomain simulation
-                          localStorage.setItem('simulated_subdomain', 'host');
-                          window.location.reload();
-                        } else {
-                          // Production: Navigate to actual host subdomain
-                          const currentHost = window.location.hostname;
-                          const protocol = window.location.protocol;
-                          const port = window.location.port
-                            ? `:${window.location.port}`
-                            : '';
-
-                          // Create host subdomain URL
-                          const hostUrl = `${protocol}//host.${currentHost}${port}/login`;
-                          window.location.href = hostUrl;
-                        }
+                        navigateToPortal('host', '/login');
                       }}
                       sx={{ fontWeight: 600 }}
                     >

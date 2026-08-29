@@ -37,8 +37,8 @@ export default function RecentReviewsCard({ reviews }: RecentReviewsCardProps) {
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <StarIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-          <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+          <StarIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+          <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
             Recent Reviews
           </Typography>
         </Box>
@@ -112,7 +112,7 @@ export default function RecentReviewsCard({ reviews }: RecentReviewsCardProps) {
                       p: 0, 
                       minWidth: 'auto', 
                       mt: 0.5,
-                      color: Colors.blue,
+                      color: Colors.cerulean,
                       fontWeight: 500,
                       fontSize: '0.75rem'
                     }}
@@ -147,7 +147,7 @@ export default function RecentReviewsCard({ reviews }: RecentReviewsCardProps) {
       <Button 
         variant="text" 
         fullWidth 
-        sx={{ mt: 1, color: Colors.blue }}
+        sx={{ mt: 1, color: Colors.cerulean }}
       >
         View All Reviews
       </Button>

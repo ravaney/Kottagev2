@@ -102,7 +102,7 @@ export default function HostLogin() {
               <Typography
                 variant="h4"
                 fontWeight={700}
-                color={Colors.blue}
+                color={Colors.cerulean}
                 gutterBottom
               >
                 Host Portal
@@ -124,10 +124,10 @@ export default function HostLogin() {
                   mb: 3,
                 }}
               >
-                <BusinessIcon sx={{ color: Colors.blue, fontSize: 20 }} />
+                <BusinessIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
                 <Typography
                   variant="body2"
-                  color={Colors.blue}
+                  color={Colors.cerulean}
                   fontWeight={600}
                 >
                   Professional property management dashboard
@@ -155,10 +155,10 @@ export default function HostLogin() {
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
                     '&:hover fieldset': {
-                      borderColor: Colors.blue,
+                      borderColor: Colors.cerulean,
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: Colors.blue,
+                      borderColor: Colors.cerulean,
                     },
                   },
                 }}
@@ -182,10 +182,10 @@ export default function HostLogin() {
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
                     '&:hover fieldset': {
-                      borderColor: Colors.blue,
+                      borderColor: Colors.cerulean,
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: Colors.blue,
+                      borderColor: Colors.cerulean,
                     },
                   },
                 }}
@@ -216,7 +216,7 @@ export default function HostLogin() {
                 size="large"
                 disabled={isPending}
                 sx={{
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   '&:hover': { backgroundColor: Colors.raspberry },
                   py: 1.5,
                   fontSize: '1.1rem',
@@ -245,7 +245,7 @@ export default function HostLogin() {
               <Link
                 to="/forgot-password"
                 style={{
-                  color: Colors.blue,
+                  color: Colors.cerulean,
                   textDecoration: 'none',
                   fontSize: 14,
                   fontWeight: 500,
@@ -264,7 +264,7 @@ export default function HostLogin() {
                 <Link
                   to="/signup"
                   style={{
-                    color: Colors.blue,
+                    color: Colors.cerulean,
                     textDecoration: 'none',
                     fontWeight: 600,
                   }}
@@ -277,7 +277,7 @@ export default function HostLogin() {
                 <Link
                   to="/Login"
                   style={{
-                    color: Colors.blue,
+                    color: Colors.cerulean,
                     textDecoration: 'none',
                     fontWeight: 600,
                   }}
@@ -308,7 +308,7 @@ export default function HostLogin() {
                 <Typography
                   variant="body2"
                   fontWeight={600}
-                  color={Colors.blue}
+                  color={Colors.cerulean}
                 >
                   Contact Host Support: support@blukottage.com | +1-876-XXX-XXXX
                 </Typography>
@@ -320,3 +320,4 @@ export default function HostLogin() {
     </Box>
   );
 }
+

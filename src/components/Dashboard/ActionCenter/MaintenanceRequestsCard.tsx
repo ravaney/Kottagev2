@@ -70,7 +70,7 @@ export default function MaintenanceRequestsCard({
     switch (type) {
       case 'cleaning': return <CleaningServicesIcon sx={{ fontSize: 20, color: '#4caf50' }} />;
       case 'repair': return <HandymanIcon sx={{ fontSize: 20, color: '#ff9800' }} />;
-      default: return <BuildIcon sx={{ fontSize: 20, color: Colors.blue }} />;
+      default: return <BuildIcon sx={{ fontSize: 20, color: Colors.cerulean }} />;
     }
   };
   
@@ -106,8 +106,8 @@ export default function MaintenanceRequestsCard({
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <BuildIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-          <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+          <BuildIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+          <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
             Maintenance Requests
           </Typography>
         </Box>
@@ -116,7 +116,7 @@ export default function MaintenanceRequestsCard({
           size="small" 
           startIcon={<AddIcon />}
           onClick={onNewRequest}
-          sx={{ backgroundColor: Colors.blue }}
+          sx={{ backgroundColor: Colors.cerulean }}
         >
           New Request
         </Button>

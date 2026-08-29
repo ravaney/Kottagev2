@@ -158,7 +158,7 @@ const HostLanding: React.FC = () => {
                     onClick={() => navigate('/signup')}
                     sx={{
                       backgroundColor: 'white',
-                      color: Colors.blue,
+                      color: Colors.cerulean,
                       px: 4,
                       py: 1.5,
                       fontSize: '1.1rem',
@@ -226,7 +226,7 @@ const HostLanding: React.FC = () => {
                   <Typography
                     variant="h3"
                     fontWeight={700}
-                    color={Colors.blue}
+                    color={Colors.cerulean}
                     gutterBottom
                   >
                     {stat.number}
@@ -457,3 +457,4 @@ const HostLanding: React.FC = () => {
 };
 
 export default HostLanding;
+

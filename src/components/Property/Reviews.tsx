@@ -26,7 +26,7 @@ const reviews = {
 };
 
 const style = mergeStyleSets({
-  label: { color: Colors.blue, whiteSpace: "nowrap" },
+  label: { color: Colors.cerulean, whiteSpace: "nowrap" },
   icon: { color: Colors.raspberry },
   review: { textAlign: "right", alignItems: "right", justifyContent: "right" },
   commentBox: { width: "100%" },
@@ -86,3 +86,4 @@ function Reviews() {
 }
 
 export default Reviews;
+

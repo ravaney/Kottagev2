@@ -368,7 +368,7 @@ The file contains: ${doc.description}`;
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Typography variant="h6" gutterBottom color={Colors.cerulean} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <DescriptionIcon />
         Developer Documentation
       </Typography>
@@ -506,4 +506,5 @@ The file contains: ${doc.description}`;
     </Box>
   );
 };
+
 

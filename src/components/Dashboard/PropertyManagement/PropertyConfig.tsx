@@ -153,7 +153,7 @@ const PropertyCard = memo(
             variant="h6"
             component="div"
             fontWeight={600}
-            color={Colors.blue}
+            color={Colors.cerulean}
           >
             {property.name}
           </Typography>
@@ -182,7 +182,7 @@ const PropertyCard = memo(
           {property.roomTypes && property.roomTypes.length > 0 && (
             <Typography
               variant="h6"
-              color={Colors.blue}
+              color={Colors.cerulean}
               fontWeight={600}
               sx={{ mt: 1 }}
             >
@@ -357,13 +357,13 @@ export default function PropertyConfig({
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h5" fontWeight={600} color={Colors.blue}>
+        <Typography variant="h5" fontWeight={600} color={Colors.cerulean}>
           My Properties
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          sx={{ backgroundColor: Colors.blue }}
+          sx={{ backgroundColor: Colors.cerulean }}
           onClick={onAddProperty}
         >
           Add Property
@@ -394,3 +394,4 @@ export default function PropertyConfig({
     </Box>
   );
 }
+

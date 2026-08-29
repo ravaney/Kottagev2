@@ -145,7 +145,7 @@ export default function GuestSignup() {
                   mb: 3,
                 }}
               >
-                <HotelIcon sx={{ color: Colors.blue, fontSize: 20 }} />
+                <HotelIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
                 <Typography
                   variant="body2"
                   color="text.secondary"
@@ -185,7 +185,7 @@ export default function GuestSignup() {
                     onClick={openFileSelector}
                     startIcon={<PhotoCameraIcon />}
                     size="small"
-                    sx={{ color: Colors.blue, borderColor: Colors.blue }}
+                    sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
                   >
                     Change Photo
                   </Button>
@@ -208,7 +208,7 @@ export default function GuestSignup() {
                     onClick={openFileSelector}
                     startIcon={<PhotoCameraIcon />}
                     size="small"
-                    sx={{ color: Colors.blue, borderColor: Colors.blue }}
+                    sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
                   >
                     Add Photo
                   </Button>
@@ -230,10 +230,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -252,10 +252,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -275,10 +275,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -296,10 +296,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -320,10 +320,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -343,10 +343,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -366,10 +366,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -389,10 +389,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -412,10 +412,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -441,10 +441,10 @@ export default function GuestSignup() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       '&:hover fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: Colors.blue,
+                        borderColor: Colors.cerulean,
                       },
                     },
                   }}
@@ -465,11 +465,11 @@ export default function GuestSignup() {
                 label={
                   <Typography variant="body2">
                     I agree to the{' '}
-                    <Link to="/terms" style={{ color: Colors.blue }}>
+                    <Link to="/terms" style={{ color: Colors.cerulean }}>
                       Terms of Service
                     </Link>{' '}
                     and{' '}
-                    <Link to="/privacy" style={{ color: Colors.blue }}>
+                    <Link to="/privacy" style={{ color: Colors.cerulean }}>
                       Privacy Policy
                     </Link>
                   </Typography>
@@ -505,7 +505,7 @@ export default function GuestSignup() {
                 !password
               }
               sx={{
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.cerulean,
                 '&:hover': { backgroundColor: Colors.raspberry },
                 py: 1.5,
                 fontSize: '1.1rem',
@@ -534,7 +534,7 @@ export default function GuestSignup() {
                 <Link
                   to="/Login"
                   style={{
-                    color: Colors.blue,
+                    color: Colors.cerulean,
                     textDecoration: 'none',
                     fontWeight: 600,
                   }}
@@ -547,7 +547,7 @@ export default function GuestSignup() {
                 <Link
                   to="/host-signup"
                   style={{
-                    color: Colors.blue,
+                    color: Colors.cerulean,
                     textDecoration: 'none',
                     fontWeight: 600,
                   }}
@@ -562,3 +562,4 @@ export default function GuestSignup() {
     </Box>
   );
 }
+

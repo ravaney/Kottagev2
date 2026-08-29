@@ -73,7 +73,7 @@ export default function StaffLogin() {
         sx={{ backgroundColor: '#f5f5f5' }}
       >
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <CircularProgress size={40} sx={{ color: Colors.blue, mb: 2 }} />
+          <CircularProgress size={40} sx={{ color: Colors.cerulean, mb: 2 }} />
           <Typography variant="body1" color="text.secondary">
             Verifying staff credentials...
           </Typography>
@@ -116,7 +116,7 @@ export default function StaffLogin() {
               <Typography
                 variant="h4"
                 fontWeight={700}
-                color={Colors.blue}
+                color={Colors.cerulean}
                 gutterBottom
               >
                 Staff Portal
@@ -140,8 +140,8 @@ export default function StaffLogin() {
                   border: '1px solid #bbdefb'
                 }}
               >
-                <LockIcon sx={{ color: Colors.blue, fontSize: 20 }} />
-                <Typography variant="body2" color={Colors.blue} fontWeight={600}>
+                <LockIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
+                <Typography variant="body2" color={Colors.cerulean} fontWeight={600}>
                   Staff credentials required
                 </Typography>
               </Box>
@@ -191,7 +191,7 @@ export default function StaffLogin() {
                 size="large"
                 disabled={isPending}
                 sx={{
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   '&:hover': { backgroundColor: Colors.raspberry },
                   py: 1.5,
                   fontSize: '1.1rem',
@@ -217,7 +217,7 @@ export default function StaffLogin() {
                 <Typography
                   component="span"
                   variant="body2"
-                  sx={{ color: Colors.blue, fontWeight: 600 }}
+                  sx={{ color: Colors.cerulean, fontWeight: 600 }}
                 >
                   Contact IT Support
                 </Typography>
@@ -236,3 +236,4 @@ export default function StaffLogin() {
     </Box>
   );
 }
+

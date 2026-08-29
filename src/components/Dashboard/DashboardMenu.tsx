@@ -19,13 +19,17 @@ import { Colors } from '../constants';
 import { useAuth } from '../../hooks';
 import { useChat } from '../../contexts/ChatContext';
 import { useUserClaims } from '../../hooks/useUserClaims';
+import { useHostInquiries } from '../../hooks/useHostInquiries';
 
 export default function DashboardMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const { appUser, firebaseUser } = useAuth();
-  const { chats } = useChat();
+  const { totalUnreadMessages } = useChat();
   const { claims } = useUserClaims();
+  const { unreadCount: unreadInquiryCount } = useHostInquiries(
+    firebaseUser?.uid || null
+  );
   // Check if user has host permissions
   const isHost =
     claims && (claims.role === 'host' || claims.userType === 'host');
@@ -37,11 +41,6 @@ export default function DashboardMenu() {
     day: 'numeric',
   });
 
-  // Calculate total unread messages
-  const totalUnreadMessages = chats.reduce((total, chat) => {
-    const currentUserId = firebaseUser?.uid || '';
-    return total + (chat.unreadCount?.[currentUserId] || 0);
-  }, 0);
   const getActiveTab = () => {
     const path = location.pathname;
     if (isHost) {
@@ -60,6 +59,9 @@ export default function DashboardMenu() {
       return 0; // Default to Messages for guests
     }
   };
+
+  const totalMessageCenterCount =
+    totalUnreadMessages + (isHost ? unreadInquiryCount : 0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     if (isHost) {
@@ -104,12 +106,12 @@ export default function DashboardMenu() {
           sx={{ mb: 2 }}
         >
           <Box display="flex" alignItems="center" gap={2}>
-            <DashboardIcon sx={{ color: Colors.blue, fontSize: 32 }} />
+            <DashboardIcon sx={{ color: Colors.cerulean, fontSize: 32 }} />
             <Box>
               <Typography
                 variant="h4"
                 fontWeight={700}
-                color={Colors.blue}
+                color={Colors.cerulean}
                 sx={{ lineHeight: 1 }}
               >
                 Dashboard
@@ -122,7 +124,7 @@ export default function DashboardMenu() {
                   label={isHost ? 'Host' : 'Guest'}
                   size="small"
                   sx={{
-                    backgroundColor: isHost ? Colors.blue : Colors.raspberry,
+                    backgroundColor: isHost ? Colors.cerulean : Colors.raspberry,
                     color: 'white',
                     fontWeight: 600,
                     fontSize: '0.75rem',
@@ -159,7 +161,7 @@ export default function DashboardMenu() {
                 fontSize: '0.9rem',
               },
               '& .MuiTabs-indicator': {
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.cerulean,
                 height: 3,
               },
             }}
@@ -171,7 +173,7 @@ export default function DashboardMenu() {
                 label="Home"
                 iconPosition="start"
                 sx={{
-                  color: getActiveTab() === 0 ? Colors.blue : 'text.secondary',
+                  color: getActiveTab() === 0 ? Colors.cerulean : 'text.secondary',
                 }}
               />
             )}
@@ -196,14 +198,14 @@ export default function DashboardMenu() {
                 label="Action Center"
                 iconPosition="start"
                 sx={{
-                  color: getActiveTab() === 1 ? Colors.blue : 'text.secondary',
+                  color: getActiveTab() === 1 ? Colors.cerulean : 'text.secondary',
                 }}
               />
             )}
             <Tab
               icon={
                 <Badge
-                  badgeContent={totalUnreadMessages}
+                  badgeContent={totalMessageCenterCount}
                   color="primary"
                   sx={{
                     '& .MuiBadge-badge': {
@@ -221,7 +223,7 @@ export default function DashboardMenu() {
               sx={{
                 color:
                   getActiveTab() === (isHost ? 2 : 0)
-                    ? Colors.blue
+                    ? Colors.cerulean
                     : 'text.secondary',
               }}
             />
@@ -232,7 +234,7 @@ export default function DashboardMenu() {
                 label="My Reservations"
                 iconPosition="start"
                 sx={{
-                  color: getActiveTab() === 1 ? Colors.blue : 'text.secondary',
+                  color: getActiveTab() === 1 ? Colors.cerulean : 'text.secondary',
                 }}
               />
             )}
@@ -245,7 +247,7 @@ export default function DashboardMenu() {
                   iconPosition="start"
                   sx={{
                     color:
-                      getActiveTab() === 3 ? Colors.blue : 'text.secondary',
+                      getActiveTab() === 3 ? Colors.cerulean : 'text.secondary',
                   }}
                 />
                 <Tab
@@ -254,7 +256,7 @@ export default function DashboardMenu() {
                   iconPosition="start"
                   sx={{
                     color:
-                      getActiveTab() === 4 ? Colors.blue : 'text.secondary',
+                      getActiveTab() === 4 ? Colors.cerulean : 'text.secondary',
                   }}
                 />
               </>
@@ -269,3 +271,4 @@ export default function DashboardMenu() {
     </Box>
   );
 }
+

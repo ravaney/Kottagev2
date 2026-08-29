@@ -1,0 +1,30 @@
+{
+  "/": {
+    "title": "Blue Kottage | Jamaica stays, events, and nomad travel",
+    "description": "Discover Jamaica stays, upcoming events, and remote-work-ready escapes with Blue Kottage."
+  },
+  "/search": {
+    "title": "Search Stays | Blue Kottage",
+    "description": "Search Jamaica stays by destination, travel dates, guest count, and travel style."
+  },
+  "/explore": {
+    "title": "Explore Jamaica | Blue Kottage",
+    "description": "Explore Jamaica through coastlines, mountains, city weekends, and slower remote-work escapes."
+  },
+  "/Explore": {
+    "title": "Explore Jamaica | Blue Kottage",
+    "description": "Explore Jamaica through coastlines, mountains, city weekends, and slower remote-work escapes."
+  },
+  "/nomad-network": {
+    "title": "Nomads | Remote-work stays in Jamaica | Blue Kottage",
+    "description": "Browse Nomad Verified stays in Jamaica with workspace details, coworking access, and fast Wi-Fi."
+  },
+  "/Events": {
+    "title": "Upcoming Events in Jamaica | Blue Kottage",
+    "description": "Find upcoming Jamaica festivals, nightlife, retreats, and cultural events before you book the stay."
+  },
+  "/events": {
+    "title": "Upcoming Events in Jamaica | Blue Kottage",
+    "description": "Find upcoming Jamaica festivals, nightlife, retreats, and cultural events before you book the stay."
+  }
+}

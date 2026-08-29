@@ -115,8 +115,8 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
   return (
     <Paper elevation={3} sx={{ p: 2,  height:400 }}>
       {/* <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
-        <CalendarTodayIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-        <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+        <CalendarTodayIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+        <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
           Booking Calendar
         </Typography>
       </Box> */}
@@ -149,7 +149,7 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
           eventPropGetter={() => ({
             style: {
               backgroundColor: Colors.raspberry,
-              borderColor: Colors.blue,
+              borderColor: Colors.cerulean,
               color: 'white',
               borderRadius: '4px',
               border: 'none',
@@ -163,7 +163,7 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
         <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
           <DialogTitle sx={{ pb: 1 }}>
             <Box display="flex" alignItems="center" gap={1}>
-              <DateRangeIcon sx={{ color: Colors.blue }} />
+              <DateRangeIcon sx={{ color: Colors.cerulean }} />
               <Typography variant="h6" fontWeight={600}>
                 Booking Details
               </Typography>
@@ -194,7 +194,7 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
                               month: 'short', day: 'numeric' 
                             })}
                             size="small"
-                            sx={{ backgroundColor: Colors.blue, color: 'white' }}
+                            sx={{ backgroundColor: Colors.cerulean, color: 'white' }}
                           />
                           <Typography variant="caption" sx={{ alignSelf: 'center' }}>to</Typography>
                           <Chip 
@@ -231,7 +231,7 @@ export default function BookingCalendar({ events }: BookingCalendarProps) {
                           month: 'long', 
                           day: 'numeric' 
                         })}
-                        sx={{ backgroundColor: Colors.blue, color: 'white', mb: 1 }}
+                        sx={{ backgroundColor: Colors.cerulean, color: 'white', mb: 1 }}
                       />
                     </Box>
                     

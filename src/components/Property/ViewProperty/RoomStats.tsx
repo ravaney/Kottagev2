@@ -26,7 +26,7 @@ export const RoomStats: React.FC<RoomStatsProps> = ({
     return (
       <Box sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
-          <People sx={{ color: Colors.blue, fontSize: 20 }} />
+          <People sx={{ color: Colors.cerulean, fontSize: 20 }} />
           <Typography variant="body2" fontWeight={600}>
             Up to {room.maxOccupancy} guests
           </Typography>
@@ -48,7 +48,7 @@ export const RoomStats: React.FC<RoomStatsProps> = ({
       <Grid container spacing={2}>
         <Grid item xs={showAvailability ? 6 : 12}>
           <Box display="flex" alignItems="center" gap={1}>
-            <People sx={{ color: Colors.blue, fontSize: 20 }} />
+            <People sx={{ color: Colors.cerulean, fontSize: 20 }} />
             <Typography variant="body2" fontWeight={600}>
               Up to {room.maxOccupancy} guests
             </Typography>
@@ -68,3 +68,4 @@ export const RoomStats: React.FC<RoomStatsProps> = ({
     </Box>
   );
 };
+

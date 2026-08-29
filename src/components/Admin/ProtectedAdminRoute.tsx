@@ -25,7 +25,7 @@ export default function ProtectedAdminRoute({ children }: ProtectedAdminRoutePro
         sx={{ backgroundColor: '#f5f5f5' }}
       >
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <CircularProgress size={40} sx={{ color: Colors.blue, mb: 2 }} />
+          <CircularProgress size={40} sx={{ color: Colors.cerulean, mb: 2 }} />
           <Typography variant="body1" color="text.secondary">
             Loading admin portal...
           </Typography>
@@ -50,7 +50,7 @@ export default function ProtectedAdminRoute({ children }: ProtectedAdminRoutePro
         sx={{ backgroundColor: '#f5f5f5' }}
       >
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <CircularProgress size={40} sx={{ color: Colors.blue, mb: 2 }} />
+          <CircularProgress size={40} sx={{ color: Colors.cerulean, mb: 2 }} />
           <Typography variant="body1" color="text.secondary">
             Verifying administrator credentials...
           </Typography>
@@ -75,3 +75,4 @@ export default function ProtectedAdminRoute({ children }: ProtectedAdminRoutePro
   // User is authenticated and has admin access
   return <>{children}</>;
 }
+

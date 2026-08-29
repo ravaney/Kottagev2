@@ -234,7 +234,7 @@ export default function StaffManagement() {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight={700} color={Colors.blue} gutterBottom>
+        <Typography variant="h4" fontWeight={700} color={Colors.cerulean} gutterBottom>
           Staff Management
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -246,7 +246,7 @@ export default function StaffManagement() {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Paper sx={{ p: 3, textAlign: 'center' }}>
-            <Typography variant="h3" fontWeight={700} color={Colors.blue}>
+            <Typography variant="h3" fontWeight={700} color={Colors.cerulean}>
               {staffData.length}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -299,7 +299,7 @@ export default function StaffManagement() {
               startIcon={<PersonAddIcon />}
               onClick={handleAddStaff}
               sx={{
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.cerulean,
                 '&:hover': { backgroundColor: Colors.raspberry }
               }}
             >
@@ -337,7 +337,7 @@ export default function StaffManagement() {
                 <TableRow key={staff.id} hover>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Avatar sx={{ bgcolor: Colors.blue, width: 40, height: 40 }}>
+                      <Avatar sx={{ bgcolor: Colors.cerulean, width: 40, height: 40 }}>
                         {staff.name.split(' ').map(n => n[0]).join('')}
                       </Avatar>
                       <Box>
@@ -354,7 +354,7 @@ export default function StaffManagement() {
                     <Chip 
                       label={staff.role} 
                       size="small" 
-                      sx={{ backgroundColor: '#e3f2fd', color: Colors.blue }}
+                      sx={{ backgroundColor: '#e3f2fd', color: Colors.cerulean }}
                     />
                   </TableCell>
                   <TableCell>
@@ -405,7 +405,7 @@ export default function StaffManagement() {
                       <IconButton
                         size="small"
                         onClick={() => handleEditStaff(staff)}
-                        sx={{ color: Colors.blue }}
+                        sx={{ color: Colors.cerulean }}
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
@@ -511,7 +511,7 @@ export default function StaffManagement() {
             onClick={handleSaveStaff}
             variant="contained"
             sx={{
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.cerulean,
               '&:hover': { backgroundColor: Colors.raspberry }
             }}
           >
@@ -565,3 +565,4 @@ export default function StaffManagement() {
     </Container>
   );
 }
+

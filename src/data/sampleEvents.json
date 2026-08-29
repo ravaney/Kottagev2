@@ -1,0 +1,348 @@
+[
+  {
+    "id": "reggae-sumfest-2026",
+    "title": "Reggae Sumfest 2026",
+    "summary": "Jamaica's flagship summer music festival returns to Montego Bay with a full week of parties and live showcase nights.",
+    "description": "Reggae Sumfest is one of Jamaica's signature summer music events, built around a full festival week in Montego Bay. The official site highlights a mid-July 2026 staging, lead-in parties, and major concert nights at Catherine Hall. This sample record uses the published festival timing, official links, and announced artist teasers so the detail page feels grounded while ticket checkout remains scaffolded inside the app.",
+    "image": "https://reggaesumfest.com/wp-content/uploads/2025/04/CEZ5976-890x664.jpg",
+    "startDate": "2026-07-12T18:00:00.000Z",
+    "endDate": "2026-07-18T23:30:00.000Z",
+    "category": "Music",
+    "status": "published",
+    "featured": true,
+    "organizer": "Downsound Entertainment",
+    "venue": {
+      "name": "Catherine Hall Entertainment Complex",
+      "city": "Montego Bay",
+      "parish": "St. James",
+      "address": "Catherine Hall, Montego Bay"
+    },
+    "tags": ["Reggae", "Dancehall", "Festival Week", "Montego Bay"],
+    "perks": [
+      "Festival week programming",
+      "Headline showcase nights",
+      "Official ticket details on the Sumfest site"
+    ],
+    "lineup": [
+      "Vybz Kartel",
+      "Masicka",
+      "Toni Braxton",
+      "Tarrus Riley",
+      "Protoje",
+      "Lila Ike"
+    ],
+    "ticketTiers": [
+      {
+        "id": "festival-pass",
+        "name": "Festival Pass - Price TBA",
+        "price": 0,
+        "remaining": 0,
+        "perks": [
+          "Scaffolded reservation flow in app",
+          "Live pricing handled on the official event site"
+        ]
+      },
+      {
+        "id": "vip-access",
+        "name": "VIP Access - Price TBA",
+        "price": 0,
+        "remaining": 0,
+        "perks": [
+          "Premium access placeholder for the app flow",
+          "Check the official event site for current availability"
+        ]
+      }
+    ],
+    "ticketUrl": "https://reggaesumfest.com/tickets/",
+    "website": "https://reggaesumfest.com/",
+    "createdAt": "2026-03-17T09:00:00.000Z",
+    "source": "sample"
+  },
+  {
+    "id": "dream-wknd-2026",
+    "title": "Dream Wknd 2026",
+    "summary": "A multi-day Montego Bay party series blending beach events, nightlife, and premium weekend passes.",
+    "description": "Dream Wknd is one of Jamaica's best-known summer party series, with official 2026 dates spanning late July into early August in Montego Bay. The official FAQ describes season tickets, individual event tickets, and premium tiers such as Gold and Diamond, so this sample event leans into nightlife discovery while keeping purchase and reservation flows scaffolded in the app.",
+    "image": "https://dreamwknd.com/wp-content/uploads/2023/09/dream_24_wknd_2023_grid-min-1.png",
+    "startDate": "2026-07-30T20:00:00.000Z",
+    "endDate": "2026-08-03T10:00:00.000Z",
+    "category": "Nightlife",
+    "status": "published",
+    "featured": true,
+    "organizer": "Dream Entertainment Limited",
+    "venue": {
+      "name": "Multiple Montego Bay venues",
+      "city": "Montego Bay",
+      "parish": "St. James",
+      "address": "Venue lineup announced by Dream Wknd"
+    },
+    "tags": ["Party Series", "Montego Bay", "Summer Weekend", "Premium Events"],
+    "perks": [
+      "Season pass planning",
+      "Gold and Diamond tier concepts",
+      "Multiple event venues across Montego Bay"
+    ],
+    "lineup": [],
+    "ticketTiers": [
+      {
+        "id": "season-ticket",
+        "name": "Season Ticket - Price TBA",
+        "price": 0,
+        "remaining": 0,
+        "perks": [
+          "Built around the official multi-event weekend format",
+          "Use the official Dream Wknd ticket site for live pricing"
+        ]
+      },
+      {
+        "id": "gold-ticket",
+        "name": "Gold Ticket - Price TBA",
+        "price": 0,
+        "remaining": 0,
+        "perks": [
+          "Premium nightlife access placeholder",
+          "Ticket details finalized on the official ticket portal"
+        ]
+      },
+      {
+        "id": "diamond-ticket",
+        "name": "Diamond Ticket - Price TBA",
+        "price": 0,
+        "remaining": 0,
+        "perks": [
+          "Top-tier sample option for the app flow",
+          "Organizer controls live inventory and pricing"
+        ]
+      }
+    ],
+    "ticketUrl": "https://tickets.dreamwknd.com/",
+    "website": "https://dreamwknd.com/",
+    "createdAt": "2026-03-17T09:10:00.000Z",
+    "source": "sample"
+  },
+  {
+    "id": "mobay-jerk-food-festival-2026",
+    "title": "Montego Bay Jerk & Food Festival 2026",
+    "summary": "A one-day Montego Bay food event focused on jerk staples, live entertainment, and family-friendly festival energy.",
+    "description": "The official Montego Bay Jerk & Food Festival site promotes the 13th annual staging for August 1, 2026 at Catherine Hall Entertainment Center. This sample event keeps the page grounded in food discovery, live entertainment, and travel planning, while ticket reservation stays scaffolded in the app.",
+    "image": "https://montegobayjerkfestival.com/wp-content/uploads/2022/06/MontegoBayJerkFestival-2018-12.jpg",
+    "startDate": "2026-08-01T16:00:00.000Z",
+    "endDate": "2026-08-02T01:00:00.000Z",
+    "category": "Food & Drink",
+    "status": "published",
+    "featured": false,
+    "organizer": "Summertainment Promotions",
+    "venue": {
+      "name": "Catherine Hall Entertainment Center",
+      "city": "Montego Bay",
+      "parish": "St. James",
+      "address": "Catherine Hall, Montego Bay"
+    },
+    "tags": ["Jerk Festival", "Food & Drink", "Montego Bay", "Live Entertainment"],
+    "perks": [
+      "Jerk food vendors",
+      "Festival entertainment",
+      "Official ticket link available"
+    ],
+    "lineup": [],
+    "ticketTiers": [
+      {
+        "id": "general-admission",
+        "name": "General Admission - Price TBA",
+        "price": 0,
+        "remaining": 0,
+        "perks": [
+          "Sample ticket flow for the event page",
+          "Official pricing is managed on the festival site"
+        ]
+      },
+      {
+        "id": "vip-patio",
+        "name": "VIP Patio - Price TBA",
+        "price": 0,
+        "remaining": 0,
+        "perks": [
+          "Premium sample option for the demo flow",
+          "Check the official site for current inventory"
+        ]
+      }
+    ],
+    "ticketUrl": "https://www.ticketgateway.com/mobayjerkfoodfestival",
+    "website": "https://montegobayjerkfestival.com/",
+    "createdAt": "2026-03-17T09:20:00.000Z",
+    "source": "sample"
+  },
+  {
+    "id": "sample-kingston-sunset-sessions",
+    "title": "Kingston Sunset Sessions",
+    "summary": "A rooftop evening of live reggae, craft cocktails, and skyline views in New Kingston.",
+    "description": "Kingston Sunset Sessions brings together local artists, DJ sets, and a polished rooftop atmosphere for guests who want an easy, stylish night out. Expect live performances, curated food stations, and a late-evening crowd that feels social without being chaotic.",
+    "image": "/Geejam2.jpg",
+    "startDate": "2026-04-18T18:30:00.000Z",
+    "endDate": "2026-04-19T01:00:00.000Z",
+    "category": "Music",
+    "status": "published",
+    "featured": false,
+    "organizer": "Yaad Live",
+    "venue": {
+      "name": "Skyline Terrace",
+      "city": "Kingston",
+      "parish": "St. Andrew",
+      "address": "10 Trafalgar Road, New Kingston"
+    },
+    "tags": ["Live Music", "Rooftop", "Date Night"],
+    "perks": ["Fast entry lane", "Cocktail tasting credit", "VIP lounge option"],
+    "lineup": ["DJ Solstice", "Riddim Theory", "Amara Blake"],
+    "ticketTiers": [
+      {
+        "id": "general",
+        "name": "General Admission",
+        "price": 45,
+        "remaining": 180,
+        "perks": ["Event entry", "Welcome drink"]
+      },
+      {
+        "id": "vip",
+        "name": "VIP Deck",
+        "price": 95,
+        "remaining": 40,
+        "perks": ["Priority entry", "Reserved lounge seating", "2 drink tokens"]
+      }
+    ],
+    "coupon": {
+      "code": "SUNSET10",
+      "description": "Save on early ticket purchases this week.",
+      "discountText": "10% off General Admission",
+      "expiresAt": "2026-04-10T23:59:00.000Z"
+    },
+    "website": "https://example.com/events/sunset-sessions",
+    "createdAt": "2026-03-10T09:00:00.000Z",
+    "source": "sample"
+  },
+  {
+    "id": "sample-portland-wellness-weekend",
+    "title": "Portland Wellness Weekend",
+    "summary": "Three days of guided movement, coastal breakfasts, and restorative sessions near the sea.",
+    "description": "Designed for guests who want a softer pace, Portland Wellness Weekend combines yoga flows, sound baths, healthy dining pop-ups, and optional sunrise hikes. It is built to feel premium, calm, and approachable for solo travelers or friend groups.",
+    "image": "/Port_antonio2.jpg",
+    "startDate": "2026-05-22T14:00:00.000Z",
+    "endDate": "2026-05-24T20:00:00.000Z",
+    "category": "Wellness",
+    "status": "published",
+    "featured": false,
+    "organizer": "Blue Coast Collective",
+    "venue": {
+      "name": "Frenchman Cove Pavilion",
+      "city": "Port Antonio",
+      "parish": "Portland",
+      "address": "Frenchman Cove, Drapers"
+    },
+    "tags": ["Wellness", "Weekend Retreat", "Outdoor Sessions"],
+    "perks": ["Morning yoga", "Healthy brunch included", "Meditation sessions"],
+    "lineup": ["Nia Morgan", "Kai Rivers", "Dr. Alicia James"],
+    "ticketTiers": [
+      {
+        "id": "retreat-pass",
+        "name": "Weekend Retreat Pass",
+        "price": 160,
+        "remaining": 65,
+        "perks": ["All classes", "Brunch access", "Welcome wellness kit"]
+      }
+    ],
+    "coupon": {
+      "code": "RESET15",
+      "description": "Reserve early and save on retreat passes.",
+      "discountText": "15% off weekend passes",
+      "expiresAt": "2026-05-01T23:59:00.000Z"
+    },
+    "createdAt": "2026-03-08T11:30:00.000Z",
+    "source": "sample"
+  },
+  {
+    "id": "sample-mobay-food-rum-festival",
+    "title": "Montego Bay Food & Rum Festival",
+    "summary": "Chef tastings, local distillers, and live performances celebrating Jamaica's food culture.",
+    "description": "This festival is a lively culinary showcase with tasting booths, chef-led pairings, rum education sessions, and a stronger premium experience for both locals and travelers. It works well as a trip anchor for visitors already staying in Montego Bay.",
+    "image": "/negril.jpg",
+    "startDate": "2026-07-11T17:00:00.000Z",
+    "endDate": "2026-07-11T23:30:00.000Z",
+    "category": "Food & Drink",
+    "status": "published",
+    "featured": false,
+    "organizer": "Island Table",
+    "venue": {
+      "name": "Harbour Lawn",
+      "city": "Montego Bay",
+      "parish": "St. James",
+      "address": "Freeport Waterfront, Montego Bay"
+    },
+    "tags": ["Food Festival", "Rum Tasting", "Chef Demos"],
+    "perks": ["Unlimited tastings zone", "Rum masterclass option", "Chef meet-and-greet"],
+    "lineup": ["Chef Andre Fennell", "Saint Jago Rum House", "Mello Vibes Band"],
+    "ticketTiers": [
+      {
+        "id": "festival-pass",
+        "name": "Festival Pass",
+        "price": 70,
+        "remaining": 220,
+        "perks": ["General entry", "Tasting passport"]
+      },
+      {
+        "id": "premium-pass",
+        "name": "Premium Pairing Pass",
+        "price": 130,
+        "remaining": 75,
+        "perks": ["Priority tasting line", "Reserved demo seating", "Premium pours"]
+      }
+    ],
+    "createdAt": "2026-03-11T12:15:00.000Z",
+    "source": "sample"
+  },
+  {
+    "id": "sample-blue-mountain-founders-retreat",
+    "title": "Blue Mountain Founders Retreat",
+    "summary": "A business-focused mountain retreat with talks, coworking blocks, and curated networking.",
+    "description": "Built for founders, creatives, and remote-first operators, this retreat pairs strategy sessions with better scenery. Guests can join small-group workshops, coworking hours, fireside conversations, and local coffee experiences across the weekend.",
+    "image": "/bluemountain.jpg",
+    "startDate": "2026-09-04T15:00:00.000Z",
+    "endDate": "2026-09-06T18:00:00.000Z",
+    "category": "Business",
+    "status": "published",
+    "featured": true,
+    "organizer": "Nomad Network Jamaica",
+    "venue": {
+      "name": "Blue Peak Lodge",
+      "city": "Newcastle",
+      "parish": "St. Andrew",
+      "address": "Newcastle Road, Blue Mountains"
+    },
+    "tags": ["Networking", "Business Retreat", "Remote Work"],
+    "perks": ["Coworking lounge", "Founder roundtables", "Coffee farm tour"],
+    "lineup": ["Shanice Barrett", "Andre Campbell", "Talia Forbes"],
+    "ticketTiers": [
+      {
+        "id": "summit-pass",
+        "name": "Summit Pass",
+        "price": 210,
+        "remaining": 90,
+        "perks": ["All talks", "Coworking access", "Networking dinner"]
+      },
+      {
+        "id": "executive-pass",
+        "name": "Executive Cabin Pass",
+        "price": 340,
+        "remaining": 24,
+        "perks": ["All summit perks", "Private mastermind", "VIP transport"]
+      }
+    ],
+    "coupon": {
+      "code": "FOUNDER20",
+      "description": "For early remote-work travelers booking this retreat.",
+      "discountText": "$20 off Summit Passes",
+      "expiresAt": "2026-08-12T23:59:00.000Z"
+    },
+    "ticketUrl": "https://example.com/events/blue-mountain-founders-retreat",
+    "createdAt": "2026-03-12T15:00:00.000Z",
+    "source": "sample"
+  }
+]

@@ -3,6 +3,10 @@ import { database } from '../firebase';
 import { get, ref } from 'firebase/database';
 import { Kottage } from './propertyHooks';
 import { checkPropertyAvailability } from './useAvailability';
+import {
+  getSeededPropertyById,
+  mergeSeededProperties,
+} from '../data/seededProperties';
 
 export interface SearchData {
   location: string;
@@ -15,6 +19,10 @@ export interface SearchData {
   };
   propertyType?: string;
   amenities?: string[];
+  nomadVerified?: boolean;
+  coworkingAccess?: boolean;
+  privateWorkspace?: boolean;
+  wifiSpeedMin?: number;
 }
 
 export interface SearchFilters {
@@ -27,34 +35,52 @@ export interface SearchFilters {
   propertyTypes?: string[];
   amenities?: string[];
   minRating?: number;
+  nomadVerified?: boolean;
+  coworkingAccess?: boolean;
+  privateWorkspace?: boolean;
+  wifiSpeedMin?: number;
 }
 
 // Extended Kottage type with Firebase key
 export type KottageWithId = Kottage & { key: string };
+
+const collectApprovedDatabaseProperties = async (): Promise<KottageWithId[]> => {
+  try {
+    const propertiesRef = ref(database, 'properties');
+    const snapshot = await get(propertiesRef);
+
+    if (!snapshot.exists()) {
+      return [];
+    }
+
+    const properties: KottageWithId[] = [];
+    snapshot.forEach(childSnapshot => {
+      const property = childSnapshot.val() as Kottage;
+      if (property.approval?.status === 'approved' && property.isListed) {
+        properties.push({
+          ...property,
+          key: childSnapshot.key!,
+        });
+      }
+    });
+
+    return properties;
+  } catch (error) {
+    console.warn(
+      'Unable to load Firebase properties, falling back to seeded listings.',
+      error
+    );
+    return [];
+  }
+};
 
 // Hook to get all approved and listed properties
 export const useProperties = () => {
   return useQuery({
     queryKey: ['properties'],
     queryFn: async () => {
-      const propertiesRef = ref(database, 'properties');
-      const snapshot = await get(propertiesRef);
-      
-      if (snapshot.exists()) {
-        const properties: KottageWithId[] = [];
-        snapshot.forEach((childSnapshot) => {
-          const property = childSnapshot.val() as Kottage;
-          // Only include approved and listed properties
-          if (property.approval?.status === 'approved' && property.isListed) {
-            properties.push({
-              ...property,
-              key: childSnapshot.key!
-            });
-          }
-        });
-        return properties;
-      }
-      return [];
+      const databaseProperties = await collectApprovedDatabaseProperties();
+      return mergeSeededProperties<KottageWithId>(databaseProperties);
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -65,25 +91,8 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
   return useQuery({
     queryKey: ['properties', 'search', searchData, filters],
     queryFn: async () => {
-      // Get all approved properties first
-      const propertiesRef = ref(database, 'properties');
-      const snapshot = await get(propertiesRef);
-      
-      if (!snapshot.exists()) {
-        return [];
-      }
-
-      let properties: KottageWithId[] = [];
-      snapshot.forEach((childSnapshot) => {
-        const property = childSnapshot.val() as Kottage;
-        // Only include approved and listed properties
-        if (property.approval?.status === 'approved' && property.isListed) {
-          properties.push({
-            ...property,
-            key: childSnapshot.key!
-          });
-        }
-      });
+      const databaseProperties = await collectApprovedDatabaseProperties();
+      let properties = mergeSeededProperties<KottageWithId>(databaseProperties);
 
       // Apply search filters
       let filteredProperties = properties;
@@ -139,6 +148,38 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
           requiredAmenities.every(amenity => 
             property.amenities?.includes(amenity)
           )
+        );
+      }
+
+      const nomadVerified =
+        searchData.nomadVerified || filters?.nomadVerified;
+      if (nomadVerified) {
+        filteredProperties = filteredProperties.filter(
+          property => property.nomad?.isVerified
+        );
+      }
+
+      const coworkingAccess =
+        searchData.coworkingAccess || filters?.coworkingAccess;
+      if (coworkingAccess) {
+        filteredProperties = filteredProperties.filter(
+          property => property.nomad?.coworkingAccess
+        );
+      }
+
+      const privateWorkspace =
+        searchData.privateWorkspace || filters?.privateWorkspace;
+      if (privateWorkspace) {
+        filteredProperties = filteredProperties.filter(
+          property => property.nomad?.privateWorkspace
+        );
+      }
+
+      const wifiSpeedMin =
+        searchData.wifiSpeedMin || filters?.wifiSpeedMin;
+      if (wifiSpeedMin) {
+        filteredProperties = filteredProperties.filter(
+          property => (property.nomad?.wifiSpeedMbps || 0) >= wifiSpeedMin
         );
       }
 
@@ -205,24 +246,8 @@ export const usePopularProperties = (limit: number = 6) => {
   return useQuery({
     queryKey: ['properties', 'popular', limit],
     queryFn: async () => {
-      const propertiesRef = ref(database, 'properties');
-      const snapshot = await get(propertiesRef);
-      
-      if (!snapshot.exists()) {
-        return [];
-      }
-
-      let properties: KottageWithId[] = [];
-      snapshot.forEach((childSnapshot) => {
-        const property = childSnapshot.val() as Kottage;
-        // Only include approved and listed properties
-        if (property.approval?.status === 'approved' && property.isListed) {
-          properties.push({
-            ...property,
-            key: childSnapshot.key!
-          });
-        }
-      });
+      const databaseProperties = await collectApprovedDatabaseProperties();
+      const properties = mergeSeededProperties<KottageWithId>(databaseProperties);
 
       // Sort by popularity score (with fallback to rating-based calculation)
       const sortedProperties = properties
@@ -245,26 +270,12 @@ export const usePropertiesByRegion = (region: string) => {
   return useQuery({
     queryKey: ['properties', 'region', region],
     queryFn: async () => {
-      const propertiesRef = ref(database, 'properties');
-      const snapshot = await get(propertiesRef);
-      
-      if (!snapshot.exists()) {
-        return [];
-      }
-
-      let properties: KottageWithId[] = [];
-      snapshot.forEach((childSnapshot) => {
-        const property = childSnapshot.val() as Kottage;
-        // Only include approved and listed properties in the specified region
-        if (property.approval?.status === 'approved' && 
-            property.isListed && 
-            property.address?.state?.toLowerCase() === region.toLowerCase()) {
-          properties.push({
-            ...property,
-            key: childSnapshot.key!
-          });
-        }
-      });
+      const databaseProperties = await collectApprovedDatabaseProperties();
+      const properties = mergeSeededProperties<KottageWithId>(
+        databaseProperties
+      ).filter(
+        property => property.address?.state?.toLowerCase() === region.toLowerCase()
+      );
 
       return properties;
     },
@@ -278,16 +289,24 @@ export const useProperty = (id: string) => {
   return useQuery({
     queryKey: ['property', id],
     queryFn: async () => {
-      const propertyRef = ref(database, `properties/${id}`);
-      const snapshot = await get(propertyRef);
-      
-      if (snapshot.exists()) {
-        const property = snapshot.val() as Kottage;
-        if (property.approval?.status === 'approved' && property.isListed) {
-          return { ...property, key: id };
+      try {
+        const propertyRef = ref(database, `properties/${id}`);
+        const snapshot = await get(propertyRef);
+
+        if (snapshot.exists()) {
+          const property = snapshot.val() as Kottage;
+          if (property.approval?.status === 'approved' && property.isListed) {
+            return { ...property, key: id };
+          }
         }
+      } catch (error) {
+        console.warn(
+          `Unable to load property ${id} from Firebase, checking seeded listings.`,
+          error
+        );
       }
-      return null;
+
+      return getSeededPropertyById(id);
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,

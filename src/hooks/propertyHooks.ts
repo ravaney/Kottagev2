@@ -8,6 +8,10 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 import { IAddress } from '../../public/QuickType';
+import {
+  getSeededPropertiesByOwnerId,
+  getSeededPropertyById,
+} from '../data/seededProperties';
 
 export interface RoomPromotion {
   id: string;
@@ -66,6 +70,24 @@ export interface IHostInfo {
   superhost?: boolean;
 }
 
+export interface NomadInfo {
+  isVerified: boolean;
+  wifiSpeedMbps?: number;
+  wifiBackupAvailable?: boolean;
+  coworkingAccess?: boolean;
+  coworkingPartner?: string;
+  coworkingAddress?: string;
+  privateWorkspace?: boolean;
+  ergonomicDeskChair?: boolean;
+  monitorRental?: boolean;
+  quietRoomAccess?: boolean;
+}
+
+export interface PropertyCoordinates {
+  latitude: number;
+  longitude: number;
+}
+
 export interface Kottage {
   id: string;
   ownerId: string;
@@ -88,6 +110,8 @@ export interface Kottage {
   bathrooms?: number;
   squareFootage?: number;
   host?: IHostInfo;
+  nomad?: NomadInfo;
+  coordinates?: PropertyCoordinates;
 }
 
 export const useAddProperty = () => {
@@ -192,6 +216,8 @@ export const useAddProperty = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['allProperties'] });
     },
   });
 };
@@ -200,10 +226,12 @@ export const useMyProperties = (): UseQueryResult<Kottage[]> => {
   return useQuery({
     queryKey: ['myProperties'],
     queryFn: async (): Promise<Kottage[]> => {
+      const currentUserId = auth?.currentUser?.uid;
+      const seededProperties = getSeededPropertiesByOwnerId(currentUserId);
       const snapshot = await get(
-        ref(database, 'users/' + auth?.currentUser?.uid + '/myProperties/')
+        ref(database, 'users/' + currentUserId + '/myProperties/')
       );
-      if (!snapshot.exists()) return [];
+      if (!snapshot.exists()) return seededProperties;
 
       const propertyIds = Object.keys(snapshot.val() as object);
       const properties = await Promise.all(
@@ -213,7 +241,15 @@ export const useMyProperties = (): UseQueryResult<Kottage[]> => {
         })
       );
 
-      return properties.filter((property) => property !== null);
+      const merged = new Map<string, Kottage>();
+      seededProperties.forEach(property => {
+        merged.set(property.id, property);
+      });
+      properties.filter((property) => property !== null).forEach(property => {
+        merged.set(property.id, property);
+      });
+
+      return Array.from(merged.values());
     },
     enabled: !!auth?.currentUser?.uid,
   });
@@ -242,7 +278,7 @@ export const useGetPropertyById = (propertyId: string | undefined) => {
       if (!propertyId) return null;
       
       const propertySnapshot = await get(ref(database, `properties/${propertyId}`));
-      if (!propertySnapshot.exists()) return null;
+      if (!propertySnapshot.exists()) return getSeededPropertyById(propertyId);
       
       return propertySnapshot.val() as Kottage;
     },
@@ -284,6 +320,8 @@ export const useAddPropertyImages = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['allProperties'] });
     },
   });
 };
@@ -306,6 +344,8 @@ export const useDeleteProperty = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['allProperties'] });
     },
   });
 };
@@ -362,6 +402,8 @@ export const useUploadApprovalDocuments = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['allProperties'] });
     },
   });
 };
@@ -408,6 +450,7 @@ export const useUpdateApprovalStatus = () => {
       console.log('Mutation succeeded, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
       queryClient.invalidateQueries({ queryKey: ['allProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
     },
     onError: (error) => {
       console.error('Mutation failed:', error);
@@ -442,6 +485,8 @@ export const useUploadRoomImages = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['allProperties'] });
     },
   });
 };
@@ -465,6 +510,9 @@ export const useUpdateProperty = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['allProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['property'] });
     },
   });
 };

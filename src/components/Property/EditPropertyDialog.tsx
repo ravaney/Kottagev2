@@ -39,6 +39,9 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import ImageIcon from '@mui/icons-material/Image';
 import { getApprovalStatusIcon, getApprovalStatusColor, propertyTypeOptions, amenitiesOptions, VisuallyHiddenInput, documentTypeOptions } from './constants';
+import { getDefaultNomadInfo } from '../../utils/nomadUtils';
+import NomadFieldsSection from './NomadFieldsSection';
+import PropertyLocationPicker from './PropertyLocationPicker';
 
 
 
@@ -73,6 +76,10 @@ export default function EditPropertyDialog({
     if (property) {
       setPropertyData({
         ...property,
+        nomad: {
+          ...getDefaultNomadInfo(),
+          ...property.nomad,
+        },
         address: {
           ...property.address,
           country: "Jamaica"
@@ -174,6 +181,20 @@ export default function EditPropertyDialog({
   const handleRoomAmenitiesChange = (index: number, event: any) => {
     const value = event.target.value;
     updateRoomType(index, 'amenities', typeof value === 'string' ? value.split(',') : value);
+  };
+
+  const handleNomadChange = (
+    field: keyof NonNullable<Kottage['nomad']>,
+    value: any
+  ) => {
+    setPropertyData(prev => ({
+      ...prev,
+      nomad: {
+        ...getDefaultNomadInfo(),
+        ...prev.nomad,
+        [field]: value,
+      },
+    }));
   };
 
   const handleUploadDocuments = () => {
@@ -411,7 +432,7 @@ export default function EditPropertyDialog({
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="h6" sx={{ mb: 2, color: Colors.blue }}>
+                <Typography variant="h6" sx={{ mb: 2, color: Colors.cerulean }}>
                   Address
                 </Typography>
               </Grid>
@@ -530,6 +551,19 @@ export default function EditPropertyDialog({
                   }
                 />
               </Grid>
+
+              <Grid item xs={12}>
+                <PropertyLocationPicker
+                  property={propertyData}
+                  disabled={isAnyOperationInProgress}
+                  onChange={(coordinates) =>
+                    setPropertyData(prev => ({
+                      ...prev,
+                      coordinates,
+                    }))
+                  }
+                />
+              </Grid>
             </Grid>
           </Box>
         )}
@@ -539,7 +573,7 @@ export default function EditPropertyDialog({
           <Box sx={{ pt: 1 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Typography variant="h6" sx={{ mb: 2, color: Colors.blue }}>
+                <Typography variant="h6" sx={{ mb: 2, color: Colors.cerulean }}>
                   Property Specifications
                 </Typography>
               </Grid>
@@ -657,6 +691,14 @@ export default function EditPropertyDialog({
                   </Select>
                 </FormControl>
               </Grid>
+
+              <Grid item xs={12}>
+                <NomadFieldsSection
+                  nomad={propertyData.nomad || getDefaultNomadInfo()}
+                  onChange={handleNomadChange}
+                  disabled={isAnyOperationInProgress}
+                />
+              </Grid>
             </Grid>
           </Box>
         )}
@@ -664,7 +706,7 @@ export default function EditPropertyDialog({
         {/* Tab 2: Property Images */}
         {tabValue === 2 && (
           <Box sx={{ pt: 1 }}>
-            <Typography variant="h6" sx={{ mb: 3, color: Colors.blue }}>
+            <Typography variant="h6" sx={{ mb: 3, color: Colors.cerulean }}>
               Property Gallery
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -692,14 +734,14 @@ export default function EditPropertyDialog({
         {tabValue === 3 && (
           <Box sx={{ pt: 1 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h6" sx={{ color: Colors.blue }}>
+              <Typography variant="h6" sx={{ color: Colors.cerulean }}>
                 Room Types & Pricing
               </Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={addRoomType}
-                sx={{ backgroundColor: Colors.blue }}
+                sx={{ backgroundColor: Colors.cerulean }}
                 disabled={isAnyOperationInProgress}
               >
                 Add Room Type
@@ -719,7 +761,7 @@ export default function EditPropertyDialog({
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={addRoomType}
-                    sx={{ backgroundColor: Colors.blue }}
+                    sx={{ backgroundColor: Colors.cerulean }}
                     disabled={isAnyOperationInProgress}
                   >
                     Add Your First Room Type
@@ -738,7 +780,7 @@ export default function EditPropertyDialog({
                           alignItems: 'center',
                           mb: 2
                         }}>
-                          <Typography variant="h6" color={Colors.blue}>
+                          <Typography variant="h6" color={Colors.cerulean}>
                             Room Type {index + 1}
                           </Typography>
                           <IconButton
@@ -879,7 +921,7 @@ export default function EditPropertyDialog({
 
                           {/* Room Images Section */}
                           <Grid item xs={12}>
-                            <Typography variant="subtitle1" sx={{ mb: 2, mt: 2, color: Colors.blue, fontWeight: 600 }}>
+                            <Typography variant="subtitle1" sx={{ mb: 2, mt: 2, color: Colors.cerulean, fontWeight: 600 }}>
                               Room Images
                             </Typography>
 
@@ -1041,7 +1083,7 @@ export default function EditPropertyDialog({
         {/* Tab 4: Approval Documents */}
         {tabValue === 4 && (
           <Box sx={{ pt: 1 }}>
-            <Typography variant="h6" sx={{ mb: 2, color: Colors.blue }}>
+            <Typography variant="h6" sx={{ mb: 2, color: Colors.cerulean }}>
               Approval Documents
             </Typography>
 
@@ -1163,7 +1205,7 @@ export default function EditPropertyDialog({
                         onClick={handleUploadDocuments}
                         disabled={isUploadingDocs || isAnyOperationInProgress}
                         startIcon={isUploadingDocs ? <CircularProgress size={20} /> : <CloudUploadIcon />}
-                        sx={{ backgroundColor: Colors.blue }}
+                        sx={{ backgroundColor: Colors.cerulean }}
                       >
                         {isUploadingDocs ? 'Uploading...' : 'Upload Documents'}
                       </Button>
@@ -1185,7 +1227,7 @@ export default function EditPropertyDialog({
           variant="contained"
           disabled={!isValid || isAnyOperationInProgress}
           startIcon={isAnyOperationInProgress ? <CircularProgress size={20} /> : null}
-          sx={{ backgroundColor: Colors.blue }}
+          sx={{ backgroundColor: Colors.cerulean }}
         >
           {isAnyOperationInProgress ?
             (isUploadingPropertyImages ? 'Uploading Property Images...' :
@@ -1198,3 +1240,4 @@ export default function EditPropertyDialog({
     </Dialog>
   );
 }
+

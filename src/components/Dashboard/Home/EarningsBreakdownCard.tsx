@@ -116,8 +116,8 @@ export default function EarningsBreakdownCard({ reservations }: EarningsBreakdow
     <Paper elevation={3} sx={{ p: 2, borderRadius: '4px',mb:1 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <AttachMoneyIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-          <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+          <AttachMoneyIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+          <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
             Earnings Breakdown
           </Typography>
         </Box>
@@ -135,8 +135,8 @@ export default function EarningsBreakdownCard({ reservations }: EarningsBreakdow
               fontSize: '0.75rem'
             },
             '& .Mui-selected': {
-              backgroundColor: `${Colors.blue}15 !important`,
-              color: Colors.blue,
+              backgroundColor: `${Colors.cerulean}15 !important`,
+              color: Colors.cerulean,
               fontWeight: 600
             }
           }}
@@ -214,7 +214,7 @@ export default function EarningsBreakdownCard({ reservations }: EarningsBreakdow
             />
             <Bar 
               dataKey="earnings" 
-              fill={Colors.blue} 
+              fill={Colors.cerulean} 
               radius={[4, 4, 0, 0]}
               name="Earnings"
             />

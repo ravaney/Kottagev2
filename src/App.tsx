@@ -10,11 +10,15 @@ import { ChatProvider } from './contexts/ChatContext';
 import { isSubdomain } from './utils/subdomainRouter';
 import Splash from './components/Home/Splash';
 import SearchPage from './components/Home/SearchPage';
+import NomadNetworkPage from './components/Home/NomadNetworkPage';
+import EventsPage from './components/Events/EventsPage';
+import EventDetailPage from './components/Events/EventDetailPage';
 import Login from './components/Auth/Login';
 import MyAccount from './components/MyAccount/MyAccount';
 import Profile from './components/MyAccount/Profile';
 import Settings from './components/MyAccount/Settings';
 import Favourites from './components/MyAccount/Favourites';
+import TicketsAndCoupons from './components/MyAccount/TicketsAndCoupons';
 import PageNotFound from './components/Nav/PageNotFound';
 import ProtectedRoute from './ProtectedRoute';
 import ViewKottage from './components/Property/ViewKottage';
@@ -31,7 +35,6 @@ import PropertyManagement from './components/Dashboard/PropertyManagement/Proper
 import Explore from './components/Property/Explore';
 import PropertyAnalyticsPage from './components/Dashboard/PropertyManagement/PropertyAnalyticsPage';
 import ManageProperty from './components/Property/ManageProperty';
-// Subdomain-specific imports
 import AdminLanding from './components/Admin/AdminLanding';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import RegionalAssignment from './components/Admin/RegionalAssignment';
@@ -47,18 +50,18 @@ import PayoutDispute from './components/Staff/PayoutDispute';
 import SubdomainSimulator from './components/Admin/SubdomainSimulator';
 import CEOAnalytics from './components/Admin/CEOAnalytics';
 import EmployeeManagement from './components/Admin/EmployeeManagement';
+import EventManagement from './components/Admin/EventManagement';
 import ProtectedAdminRoute from './components/Admin/ProtectedAdminRoute';
 import ProtectedStaffRoute from './components/Staff/ProtectedStaffRoute';
 import AddProperty from './components/Dashboard/PropertyManagement/AddProperty';
 import Messages from './components/Dashboard/Messages/Messages';
 import ActionCenter from './components/Dashboard/ActionCenter/ActionCenter';
-// New Auth Components
 import HostSignup from './components/Host/HostSignup';
 import GuestSignup from './components/Auth/GuestSignup';
 import HostLogin from './components/Host/HostLogin';
 import ProtectedHostRoute from './components/Auth/ProtectedHostRoute';
 import ProtectedHostOnlyRoute from './components/Auth/ProtectedHostOnlyRoute';
-// Host Components
+import RouterScrollLayout from './components/common/RouterScrollLayout';
 import HostLanding from './components/Host/HostLanding';
 import HostLayout from './components/Host/HostLayout';
 import HostDashboardHome from './components/Host/HostDashboardHome';
@@ -67,345 +70,385 @@ import HostRoot from './components/Host/HostRoot';
 function App() {
   setIconOptions({ disableWarnings: true });
 
-  // Initialize analytics service
   useEffect(() => {
     analyticsService.enableAutoTracking();
     analyticsService.enableBatchTracking();
   }, []);
 
-  // Check which subdomain we're on
   const isAdminSite = isSubdomain('admin');
   const isStaffSite = isSubdomain('staff');
   const isHostSite = isSubdomain('host');
 
-  // Create different routers based on subdomain
   const mainRouter = createBrowserRouter([
     {
-      path: '/',
-      element: <Layout />,
+      element: <RouterScrollLayout />,
       errorElement: <PageNotFound />,
-
       children: [
         {
-          index: true,
-          element: <Splash />,
-        },
-        {
-          path: '/search',
-          element: <SearchPage />,
-        },
-        {
-          path: '/Login',
-          element: <Login />,
-        },
-        {
-          path: '/signup',
-          element: <GuestSignup />,
-        },
-
-        {
-          path: '/explore',
-          element: <Explore />,
-        },
-        {
-          path: '/Kottages/:id',
-          element: <ViewKottage />,
-        },
-        {
-          path: '/Kottages/:id/book-room',
-          element: <ProtectedRoute children={<BookRoom />} />,
-        },
-        {
-          path: '/booking-confirmation',
-          element: <BookingConfirmation />,
-        },
-        {
-          path: '/MyAccount',
-          //use protected route to wrap the element
-          element: <ProtectedRoute children={<MyAccount />} />,
-
+          path: '/',
+          element: <Layout />,
+          errorElement: <PageNotFound />,
           children: [
             {
-              element: <Navigate to="/MyAccount/Dashboard/myreservations" />,
               index: true,
+              element: <Splash />,
             },
             {
-              path: '/MyAccount/Dashboard',
-              element: <DashboardMenu />,
+              path: '/search',
+              element: <SearchPage />,
+            },
+            {
+              path: '/nomad-network',
+              element: <NomadNetworkPage />,
+            },
+            {
+              path: '/Events',
+              element: <EventsPage />,
+            },
+            {
+              path: '/Events/:eventId',
+              element: <EventDetailPage />,
+            },
+            {
+              path: '/Login',
+              element: <Login />,
+            },
+            {
+              path: '/signup',
+              element: <GuestSignup />,
+            },
+            {
+              path: '/explore',
+              element: <Explore />,
+            },
+            {
+              path: '/Kottages/:id',
+              element: <ViewKottage />,
+            },
+            {
+              path: '/Kottages/:id/book-room',
+              element: <ProtectedRoute children={<BookRoom />} />,
+            },
+            {
+              path: '/booking-confirmation',
+              element: <BookingConfirmation />,
+            },
+            {
+              path: '/MyAccount',
+              element: <ProtectedRoute children={<MyAccount />} />,
               children: [
                 {
+                  element: <Navigate to="/MyAccount/Dashboard/myreservations" />,
                   index: true,
-                  element: <Navigate to="myreservations" replace />,
                 },
                 {
-                  path: 'action-center',
-                  element: <ActionCenter />,
+                  path: '/MyAccount/Dashboard',
+                  element: <DashboardMenu />,
+                  children: [
+                    {
+                      index: true,
+                      element: <Navigate to="myreservations" replace />,
+                    },
+                    {
+                      path: 'action-center',
+                      element: <ActionCenter />,
+                    },
+                    {
+                      path: 'messages',
+                      element: <Messages />,
+                    },
+                    {
+                      path: 'myreservations',
+                      element: <ManageReservations />,
+                    },
+                    {
+                      path: 'reservations',
+                      element: (
+                        <ProtectedHostOnlyRoute>
+                          <ManageReservations />
+                        </ProtectedHostOnlyRoute>
+                      ),
+                    },
+                  ],
                 },
                 {
-                  path: 'messages',
-                  element: <Messages />,
+                  path: '/MyAccount/Profile',
+                  element: <Profile />,
                 },
                 {
-                  path: 'myreservations',
-                  element: <ManageReservations />,
+                  path: '/MyAccount/Favourites',
+                  element: <Favourites />,
                 },
-                // Host-only routes moved to host subdomain
                 {
-                  path: 'reservations',
-                  element: (
-                    <ProtectedHostOnlyRoute>
-                      <ManageReservations />
-                    </ProtectedHostOnlyRoute>
-                  ),
+                  path: '/MyAccount/TicketsAndCoupons',
+                  element: <TicketsAndCoupons />,
+                },
+                {
+                  path: '/MyAccount/Settings',
+                  element: <Settings />,
                 },
               ],
             },
             {
-              path: '/MyAccount/Profile',
+              path: '*',
+              element: <PageNotFound />,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
+
+  const adminRouter = createBrowserRouter([
+    {
+      element: <RouterScrollLayout />,
+      errorElement: <PageNotFound />,
+      children: [
+        {
+          path: '/',
+          element: (
+            <ProtectedAdminRoute>
+              <AdminLanding />
+            </ProtectedAdminRoute>
+          ),
+          errorElement: <PageNotFound />,
+          children: [
+            {
+              index: true,
+              element: <Navigate to="/dashboard" replace />,
+            },
+            {
+              path: 'dashboard',
+              element: <AdminDashboard />,
+            },
+            {
+              path: 'properties',
+              element: <PropertyVerification />,
+            },
+            {
+              path: 'bookings',
+              element: <BookingManagement />,
+            },
+            {
+              path: 'reservation-support',
+              element: <ReservationSupport />,
+            },
+            {
+              path: 'guests',
+              element: <GuestHostManagement />,
+            },
+            {
+              path: 'review-moderation',
+              element: <ReviewModeration />,
+            },
+            {
+              path: 'platform-integrity',
+              element: <PlatformIntegrity />,
+            },
+            {
+              path: 'payout-dispute',
+              element: <PayoutDispute />,
+            },
+            {
+              path: 'employee-management',
+              element: <EmployeeManagement />,
+            },
+            {
+              path: 'regional-assignment',
+              element: <RegionalAssignment />,
+            },
+            {
+              path: 'analytics',
+              element: <CEOAnalytics />,
+            },
+            {
+              path: 'events',
+              element: <EventManagement />,
+            },
+            {
+              path: 'settings',
+              element: <div>Settings (Coming Soon)</div>,
+            },
+            {
+              path: '*',
+              element: <PageNotFound />,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
+
+  const staffRouter = createBrowserRouter([
+    {
+      element: <RouterScrollLayout />,
+      errorElement: <PageNotFound />,
+      children: [
+        {
+          path: '/',
+          element: (
+            <ProtectedStaffRoute>
+              <StaffLanding />
+            </ProtectedStaffRoute>
+          ),
+          errorElement: <PageNotFound />,
+          children: [
+            {
+              index: true,
+              element: <StaffDashboard />,
+            },
+            {
+              path: 'dashboard',
+              element: <StaffDashboard />,
+            },
+            {
+              path: 'reservation-support',
+              element: <ReservationSupport />,
+            },
+            {
+              path: 'properties',
+              element: <PropertyVerification />,
+            },
+            {
+              path: 'bookings',
+              element: <BookingManagement />,
+            },
+            {
+              path: 'guests',
+              element: <GuestHostManagement />,
+            },
+            {
+              path: 'review-moderation',
+              element: <ReviewModeration />,
+            },
+            {
+              path: 'platform-integrity',
+              element: <PlatformIntegrity />,
+            },
+            {
+              path: 'payout-dispute',
+              element: <PayoutDispute />,
+            },
+            {
+              path: 'settings',
+              element: <div>Settings (Coming Soon)</div>,
+            },
+            {
+              path: '*',
+              element: <PageNotFound />,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
+
+  const hostRouter = createBrowserRouter([
+    {
+      element: <RouterScrollLayout />,
+      errorElement: <PageNotFound />,
+      children: [
+        {
+          path: '/',
+          element: <HostRoot />,
+          errorElement: <PageNotFound />,
+        },
+        {
+          path: '/dashboard',
+          element: (
+            <ProtectedHostRoute>
+              <HostLayout />
+            </ProtectedHostRoute>
+          ),
+          children: [
+            {
+              index: true,
+              element: <HostDashboardHome />,
+            },
+            {
+              path: 'action-center',
+              element: <ActionCenter />,
+            },
+            {
+              path: 'messages',
+              element: <Messages />,
+            },
+            {
+              path: 'reservations',
+              element: <ManageReservations />,
+            },
+            {
+              path: 'properties',
+              element: <PropertyManagement />,
+              children: [
+                {
+                  path: 'add-property',
+                  element: <AddProperty />,
+                },
+                {
+                  path: 'manage/:propertyId',
+                  element: <ManageProperty />,
+                },
+              ],
+            },
+            {
+              path: 'analytics/:propertyId',
+              element: <PropertyAnalyticsPage />,
+            },
+            {
+              path: '*',
+              element: <PageNotFound />,
+            },
+          ],
+        },
+        {
+          path: '/profile',
+          element: (
+            <ProtectedHostRoute>
+              <HostLayout />
+            </ProtectedHostRoute>
+          ),
+          children: [
+            {
+              index: true,
               element: <Profile />,
             },
+          ],
+        },
+        {
+          path: '/settings',
+          element: (
+            <ProtectedHostRoute>
+              <HostLayout />
+            </ProtectedHostRoute>
+          ),
+          children: [
             {
-              path: '/MyAccount/Favourites',
-              element: <Favourites />,
-            },
-            {
-              path: '/MyAccount/Settings',
+              index: true,
               element: <Settings />,
             },
           ],
         },
+        {
+          path: '/landing',
+          element: <HostLanding />,
+        },
+        {
+          path: '/signup',
+          element: <HostSignup />,
+        },
+        {
+          path: '/login',
+          element: <HostLogin />,
+        },
+        {
+          path: '*',
+          element: <PageNotFound />,
+        },
       ],
     },
   ]);
 
-  // Create admin router for admin subdomain
-  const adminRouter = createBrowserRouter([
-    {
-      path: '/',
-      element: (
-        <ProtectedAdminRoute>
-          <AdminLanding />
-        </ProtectedAdminRoute>
-      ),
-      errorElement: <PageNotFound />,
-      children: [
-        {
-          index: true,
-          element: <Navigate to="/dashboard" replace />,
-        },
-        {
-          path: 'dashboard',
-          element: <AdminDashboard />,
-        },
-        {
-          path: 'properties',
-          element: <PropertyVerification />,
-        },
-        {
-          path: 'bookings',
-          element: <BookingManagement />,
-        },
-        {
-          path: 'reservation-support',
-          element: <ReservationSupport />,
-        },
-        {
-          path: 'guests',
-          element: <GuestHostManagement />,
-        },
-        {
-          path: 'review-moderation',
-          element: <ReviewModeration />,
-        },
-        {
-          path: 'platform-integrity',
-          element: <PlatformIntegrity />,
-        },
-        {
-          path: 'payout-dispute',
-          element: <PayoutDispute />,
-        },
-        {
-          path: 'employee-management',
-          element: <EmployeeManagement />,
-        },
-        {
-          path: 'regional-assignment',
-          element: <RegionalAssignment />,
-        },
-        {
-          path: 'analytics',
-          element: <CEOAnalytics />,
-        },
-        {
-          path: 'settings',
-          element: <div>Settings (Coming Soon)</div>,
-        },
-      ],
-    },
-    {
-      path: '*',
-      element: <Navigate to="/" />,
-    },
-  ]);
-
-  // Create staff router for staff subdomain
-  const staffRouter = createBrowserRouter([
-    {
-      path: '/',
-      element: (
-        <ProtectedStaffRoute>
-          <StaffLanding />
-        </ProtectedStaffRoute>
-      ),
-      errorElement: <PageNotFound />,
-      children: [
-        {
-          index: true,
-          element: <StaffDashboard />,
-        },
-        {
-          path: 'dashboard',
-          element: <StaffDashboard />,
-        },
-        {
-          path: 'reservation-support',
-          element: <ReservationSupport />,
-        },
-        {
-          path: 'properties',
-          element: <PropertyVerification />,
-        },
-        {
-          path: 'bookings',
-          element: <BookingManagement />,
-        },
-        {
-          path: 'guests',
-          element: <GuestHostManagement />,
-        },
-        {
-          path: 'review-moderation',
-          element: <ReviewModeration />,
-        },
-        {
-          path: 'platform-integrity',
-          element: <PlatformIntegrity />,
-        },
-        {
-          path: 'payout-dispute',
-          element: <PayoutDispute />,
-        },
-        {
-          path: 'settings',
-          element: <div>Settings (Coming Soon)</div>,
-        },
-      ],
-    },
-    {
-      path: '*',
-      element: <Navigate to="/" />,
-    },
-  ]);
-
-  //create host subdomain
-  const hostRouter = createBrowserRouter([
-    {
-      path: '/',
-      element: <HostRoot />,
-      errorElement: <PageNotFound />,
-    },
-    {
-      path: '/dashboard',
-      element: (
-        <ProtectedHostRoute>
-          <HostLayout />
-        </ProtectedHostRoute>
-      ),
-      children: [
-        {
-          index: true,
-          element: <HostDashboardHome />,
-        },
-        {
-          path: 'action-center',
-          element: <ActionCenter />,
-        },
-        {
-          path: 'messages',
-          element: <Messages />,
-        },
-        {
-          path: 'reservations',
-          element: <ManageReservations />,
-        },
-        {
-          path: 'properties',
-          element: <PropertyManagement />,
-          children: [
-            {
-              path: 'add-property',
-              element: <AddProperty />,
-            },
-            {
-              path: 'manage/:propertyId',
-              element: <ManageProperty />,
-            },
-          ],
-        },
-        {
-          path: 'analytics/:propertyId',
-          element: <PropertyAnalyticsPage />,
-        },
-      ],
-    },
-    {
-      path: '/profile',
-      element: (
-        <ProtectedHostRoute>
-          <HostLayout />
-        </ProtectedHostRoute>
-      ),
-      children: [
-        {
-          index: true,
-          element: <Profile />,
-        },
-      ],
-    },
-    {
-      path: '/settings',
-      element: (
-        <ProtectedHostRoute>
-          <HostLayout />
-        </ProtectedHostRoute>
-      ),
-      children: [
-        {
-          index: true,
-          element: <Settings />,
-        },
-      ],
-    },
-    {
-      path: '/landing',
-      element: <HostLanding />,
-    },
-    {
-      path: '/signup',
-      element: <HostSignup />,
-    },
-    {
-      path: '/login',
-      element: <HostLogin />,
-    },
-    {
-      path: '*',
-      element: <Navigate to="/" replace />,
-    },
-  ]);
-
-  // Select the appropriate router based on subdomain
   let router = mainRouter;
   if (isAdminSite) {
     router = adminRouter;

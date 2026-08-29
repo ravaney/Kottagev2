@@ -58,8 +58,8 @@ export default function CalendarSyncCard({
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <EventIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-          <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+          <EventIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+          <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
             Calendar Sync
           </Typography>
         </Box>
@@ -67,7 +67,7 @@ export default function CalendarSyncCard({
           variant="outlined" 
           size="small" 
           startIcon={<SyncIcon />}
-          sx={{ borderColor: Colors.blue, color: Colors.blue }}
+          sx={{ borderColor: Colors.cerulean, color: Colors.cerulean }}
         >
           Sync All
         </Button>

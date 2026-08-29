@@ -25,7 +25,7 @@ export default function ProtectedStaffRoute({ children }: ProtectedStaffRoutePro
         sx={{ backgroundColor: '#f5f5f5' }}
       >
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <CircularProgress size={40} sx={{ color: Colors.blue, mb: 2 }} />
+          <CircularProgress size={40} sx={{ color: Colors.cerulean, mb: 2 }} />
           <Typography variant="body1" color="text.secondary">
             Loading staff portal...
           </Typography>
@@ -50,7 +50,7 @@ export default function ProtectedStaffRoute({ children }: ProtectedStaffRoutePro
         sx={{ backgroundColor: '#f5f5f5' }}
       >
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <CircularProgress size={40} sx={{ color: Colors.blue, mb: 2 }} />
+          <CircularProgress size={40} sx={{ color: Colors.cerulean, mb: 2 }} />
           <Typography variant="body1" color="text.secondary">
             Verifying staff credentials...
           </Typography>
@@ -73,3 +73,4 @@ export default function ProtectedStaffRoute({ children }: ProtectedStaffRoutePro
   // User is authenticated and has staff access
   return <>{children}</>;
 }
+

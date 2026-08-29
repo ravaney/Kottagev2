@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ref, get, query, orderByChild, equalTo } from 'firebase/database';
 import { database } from '../firebase';
+import { getSeededPropertyById } from '../data/seededProperties';
 
 export interface AvailabilityParams {
   propertyId: string;
@@ -80,12 +81,16 @@ export const usePropertyAvailability = (propertyId: string, checkIn: Date, check
       // Get property details
       const propertyRef = ref(database, `properties/${propertyId}`);
       const propertySnapshot = await get(propertyRef);
-      
-      if (!propertySnapshot.exists()) {
+
+      const property =
+        propertySnapshot.exists()
+          ? propertySnapshot.val()
+          : getSeededPropertyById(propertyId);
+
+      if (!property) {
         throw new Error('Property not found');
       }
-      
-      const property = propertySnapshot.val();
+
       const roomTypes = property.roomTypes || {};
       
       // Check availability for each room type
@@ -201,10 +206,14 @@ export async function checkPropertyAvailability(
     // Get property details to check room types
     const propertyRef = ref(database, `properties/${propertyId}`);
     const propertySnapshot = await get(propertyRef);
-    
-    if (!propertySnapshot.exists()) return false;
-    
-    const property = propertySnapshot.val();
+
+    const property =
+      propertySnapshot.exists()
+        ? propertySnapshot.val()
+        : getSeededPropertyById(propertyId);
+
+    if (!property) return false;
+
     const roomTypes = property.roomTypes || {};
     
     // If no room types, check property-level availability

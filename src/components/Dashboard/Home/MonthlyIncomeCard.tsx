@@ -17,12 +17,12 @@ export default function MonthlyIncomeCard({ amount, percentage, isPositive }: Mo
         <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box>
             <Box display="flex" alignItems="center" gap={1} sx={{ mb: 0.5 }}>
-              <AttachMoneyIcon sx={{ color: Colors.blue, fontSize: 18 }} />
+              <AttachMoneyIcon sx={{ color: Colors.cerulean, fontSize: 18 }} />
               <Typography variant="caption" color="text.secondary">
                 This Month
               </Typography>
             </Box>
-            <Typography variant='subtitle1' fontWeight={700} color={Colors.blue}>
+            <Typography variant='subtitle1' fontWeight={700} color={Colors.cerulean}>
               {amount}
             </Typography>
           </Box>

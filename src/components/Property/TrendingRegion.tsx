@@ -71,11 +71,11 @@ export default function TrendingRegion({ region }: TrendingRegionProps) {
     >
       <Box sx={{ 
         p: { xs: 2, md: 4 },
-        background: `linear-gradient(135deg, ${Colors.blue}10 0%, ${Colors.raspberry}10 100%)`
+        background: `linear-gradient(135deg, ${Colors.cerulean}10 0%, ${Colors.raspberry}10 100%)`
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <TrendingUpIcon sx={{ color: Colors.raspberry, mr: 1, fontSize: 28 }} />
-          <Typography variant="h4" fontWeight={700} color={Colors.blue}>
+          <Typography variant="h4" fontWeight={700} color={Colors.cerulean}>
             Trending in {region.name}
           </Typography>
         </Box>
@@ -101,7 +101,7 @@ export default function TrendingRegion({ region }: TrendingRegionProps) {
           </Grid>
           
           <Grid item xs={12} md={6}>
-            <Typography variant="h6" fontWeight={600} color={Colors.blue} sx={{ mb: 2 }}>
+            <Typography variant="h6" fontWeight={600} color={Colors.cerulean} sx={{ mb: 2 }}>
               Top Highlights
             </Typography>
             
@@ -148,7 +148,7 @@ export default function TrendingRegion({ region }: TrendingRegionProps) {
               sx={{
                 mt: 3,
                 backgroundColor: Colors.raspberry,
-                '&:hover': { backgroundColor: Colors.blue },
+                '&:hover': { backgroundColor: Colors.cerulean },
                 borderRadius: 2,
                 px: 3
               }}

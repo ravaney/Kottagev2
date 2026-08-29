@@ -77,7 +77,7 @@ const BookingConfirmation: React.FC = () => {
           <Typography
             variant="h3"
             fontWeight={700}
-            sx={{ color: Colors.blue, mb: 1 }}
+            sx={{ color: Colors.cerulean, mb: 1 }}
           >
             Booking Confirmed!
           </Typography>
@@ -108,7 +108,7 @@ const BookingConfirmation: React.FC = () => {
             label={`Reservation #${bookingData.reservationId}`}
             sx={{
               mb: 3,
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.cerulean,
               color: 'white',
               fontWeight: 600,
             }}
@@ -116,7 +116,7 @@ const BookingConfirmation: React.FC = () => {
 
           <Box display="flex" flexDirection="column" gap={2}>
             <Box display="flex" alignItems="center" gap={2}>
-              <Home sx={{ color: Colors.blue }} />
+              <Home sx={{ color: Colors.cerulean }} />
               <Box>
                 <Typography variant="body1" fontWeight={600}>
                   {bookingData.roomName}
@@ -128,7 +128,7 @@ const BookingConfirmation: React.FC = () => {
             </Box>
 
             <Box display="flex" alignItems="center" gap={2}>
-              <CalendarToday sx={{ color: Colors.blue }} />
+              <CalendarToday sx={{ color: Colors.cerulean }} />
               <Box>
                 <Typography variant="body1" fontWeight={600}>
                   {new Date(bookingData.checkInDate).toLocaleDateString()} -{' '}
@@ -141,7 +141,7 @@ const BookingConfirmation: React.FC = () => {
             </Box>
 
             <Box display="flex" alignItems="center" gap={2}>
-              <Person sx={{ color: Colors.blue }} />
+              <Person sx={{ color: Colors.cerulean }} />
               <Typography variant="body1" fontWeight={600}>
                 {bookingData.guests} guest{bookingData.guests > 1 ? 's' : ''}
               </Typography>
@@ -197,7 +197,7 @@ const BookingConfirmation: React.FC = () => {
               )
             }
             sx={{
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.cerulean,
               px: 4,
               py: 1.5,
               borderRadius: 2,
@@ -212,8 +212,8 @@ const BookingConfirmation: React.FC = () => {
             size="large"
             onClick={() => navigate('/')}
             sx={{
-              borderColor: Colors.blue,
-              color: Colors.blue,
+              borderColor: Colors.cerulean,
+              color: Colors.cerulean,
               px: 4,
               py: 1.5,
               borderRadius: 2,
@@ -230,3 +230,4 @@ const BookingConfirmation: React.FC = () => {
 };
 
 export default BookingConfirmation;
+

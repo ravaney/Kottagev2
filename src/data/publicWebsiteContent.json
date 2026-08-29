@@ -1,0 +1,147 @@
+{
+  "siteName": "Blue Kottage",
+  "home": {
+    "eyebrow": "Jamaica travel, with more context",
+    "headline": "Stay closer to the version of Jamaica you actually came for.",
+    "description": "Blue Kottage helps guests discover beautiful stays, plan around local events, and find remote-work-friendly escapes without losing the feeling of a real trip.",
+    "stats": [
+      { "label": "Verified stays", "value": "200+" },
+      { "label": "Upcoming events", "value": "7" },
+      { "label": "Nomad-ready picks", "value": "3" }
+    ],
+    "highlights": [
+      {
+        "title": "Stay discovery that feels editorial",
+        "body": "Lead with beaches, hills, food towns, and travel mood, not just generic listings."
+      },
+      {
+        "title": "Events that help shape the trip",
+        "body": "See what is happening before you book so your stay lines up with music, culture, nightlife, or wellness."
+      },
+      {
+        "title": "Remote-work stays with useful detail",
+        "body": "Nomad listings call out practical things like Wi-Fi speed, workspaces, and coworking access."
+      }
+    ],
+    "featuredStays": [
+      {
+        "name": "Frenchman's Cove Escape",
+        "location": "Portland",
+        "summary": "A slower coastal stay near coves, hills, and lush day trips.",
+        "price": "From $240/night",
+        "tag": "Coastal Retreat",
+        "image": "/frenchman.jpg",
+        "link": "/Explore"
+      },
+      {
+        "name": "Blue Mountain Hideaway",
+        "location": "St. Andrew",
+        "summary": "Cool air, coffee-country scenery, and room to unplug or work quietly.",
+        "price": "From $210/night",
+        "tag": "Mountain Reset",
+        "image": "/bluemountain.jpg",
+        "link": "/nomad-network"
+      },
+      {
+        "name": "Negril Weekend House",
+        "location": "Westmoreland",
+        "summary": "Built for sunsets, beach days, and easy group weekends.",
+        "price": "From $285/night",
+        "tag": "Beach Escape",
+        "image": "/negril.jpg",
+        "link": "/search"
+      }
+    ],
+    "regions": [
+      {
+        "title": "Portland",
+        "body": "Rainforest drives, coves, smaller crowds, and soft adventure.",
+        "image": "/Port_antonio2.jpg"
+      },
+      {
+        "title": "Montego Bay",
+        "body": "Events, nightlife, group stays, and quick trip energy.",
+        "image": "/images/mobay.png"
+      },
+      {
+        "title": "Blue Mountains",
+        "body": "Cooler mornings, coffee trails, and longer-focus stays.",
+        "image": "/bluemountain.jpg"
+      }
+    ]
+  },
+  "explore": {
+    "eyebrow": "Explore by trip mood",
+    "headline": "Start with the feeling of the trip, then find the stay.",
+    "description": "Explore coast, city, mountain, and remote-work-friendly stays across Jamaica before you narrow down dates and filters.",
+    "collections": [
+      {
+        "title": "Beach weekends",
+        "body": "For guests optimizing for sand, sunsets, and easy access to the water.",
+        "image": "/negril.jpg",
+        "link": "/search"
+      },
+      {
+        "title": "City breaks",
+        "body": "For short stays around food, nightlife, meetings, or family visits.",
+        "image": "/Geejam2.jpg",
+        "link": "/search"
+      },
+      {
+        "title": "Quiet mountain stays",
+        "body": "For guests who want cooler weather, greenery, and a slower pace.",
+        "image": "/bluemountain.jpg",
+        "link": "/search"
+      },
+      {
+        "title": "Remote-work escapes",
+        "body": "For guests blending focused work time with a meaningful stay in Jamaica.",
+        "image": "/swift river.jpg",
+        "link": "/nomad-network"
+      }
+    ]
+  },
+  "nomads": {
+    "eyebrow": "Nomads",
+    "headline": "Remote-work stays built for longer, calmer travel.",
+    "description": "Nomad Verified listings spotlight practical work details like Wi-Fi speed, workspace setup, and coworking access, with the Nomad Pass added at checkout.",
+    "passPrice": "$49",
+    "perks": [
+      {
+        "title": "Verified fast Wi-Fi",
+        "body": "See which stays can support calls, focused work, and longer sessions."
+      },
+      {
+        "title": "Workspace details",
+        "body": "Look for private work areas, ergonomic seating, and quiet-room access."
+      },
+      {
+        "title": "Coworking visibility",
+        "body": "Some stays include direct coworking access or partner guidance nearby."
+      }
+    ],
+    "properties": [
+      {
+        "name": "Blue Peak Lodge",
+        "location": "Newcastle, St. Andrew",
+        "summary": "Quiet mountain air, 120 Mbps Wi-Fi, private workspace, and coworking-friendly common areas.",
+        "image": "/bluemountain.jpg",
+        "tags": ["Nomad Verified", "120+ Mbps Wi-Fi", "Private Workspace"]
+      },
+      {
+        "name": "Port Antonio Work Retreat",
+        "location": "Port Antonio, Portland",
+        "summary": "Designed for slower coastal work weeks with a dedicated desk and local workspace guidance.",
+        "image": "/Port_antonio2.jpg",
+        "tags": ["Nomad Verified", "Coworking Access", "Quiet Room"]
+      },
+      {
+        "name": "Kingston Creative Base",
+        "location": "New Kingston, St. Andrew",
+        "summary": "Fast city stay near meetings, nightlife, and a structured daytime setup for remote work.",
+        "image": "/Geejam1.jpg",
+        "tags": ["Nomad Verified", "Monitor Rental", "Ergonomic Desk"]
+      }
+    ]
+  }
+}

@@ -81,7 +81,7 @@ export default function ReservationStatusCard({ statusCounts }: ReservationStatu
   return (
     <Paper elevation={3} sx={{ p: 2, borderRadius: '4px',mb:1 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-        <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+        <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
           {timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)} Reservations
         </Typography>
         <ToggleButtonGroup
@@ -98,8 +98,8 @@ export default function ReservationStatusCard({ statusCounts }: ReservationStatu
               fontSize: '0.75rem'
             },
             '& .Mui-selected': {
-              backgroundColor: `${Colors.blue}15 !important`,
-              color: Colors.blue,
+              backgroundColor: `${Colors.cerulean}15 !important`,
+              color: Colors.cerulean,
               fontWeight: 600
             }
           }}

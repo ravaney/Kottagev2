@@ -34,7 +34,7 @@ export default function PageHeader({ title, subtitle, icon }: PageHeaderProps) {
         <Box display="flex" alignItems="center" gap={2}>
           {icon}
           <Box>
-            <Typography variant="h4" fontWeight={700} color={Colors.blue} sx={{ lineHeight: 1 }}>
+            <Typography variant="h4" fontWeight={700} color={Colors.cerulean} sx={{ lineHeight: 1 }}>
               {title}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>

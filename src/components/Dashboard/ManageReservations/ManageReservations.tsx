@@ -72,6 +72,7 @@ interface Reservation {
   totalPrice: number;
   guests: number;
   notes: string;
+  nomadAddOn?: ApiReservation['nomadAddOn'];
   changeHistory?: ChangeRecord[];
 }
 
@@ -156,7 +157,6 @@ export default function ManageReservations() {
       console.error('Failed to check out:', e);
     }
   };
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] =
@@ -185,6 +185,7 @@ export default function ManageReservations() {
     totalPrice: res.totalPrice,
     guests: res.guests?.length || 0,
     notes: res.notes || '',
+    nomadAddOn: res.nomadAddOn,
     changeHistory: res.edits?.map(edit => ({
       date: new Date(parseInt(edit.timestamp)).toLocaleString(),
       user: edit.userId,
@@ -281,55 +282,6 @@ export default function ManageReservations() {
         reservation.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-  // Add loading state display
-  // --- Manage Checkouts Section ---
-  const today = new Date();
-  const checkoutsToManage = apiReservations.filter(res => {
-    const checkOutDate = new Date(res.checkOut);
-    return (
-      (res.status === ReservationStatus.Confirmed ||
-        res.status === ReservationStatus.Pending) &&
-      checkOutDate <= today
-    );
-  });
-
-  const handleConfirmCheckout = async (reservation: ApiReservation) => {
-    setCheckoutLoading(reservation.reservationId);
-    try {
-      // First update the reservation status
-      await updateReservation.mutateAsync({
-        id: reservation.reservationId,
-        status: ReservationStatus.Completed,
-      });
-
-      // Then update room quantityAvailable
-      const propertyId = reservation.property.id;
-      const roomId = reservation.rooms?.[0];
-      if (!roomId) throw new Error('No room found for this reservation.');
-
-      // Get property data with room types
-      const property = reservation.property;
-      const roomTypes = (property as any).roomTypes || [];
-
-      // Find the room and increment its availability
-      const updatedRoomTypes = roomTypes.map((rt: any) =>
-        rt.id === roomId
-          ? { ...rt, quantityAvailable: (rt.quantityAvailable || 0) + 1 }
-          : rt
-      );
-
-      // Update the property with the new room availability
-      await updateProperty.mutateAsync({
-        id: propertyId,
-        roomTypes: updatedRoomTypes,
-      });
-
-      refetch();
-    } catch (e) {
-      console.error('Failed to confirm checkout:', e);
-    }
-    setCheckoutLoading(null);
-  };
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -365,6 +317,14 @@ export default function ManageReservations() {
           </TableCell>
           <TableCell>
             <Typography variant="body2">{reservation.property}</Typography>
+            {reservation.nomadAddOn?.enabled && (
+              <Chip
+                label="Nomad Pass"
+                size="small"
+                color="primary"
+                sx={{ mt: 0.75, fontWeight: 700 }}
+              />
+            )}
           </TableCell>
           <TableCell>
             <Typography variant="body2">
@@ -385,7 +345,7 @@ export default function ManageReservations() {
             />
           </TableCell>
           <TableCell>
-            <Typography variant="body2" fontWeight={600} color={Colors.blue}>
+            <Typography variant="body2" fontWeight={600} color={Colors.cerulean}>
               {reservation.amount}
             </Typography>
           </TableCell>
@@ -424,7 +384,7 @@ export default function ManageReservations() {
                   border: '1px solid #e0e0e0',
                 }}
               >
-                <Typography variant="h6" sx={{ mb: 2, color: Colors.blue }}>
+                <Typography variant="h6" sx={{ mb: 2, color: Colors.cerulean }}>
                   Reservation Details
                 </Typography>
 
@@ -508,6 +468,36 @@ export default function ManageReservations() {
                       <Typography variant="body2">
                         Total Amount: ${reservation.totalPrice.toLocaleString()}
                       </Typography>
+                      {reservation.nomadAddOn?.enabled && (
+                        <Box sx={{ mt: 1 }}>
+                          <Chip
+                            label={`Nomad Pass +$${reservation.nomadAddOn.price}`}
+                            size="small"
+                            color="primary"
+                            sx={{ mr: 1, mb: 1 }}
+                          />
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              gap: 1,
+                              flexWrap: 'wrap',
+                            }}
+                          >
+                            {Object.entries(reservation.nomadAddOn.perks)
+                              .filter(([, enabled]) => enabled)
+                              .map(([perk]) => (
+                                <Chip
+                                  key={perk}
+                                  label={perk
+                                    .replace(/([A-Z])/g, ' $1')
+                                    .replace(/^./, char => char.toUpperCase())}
+                                  size="small"
+                                  variant="outlined"
+                                />
+                              ))}
+                          </Box>
+                        </Box>
+                      )}
                       <Typography variant="body2">
                         Duration:{' '}
                         {Math.ceil(
@@ -552,7 +542,7 @@ export default function ManageReservations() {
                             }}
                           >
                             <HistoryIcon
-                              sx={{ fontSize: 18, color: Colors.blue }}
+                              sx={{ fontSize: 18, color: Colors.cerulean }}
                             />
                             <Typography variant="subtitle2" fontWeight={600}>
                               Change History
@@ -662,7 +652,7 @@ export default function ManageReservations() {
                               size="small"
                               onClick={e => handleEditClick(e, reservation)}
                               sx={{
-                                color: Colors.blue,
+                                color: Colors.cerulean,
                                 backgroundColor: 'white',
                                 mr: 1,
                               }}
@@ -810,7 +800,7 @@ export default function ManageReservations() {
                               size="small"
                               onClick={e => handleEditClick(e, reservation)}
                               sx={{
-                                color: Colors.blue,
+                                color: Colors.cerulean,
                                 backgroundColor: 'white',
                                 mr: 1,
                               }}
@@ -920,8 +910,8 @@ export default function ManageReservations() {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <CalendarMonthIcon sx={{ color: Colors.blue, fontSize: 28 }} />
-            <Typography variant="h5" fontWeight={600} color={Colors.blue}>
+            <CalendarMonthIcon sx={{ color: Colors.cerulean, fontSize: 28 }} />
+            <Typography variant="h5" fontWeight={600} color={Colors.cerulean}>
               Manage Reservations
             </Typography>
             <IconButton
@@ -1078,3 +1068,4 @@ export default function ManageReservations() {
     </Box>
   );
 }
+

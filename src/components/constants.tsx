@@ -15,7 +15,6 @@ export const weightedAverage = (weights: number[]) => {
 
 //create an array of colors to pick from
 export enum Colors {
-  blue = '#007bff',
   raspberry = '#d155b6',
   powderBlue = '#b1d6e3',
   offWhite = '#e6e6e6',

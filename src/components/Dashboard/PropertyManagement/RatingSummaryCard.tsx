@@ -41,8 +41,8 @@ export default function RatingSummaryCard({ properties }: RatingSummaryCardProps
   return (
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-        <GradeIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-        <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+        <GradeIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+        <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
           Rating Summary
         </Typography>
       </Box>
@@ -69,7 +69,7 @@ export default function RatingSummaryCard({ properties }: RatingSummaryCardProps
           <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 3 }}>
             <Box textAlign="center">
               <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
-                <Typography variant="h3" fontWeight={700} color={Colors.blue}>
+                <Typography variant="h3" fontWeight={700} color={Colors.cerulean}>
                   {currentProperty.averageRating.toFixed(1)}
                 </Typography>
                 <Box>

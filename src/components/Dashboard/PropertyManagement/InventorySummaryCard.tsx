@@ -34,7 +34,7 @@ export default function InventorySummaryCard({ properties }: InventorySummaryCar
       case 'vacant':
         return <Chip size="small" label="Vacant" sx={{ backgroundColor: '#4caf50', color: 'white', fontWeight: 500 }} />;
       case 'booked':
-        return <Chip size="small" label="Booked" sx={{ backgroundColor: Colors.blue, color: 'white', fontWeight: 500 }} />;
+        return <Chip size="small" label="Booked" sx={{ backgroundColor: Colors.cerulean, color: 'white', fontWeight: 500 }} />;
       case 'maintenance':
         return <Chip size="small" label="Maintenance" sx={{ backgroundColor: '#ff9800', color: 'white', fontWeight: 500 }} />;
     }
@@ -43,8 +43,8 @@ export default function InventorySummaryCard({ properties }: InventorySummaryCar
   return (
     <Paper elevation={3} sx={{ p: 2, mb: 1 }}>
       <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-        <InventoryIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-        <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+        <InventoryIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+        <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
           Inventory Summary {filter !== 'all' && `- ${filter.charAt(0).toUpperCase() + filter.slice(1)}`}
         </Typography>
       </Box>
@@ -76,15 +76,15 @@ export default function InventorySummaryCard({ properties }: InventorySummaryCar
             sx={{ 
               textAlign: 'center', 
               p: 1, 
-              backgroundColor: filter === 'booked' ? `${Colors.blue}20` : '#e3f2fd', 
+              backgroundColor: filter === 'booked' ? `${Colors.cerulean}20` : '#e3f2fd', 
               borderRadius: 1,
               cursor: 'pointer',
-              border: filter === 'booked' ? `1px solid ${Colors.blue}` : 'none',
+              border: filter === 'booked' ? `1px solid ${Colors.cerulean}` : 'none',
               transition: 'all 0.2s'
             }}
             onClick={() => setFilter(filter === 'booked' ? 'all' : 'booked')}
           >
-            <Typography variant="h5" fontWeight={700} color={Colors.blue}>
+            <Typography variant="h5" fontWeight={700} color={Colors.cerulean}>
               {booked}
             </Typography>
             <Typography variant="caption" color="text.secondary">

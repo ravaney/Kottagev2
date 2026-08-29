@@ -5,7 +5,6 @@ import {
   Container,
   Toolbar,
   Typography,
-  Button,
   IconButton,
   Avatar,
   Menu,
@@ -24,7 +23,6 @@ import {
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Notifications as NotificationsIcon,
-  AccountCircle as AccountCircleIcon,
   ExitToApp as LogoutIcon,
   Settings as SettingsIcon,
   Person as PersonIcon,
@@ -40,6 +38,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { Colors } from '../constants';
 import { useChat } from '../../contexts/ChatContext';
+import { useHostInquiries } from '../../hooks/useHostInquiries';
 
 export default function HostLayout() {
   const navigate = useNavigate();
@@ -47,16 +46,15 @@ export default function HostLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { appUser, firebaseUser } = useAuth();
-  const { chats } = useChat();
+  const { totalUnreadMessages } = useChat();
+  const { unreadCount: unreadInquiryCount } = useHostInquiries(
+    firebaseUser?.uid || null
+  );
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  // Calculate total unread messages
-  const totalUnreadMessages = chats.reduce((total, chat) => {
-    const currentUserId = firebaseUser?.uid || '';
-    return total + (chat.unreadCount?.[currentUserId] || 0);
-  }, 0);
+  const totalMessageCenterCount = totalUnreadMessages + unreadInquiryCount;
+  const isMessagesRoute = location.pathname.startsWith('/dashboard/messages');
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -91,7 +89,7 @@ export default function HostLayout() {
       label: 'Messages',
       path: '/dashboard/messages',
       icon: <MessageIcon />,
-      badge: totalUnreadMessages,
+      badge: totalMessageCenterCount,
     },
     {
       label: 'Reservations',
@@ -120,7 +118,7 @@ export default function HostLayout() {
   };
 
   const drawer = (
-    <Box sx={{ width: 250 }}>
+    <Box sx={{ width: '100%', maxWidth: 250, overflowX: 'hidden' }}>
       <Box sx={{ p: 2, textAlign: 'center' }}>
         <Box
           component="img"
@@ -136,13 +134,15 @@ export default function HostLayout() {
             key={item.path}
             onClick={() => handleNavigation(item.path)}
             sx={{
+              width: 'calc(100% - 16px)',
+              boxSizing: 'border-box',
               backgroundColor: isActivePath(item.path)
-                ? Colors.blue
+                ? Colors.cerulean
                 : 'transparent',
               color: isActivePath(item.path) ? 'white' : 'inherit',
               '&:hover': {
                 backgroundColor: isActivePath(item.path)
-                  ? Colors.blue
+                  ? Colors.cerulean
                   : 'rgba(0,0,0,0.04)',
               },
               mx: 1,
@@ -153,7 +153,7 @@ export default function HostLayout() {
           >
             <ListItemIcon
               sx={{
-                color: isActivePath(item.path) ? 'white' : Colors.blue,
+                color: isActivePath(item.path) ? 'white' : Colors.cerulean,
               }}
             >
               {item.badge ? (
@@ -174,7 +174,7 @@ export default function HostLayout() {
           onClick={() => handleNavigation('/profile')}
           sx={{ cursor: 'pointer' }}
         >
-          <ListItemIcon sx={{ color: Colors.blue }}>
+          <ListItemIcon sx={{ color: Colors.cerulean }}>
             <PersonIcon />
           </ListItemIcon>
           <ListItemText primary="Profile" />
@@ -183,7 +183,7 @@ export default function HostLayout() {
           onClick={() => handleNavigation('/settings')}
           sx={{ cursor: 'pointer' }}
         >
-          <ListItemIcon sx={{ color: Colors.blue }}>
+          <ListItemIcon sx={{ color: Colors.cerulean }}>
             <SettingsIcon />
           </ListItemIcon>
           <ListItemText primary="Settings" />
@@ -193,7 +193,14 @@ export default function HostLayout() {
   );
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        overflowX: 'hidden',
+      }}
+    >
       {/* App Bar */}
       <AppBar
         position="fixed"
@@ -220,7 +227,7 @@ export default function HostLayout() {
           {/* Logo and title for desktop */}
           {!isMobile && (
             <Box sx={{ display: 'flex', alignItems: 'center', mr: 3 }}>
-              <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+              <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                 Host Portal
               </Typography>
             </Box>
@@ -232,7 +239,7 @@ export default function HostLayout() {
           {/* Right side icons */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <IconButton color="inherit">
-              <Badge badgeContent={totalUnreadMessages} color="error">
+              <Badge badgeContent={totalMessageCenterCount} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -242,7 +249,7 @@ export default function HostLayout() {
                 sx={{
                   width: 32,
                   height: 32,
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   fontSize: '0.875rem',
                 }}
               >
@@ -307,6 +314,7 @@ export default function HostLayout() {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: 250,
+              overflowX: 'hidden',
             },
           }}
         >
@@ -326,6 +334,7 @@ export default function HostLayout() {
               boxSizing: 'border-box',
               top: '64px',
               height: 'calc(100% - 64px)',
+              overflowX: 'hidden',
             },
           }}
         >
@@ -339,15 +348,31 @@ export default function HostLayout() {
         sx={{
           flexGrow: 1,
           pt: '64px',
-          pl: { xs: 0, md: '250px' },
+          ml: { xs: 0, md: '250px' },
+          width: { xs: '100%', md: 'calc(100% - 250px)' },
+          boxSizing: 'border-box',
           backgroundColor: '#f5f5f5',
           minHeight: 'calc(100vh - 64px)',
+          overflowX: 'hidden',
+          overflowY: isMessagesRoute ? 'hidden' : 'visible',
         }}
       >
-        <Container maxWidth="xl" sx={{ py: 3 }}>
+        <Container
+          maxWidth="xl"
+          sx={{
+            pt: 3,
+            pb: isMessagesRoute ? 0 : 3,
+            height: isMessagesRoute ? 'calc(100vh - 64px)' : 'auto',
+            display: isMessagesRoute ? 'flex' : 'block',
+            flexDirection: 'column',
+            minHeight: 0,
+            overflow: isMessagesRoute ? 'hidden' : 'visible',
+          }}
+        >
           <Outlet />
         </Container>
       </Box>
     </Box>
   );
 }
+

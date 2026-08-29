@@ -1,7 +1,7 @@
-import  { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Kottage, RoomType, useGetPropertyById } from "../../hooks";
-import { useLocation,  useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { usePropertyAnalytics } from "../../services/analyticsService";
 import {
   LoadingState,
@@ -13,6 +13,7 @@ import RoomTypes from "./RoomTypes";
 
 function ViewKottage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { id: propertyId } = useParams<{ id: string }>();
   const { data: freshKottage, isLoading, error } = useGetPropertyById(propertyId);
   const kottage = freshKottage || (location.state?.kottage as Kottage | undefined);
@@ -28,7 +29,33 @@ function ViewKottage() {
   const [isFavorite, setIsFavorite] = useState(false);
   
   // Initialize analytics tracking for this property
-  const analytics = usePropertyAnalytics(kottage?.id || '', document.referrer);
+  usePropertyAnalytics(kottage?.id || '', document.referrer);
+
+  const listedRooms =
+    kottage?.roomTypes?.filter(room => room.listStatus === 'listed') || [];
+
+  const selectedNights =
+    checkInDate && checkOutDate
+      ? Math.max(
+          1,
+          Math.ceil(
+            (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 3600 * 24)
+          )
+        )
+      : 1;
+
+  const defaultRoom =
+    listedRooms.length > 0
+      ? listedRooms.reduce((cheapest, room) =>
+          room.pricePerNight < cheapest.pricePerNight ? room : cheapest
+        )
+      : null;
+
+  useEffect(() => {
+    if (!selectedRoom && defaultRoom) {
+      setSelectedRoom(defaultRoom);
+    }
+  }, [defaultRoom, selectedRoom]);
   
   // Show loading state while fetching fresh data
   if (isLoading && !kottage) {
@@ -48,18 +75,23 @@ function ViewKottage() {
 
 
 
-  // Get the default room or the cheapest room for pricing display
-  const getDefaultRoom = () => {
-    if (!kottage?.roomTypes || kottage.roomTypes.length === 0) return null;
-    return kottage.roomTypes.reduce((cheapest, room) => 
-      room.pricePerNight < cheapest.pricePerNight ? room : cheapest
-    );
-  };
+  const handlePrimaryAction = () => {
+    if (kottage && listedRooms.length === 1 && defaultRoom) {
+      navigate(`/Kottages/${kottage.id}/book-room`, {
+        state: {
+          kottage,
+          room: defaultRoom,
+          checkInDate,
+          checkOutDate,
+          guests,
+          totalPrice: defaultRoom.pricePerNight * selectedNights,
+          nights: selectedNights,
+          pricePerNight: defaultRoom.pricePerNight,
+        },
+      });
+      return;
+    }
 
-  const defaultRoom = getDefaultRoom();
-
-  // Handle scroll to rooms section
-  const handleViewRooms = () => {
     const roomsSection = document.getElementById('rooms-section');
     if (roomsSection) {
       roomsSection.scrollIntoView({ 
@@ -70,7 +102,7 @@ function ViewKottage() {
   };
 
   return (
-    <Box>
+    <Box sx={{ backgroundColor: '#f8fafc', minHeight: '100vh', pb: { xs: 10, md: 0 } }}>
       {/* Detailed Room View Modal */}
       <DetailedRoomView 
         detailedRoomView={detailedRoomView}
@@ -81,26 +113,25 @@ function ViewKottage() {
         checkOutDate={checkOutDate}
       />
 
-      {/* Property Postcard - Full Width */}
-      <Box sx={{ height: '100vh', position: 'relative' }}>
-        {kottage && (
-          <PropertyPostcard 
-            kottage={kottage}
-            defaultRoom={defaultRoom}
-            isFavorite={isFavorite}
-            onFavoriteToggle={() => setIsFavorite(!isFavorite)}
-            onViewRooms={handleViewRooms}
-          />
-        )}
-      </Box>
+      {kottage && (
+        <PropertyPostcard 
+          kottage={kottage}
+          defaultRoom={defaultRoom}
+          isFavorite={isFavorite}
+          onFavoriteToggle={() => setIsFavorite(!isFavorite)}
+          onViewRooms={handlePrimaryAction}
+          primaryActionLabel={
+            listedRooms.length === 1 ? 'Reserve this room' : 'View available rooms'
+          }
+        />
+      )}
 
       {/* Room Types Section */}
       <Box 
         id="rooms-section"
         sx={{ 
-          minHeight: '100vh',
-          backgroundColor: 'background.default',
-          py: 4
+          backgroundColor: '#f8fafc',
+          pb: { xs: 5, md: 7 }
         }}
       >
         {kottage && (
