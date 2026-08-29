@@ -38,7 +38,8 @@ import {
   BeachIcon,
   LiveMusicIcon,
   WellnessIcon,
-} from '../../icons/travel-icons-react/src';
+} from '../../icons/travel-icons/src';
+import { Colors } from '../constants';
 
 const formatDateRange = (startDate: string, endDate: string) =>
   `${format(parseISO(startDate), 'EEEE, MMMM d • h:mm a')} → ${format(
@@ -213,7 +214,7 @@ export default function EventDetailPage() {
                     backgroundColor: 'rgba(255,255,255,0.16)',
                   }}
                   label={event.badge}
-                  icon={<BeachIcon />}
+                  icon={<WellnessIcon color={Colors.raspberry} />}
                 />
               ) : null}
               <Chip

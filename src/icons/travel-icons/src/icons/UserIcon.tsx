@@ -1,0 +1,25 @@
+import React from "react";
+import { IconBase } from "../IconBase";
+import type { TravelIconProps } from "../types";
+
+export function UserIcon(props: TravelIconProps) {
+  return (
+    <IconBase {...props}>
+      <path
+        fill="var(--travel-icon-light)"
+        fillRule="evenodd"
+        d="M 10.178 48.644 L 10.178 49.384 L 10.918 49.384 L 10.918 48.644 Z M 30.151 5.000 L 30.151 5.740 L 34.589 5.740 L 34.589 5.000 Z"
+      />
+      <path
+        fill="var(--travel-icon-primary)"
+        fillRule="evenodd"
+        d="M 10.178 50.123 L 10.178 56.781 L 12.397 58.260 L 10.918 56.781 L 10.918 50.123 Z"
+      />
+      <path
+        fill="var(--travel-icon-dark)"
+        fillRule="evenodd"
+        d="M 11.658 48.644 L 11.658 56.781 L 13.137 58.260 L 51.603 58.260 L 53.082 57.521 L 53.082 47.904 L 51.603 44.205 L 49.384 41.247 L 48.644 41.247 L 45.685 38.288 L 38.288 35.329 L 27.192 35.329 L 26.452 36.068 L 22.014 36.808 L 19.055 38.288 L 13.877 43.466 Z M 27.932 7.219 L 24.233 9.438 L 21.274 14.616 L 21.274 22.014 L 22.753 24.973 L 27.932 29.411 L 29.411 29.411 L 30.151 30.151 L 37.548 29.411 L 39.027 28.671 L 43.466 23.493 L 43.466 21.274 L 44.205 20.534 L 44.205 16.096 L 43.466 15.356 L 43.466 13.877 L 41.986 10.918 L 39.767 8.699 L 36.808 7.219 L 35.329 7.219 L 34.589 6.479 L 30.151 6.479 L 29.411 7.219 Z"
+      />
+    </IconBase>
+  );
+}
