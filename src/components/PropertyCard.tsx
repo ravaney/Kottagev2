@@ -105,7 +105,7 @@ export default function PropertyCard({ property }: Props) {
                 label="My Property" 
                 size="small"
                 sx={{
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   color: 'white',
                   fontWeight: 600
                 }}
@@ -126,7 +126,7 @@ export default function PropertyCard({ property }: Props) {
           <Typography 
             variant="h6" 
             fontWeight={700}
-            sx={{ mb: 1, color: Colors.blue }}
+            sx={{ mb: 1, color: Colors.cerulean }}
           >
             {property.name}
           </Typography>
@@ -161,8 +161,8 @@ export default function PropertyCard({ property }: Props) {
                 size="small"
                 variant="outlined"
                 sx={{ 
-                  color: Colors.blue,
-                  borderColor: Colors.blue,
+                  color: Colors.cerulean,
+                  borderColor: Colors.cerulean,
                   fontSize: '0.7rem'
                 }}
               />
@@ -219,7 +219,7 @@ export default function PropertyCard({ property }: Props) {
             <Typography 
               variant="h6" 
               fontWeight={700}
-              sx={{ color: Colors.blue, mb: 1 }}
+              sx={{ color: Colors.cerulean, mb: 1 }}
             >
               $tbd <Typography component="span" variant="body2" color="text.secondary">per night</Typography>
             </Typography>
@@ -234,7 +234,7 @@ export default function PropertyCard({ property }: Props) {
                   fullWidth
                   sx={{
                     mb: 1,
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.cerulean,
                     '&:hover': { backgroundColor: Colors.raspberry }
                   }}
                 >
@@ -265,7 +265,7 @@ export default function PropertyCard({ property }: Props) {
                 onClick={handleButtonClick}
                 sx={{
                   backgroundColor: Colors.raspberry,
-                  '&:hover': { backgroundColor: Colors.blue },
+                  '&:hover': { backgroundColor: Colors.cerulean },
                   fontWeight: 600,
                   textTransform: 'none'
                 }}
@@ -280,3 +280,4 @@ export default function PropertyCard({ property }: Props) {
     </Stack>
   );
 }
+

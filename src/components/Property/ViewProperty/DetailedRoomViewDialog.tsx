@@ -44,7 +44,7 @@ import { useNavigate } from "react-router-dom";
         }}
       >
         {/* Header */}
-        <AppBar position="static" elevation={0} sx={{ bgcolor: Colors.blue }}>
+        <AppBar position="static" elevation={0} sx={{ bgcolor: Colors.cerulean }}>
           <Toolbar>
             <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700 }}>
               {detailedRoomView.name}
@@ -104,7 +104,7 @@ import { useNavigate } from "react-router-dom";
 
                 {/* Description */}
                 <Box sx={{ mb: 3 }}>
-                  <Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: Colors.blue }}>
+                  <Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: Colors.cerulean }}>
                     Description
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
@@ -128,7 +128,7 @@ import { useNavigate } from "react-router-dom";
           {kottage?.ownerId && (
             <ContactHostButton 
               hostId={kottage.ownerId}
-              hostName={kottage.name || 'Property Host'}
+              hostName={kottage.host?.name || kottage.name || 'Property Host'}
               propertyId={kottage.id}
               propertyName={kottage.name}
               variant="outlined"
@@ -155,7 +155,7 @@ import { useNavigate } from "react-router-dom";
                 }}
                 sx={{
                   background: canAccommodateGuests 
-                    ? `linear-gradient(135deg, ${Colors.blue} 0%, ${Colors.raspberry} 100%)`
+                    ? `linear-gradient(135deg, ${Colors.cerulean} 0%, ${Colors.raspberry} 100%)`
                     : '#e0e0e0',
                   color: canAccommodateGuests ? 'white' : '#9e9e9e',
                   fontWeight: 700,

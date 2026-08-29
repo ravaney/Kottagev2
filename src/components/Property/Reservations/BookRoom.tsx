@@ -2,23 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
+  Chip,
   Container,
   Typography,
   Paper,
   Button,
-  Divider,
-  alpha,
   TextField,
   InputAdornment,
   CircularProgress,
   Alert,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import {
   ArrowBack,
+  BusinessCenter,
   CalendarToday,
+  LaptopMac,
   LocationOn,
   PeopleAlt,
+  Wifi,
 } from '@mui/icons-material';
 import { Colors } from '../../constants';
 import PromotionBanner from './PromotionBanner';
@@ -26,6 +30,7 @@ import BookingInfo from '../BookingInfo';
 import RoomPromotion from './RoomPromotion';
 import {
   Kottage,
+  NomadAddOn,
   RoomType,
   useAuth,
   useCreateReservation,
@@ -40,6 +45,11 @@ import {
   handleConfirmPayment,
 } from './reservationUtilities';
 import ReservationSummary from './ReservationSummary';
+import {
+  NOMAD_PASS_PRICE,
+  getNomadBookingPerks,
+  getNomadPerkLabels,
+} from '../../../utils/nomadUtils';
 
 const BookRoom = () => {
   const location = useLocation();
@@ -69,9 +79,9 @@ const BookRoom = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(checkInDate);
   const [endDate, setEndDate] = useState<Date | undefined>(checkOutDate);
   const [guests, setGuests] = useState<number>(passedGuests || 1);
+  const [nomadPassSelected, setNomadPassSelected] = useState(false);
 
   // Payment state
-  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
   const [paymentError, setPaymentError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -149,11 +159,24 @@ const BookRoom = () => {
       : promotionalPricing?.finalPrice || room?.pricePerNight || 300;
 
   const maxGuestsAllowed = room?.maxOccupancy || 4;
+  const nomadEligible = Boolean(kottage.nomad?.isVerified);
+  const nomadPerks = getNomadPerkLabels(kottage.nomad, {
+    includeWifiSpeed: true,
+  }).slice(0, 4);
+  const nomadAddOn: NomadAddOn | undefined =
+    nomadEligible && nomadPassSelected
+      ? {
+          enabled: true,
+          price: NOMAD_PASS_PRICE,
+          perks: getNomadBookingPerks(kottage),
+        }
+      : undefined;
+  const nomadPassFee = nomadAddOn?.price || 0;
 
   const subtotal = nights * basePrice;
   const cleaningFee = 75;
   const serviceFee = subtotal * 0.1;
-  const total = subtotal + cleaningFee + serviceFee;
+  const total = subtotal + cleaningFee + serviceFee + nomadPassFee;
 
   // Calculate total savings if promotion is applied
   const totalSavings = promotionalPricing?.isPromotionApplied
@@ -189,7 +212,7 @@ const BookRoom = () => {
         <Button
           startIcon={<ArrowBack />}
           onClick={() => navigate(-1)}
-          sx={{ color: Colors.blue }}
+          sx={{ color: Colors.cerulean }}
         >
           Back to Property
         </Button>
@@ -235,7 +258,7 @@ const BookRoom = () => {
               <Typography
                 variant="h5"
                 fontWeight={600}
-                sx={{ mb: 2, color: Colors.blue }}
+                sx={{ mb: 2, color: Colors.cerulean }}
               >
                 Room Details
               </Typography>
@@ -565,6 +588,96 @@ const BookRoom = () => {
                 </Alert>
               )}
 
+              {nomadEligible && (
+                <Paper
+                  variant="outlined"
+                  sx={{
+                    p: 2.5,
+                    mb: 3,
+                    borderRadius: 3,
+                    borderColor: nomadPassSelected
+                      ? 'primary.main'
+                      : 'rgba(0,0,0,0.08)',
+                    background:
+                      'linear-gradient(135deg, rgba(227,242,253,0.55) 0%, rgba(255,255,255,1) 100%)',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      gap: 2,
+                      mb: 1.5,
+                    }}
+                  >
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 700, color: Colors.cerulean, mb: 0.5 }}
+                      >
+                        Add Nomad Pass
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Recommended for remote workers staying at this Nomad
+                        Verified property.
+                      </Typography>
+                    </Box>
+                    <Chip
+                      label={`+$${NOMAD_PASS_PRICE}`}
+                      color="primary"
+                      sx={{ fontWeight: 700 }}
+                    />
+                  </Box>
+
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={nomadPassSelected}
+                        onChange={event =>
+                          setNomadPassSelected(event.target.checked)
+                        }
+                        color="primary"
+                      />
+                    }
+                    label="Unlock Nomad Pass perks on this stay"
+                    sx={{ mb: 1 }}
+                  />
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: 1,
+                      flexWrap: 'wrap',
+                      mb: nomadPerks.length > 0 ? 1.5 : 0,
+                    }}
+                  >
+                    {nomadPerks.map(perk => (
+                      <Chip
+                        key={perk}
+                        size="small"
+                        variant="outlined"
+                        icon={
+                          perk.toLowerCase().includes('coworking') ? (
+                            <BusinessCenter />
+                          ) : perk.toLowerCase().includes('wifi') ? (
+                            <Wifi />
+                          ) : (
+                            <LaptopMac />
+                          )
+                        }
+                        label={perk}
+                      />
+                    ))}
+                  </Box>
+
+                  <Typography variant="caption" color="text.secondary">
+                    The Nomad Pass is a checkout add-on for this reservation. It
+                    does not start a separate subscription.
+                  </Typography>
+                </Paper>
+              )}
+
               {/* Combined Reservation & Pricing Summary */}
               {startDate && endDate && isDateRangeValid && (
                 <ReservationSummary
@@ -578,6 +691,9 @@ const BookRoom = () => {
                   cleaningFee={cleaningFee}
                   serviceFee={serviceFee}
                   total={total}
+                  nomadPassSelected={Boolean(nomadAddOn?.enabled)}
+                  nomadPassPrice={nomadPassFee}
+                  nomadPerks={nomadPerks}
                   promotionalPricing={promotionalPricing}
                   totalSavings={totalSavings}
                   roomForPricing={roomForPricing}
@@ -615,10 +731,10 @@ const BookRoom = () => {
                     appUser,
                     total,
                     guests,
+                    nomadAddOn,
                     createReservation,
                     updateProperty,
                     refetchBlockedDates,
-                    setPaymentSuccess,
                     setPaymentError,
                     navigate,
                   });
@@ -685,3 +801,4 @@ const BookRoom = () => {
 };
 
 export default BookRoom;
+

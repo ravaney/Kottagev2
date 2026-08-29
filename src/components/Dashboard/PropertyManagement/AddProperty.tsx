@@ -26,7 +26,6 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Checkbox,
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import {
@@ -51,9 +50,10 @@ import {
   useAddPropertyImages,
   RoomType,
   Kottage,
-  ApprovalDocument,
 } from '../../../hooks/propertyHooks';
 import { isSubdomain } from '../../../utils/subdomainRouter';
+import { getDefaultNomadInfo } from '../../../utils/nomadUtils';
+import NomadFieldsSection from '../../Property/NomadFieldsSection';
 
 const steps = [
   'Basic Information',
@@ -156,6 +156,7 @@ export default function AddProperty() {
     rating: 0,
     roomTypes: [],
     images: [],
+    nomad: getDefaultNomadInfo(),
   });
 
   const [images, setImages] = React.useState<File[]>([]);
@@ -219,6 +220,20 @@ export default function AddProperty() {
     setPropertyData(prev => ({
       ...prev,
       amenities: typeof value === 'string' ? value.split(',') : value,
+    }));
+  };
+
+  const handleNomadChange = (
+    field: keyof NonNullable<Kottage['nomad']>,
+    value: any
+  ) => {
+    setPropertyData(prev => ({
+      ...prev,
+      nomad: {
+        ...getDefaultNomadInfo(),
+        ...prev.nomad,
+        [field]: value,
+      },
     }));
   };
 
@@ -609,7 +624,7 @@ export default function AddProperty() {
             <Typography
               variant="h6"
               gutterBottom
-              color={Colors.blue}
+              color={Colors.cerulean}
               sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
             >
               <HomeIcon />
@@ -689,7 +704,7 @@ export default function AddProperty() {
             <Typography
               variant="h6"
               gutterBottom
-              color={Colors.blue}
+              color={Colors.cerulean}
               sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
             >
               <HomeIcon />
@@ -846,7 +861,7 @@ export default function AddProperty() {
             <Typography
               variant="h6"
               gutterBottom
-              color={Colors.blue}
+              color={Colors.cerulean}
               sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
             >
               <Hotel />
@@ -857,7 +872,7 @@ export default function AddProperty() {
             <Card elevation={2} sx={{ mb: 3 }}>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-                  <AttachMoney sx={{ color: Colors.blue }} />
+                  <AttachMoney sx={{ color: Colors.cerulean }} />
                   <Typography variant="h6" fontWeight={600}>
                     Base Property Information
                   </Typography>
@@ -903,6 +918,12 @@ export default function AddProperty() {
                       </Select>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12}>
+                    <NomadFieldsSection
+                      nomad={propertyData.nomad || getDefaultNomadInfo()}
+                      onChange={handleNomadChange}
+                    />
+                  </Grid>
                 </Grid>
               </CardContent>
             </Card>
@@ -928,7 +949,7 @@ export default function AddProperty() {
                     startIcon={<Add />}
                     onClick={addRoom}
                     sx={{
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       borderRadius: 2,
                       textTransform: 'none',
                       fontWeight: 600,
@@ -981,7 +1002,7 @@ export default function AddProperty() {
                       startIcon={<Add />}
                       onClick={addRoom}
                       sx={{
-                        backgroundColor: Colors.blue,
+                        backgroundColor: Colors.cerulean,
                         borderRadius: 2,
                         textTransform: 'none',
                         fontWeight: 600,
@@ -1191,7 +1212,7 @@ export default function AddProperty() {
                                     >
                                       <Image
                                         sx={{
-                                          color: Colors.blue,
+                                          color: Colors.cerulean,
                                           fontSize: 20,
                                         }}
                                       />
@@ -1259,7 +1280,7 @@ export default function AddProperty() {
                                                 <Image
                                                   sx={{
                                                     fontSize: 16,
-                                                    color: Colors.blue,
+                                                    color: Colors.cerulean,
                                                   }}
                                                 />
                                                 <Box
@@ -1368,7 +1389,7 @@ export default function AddProperty() {
             <Typography
               variant="h6"
               gutterBottom
-              color={Colors.blue}
+              color={Colors.cerulean}
               sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
             >
               <PhotoLibrary />
@@ -1386,7 +1407,7 @@ export default function AddProperty() {
                       gap={1}
                       sx={{ mb: 2 }}
                     >
-                      <Image sx={{ color: Colors.blue }} />
+                      <Image sx={{ color: Colors.cerulean }} />
                       <Typography variant="h6" fontWeight={600}>
                         Property Images
                       </Typography>
@@ -1436,7 +1457,7 @@ export default function AddProperty() {
                           <ListItem key={index} sx={{ px: 0, py: 0.5 }}>
                             <ListItemIcon>
                               <Image
-                                sx={{ fontSize: 20, color: Colors.blue }}
+                                sx={{ fontSize: 20, color: Colors.cerulean }}
                               />
                             </ListItemIcon>
                             <ListItemText
@@ -1755,7 +1776,7 @@ export default function AddProperty() {
         <Typography
           variant="h6"
           gutterBottom
-          color={Colors.blue}
+          color={Colors.cerulean}
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
           <AddBusiness />
@@ -1795,7 +1816,7 @@ export default function AddProperty() {
             <Typography
               variant="h6"
               gutterBottom
-              color={Colors.blue}
+              color={Colors.cerulean}
               sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
             >
               <HomeIcon />
@@ -1925,7 +1946,7 @@ export default function AddProperty() {
                       !validateStep3()
                     }
                     sx={{
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       borderRadius: 2,
                       textTransform: 'none',
                       fontWeight: 600,
@@ -1954,7 +1975,7 @@ export default function AddProperty() {
                     onClick={handleNext}
                     disabled={!validateCurrentStep()}
                     sx={{
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       borderRadius: 2,
                       textTransform: 'none',
                       fontWeight: 600,
@@ -1981,3 +2002,4 @@ export default function AddProperty() {
     </Box>
   );
 }
+

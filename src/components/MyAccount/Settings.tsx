@@ -70,7 +70,7 @@ export default function Settings() {
       <PageHeader 
         title="Settings"
         subtitle="Configure your account preferences and settings"
-        icon={<SettingsIcon sx={{ color: Colors.blue, fontSize: 32 }} />}
+        icon={<SettingsIcon sx={{ color: Colors.cerulean, fontSize: 32 }} />}
       />
       
       <Paper sx={{ mt: 1, borderRadius: 3 }}>
@@ -98,7 +98,7 @@ export default function Settings() {
 
         {/* Account Settings */}
         <TabPanel value={tabValue} index={0}>
-          <Typography variant="h6" gutterBottom color={Colors.blue}>
+          <Typography variant="h6" gutterBottom color={Colors.cerulean}>
             Account Information
           </Typography>
           <List>
@@ -145,7 +145,7 @@ export default function Settings() {
 
         {/* Security Settings */}
         <TabPanel value={tabValue} index={1}>
-          <Typography variant="h6" gutterBottom color={Colors.blue}>
+          <Typography variant="h6" gutterBottom color={Colors.cerulean}>
             Security & Privacy
           </Typography>
           <List>
@@ -179,7 +179,7 @@ export default function Settings() {
 
         {/* Notification Settings */}
         <TabPanel value={tabValue} index={2}>
-          <Typography variant="h6" gutterBottom color={Colors.blue}>
+          <Typography variant="h6" gutterBottom color={Colors.cerulean}>
             Notification Preferences
           </Typography>
           <List>
@@ -253,3 +253,4 @@ export default function Settings() {
     </Box>
   );
 }
+

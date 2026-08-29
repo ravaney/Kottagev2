@@ -19,6 +19,9 @@ export * from './employeeManagement';
 // Import popularity engine functions
 export * from './popularityEngine';
 
+// Import ticket validation functions
+export * from './tickets';
+
 // Initialize Firebase Admin if not already initialized
 if (admin.apps.length === 0) {
   admin.initializeApp();

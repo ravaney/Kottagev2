@@ -15,7 +15,7 @@ export default function UpcomingReservations({ reservations }: UpcomingReservati
     <Paper elevation={3} sx={{ p: 2 ,mb:1}}>
       <Box display="flex" alignItems="center" gap={1} sx={{ mb: 3 }}>
         <BookmarkIcon sx={{ color: Colors.raspberry, fontSize: 28 }} />
-        <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+        <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
           Upcoming Reservations
         </Typography>
       </Box>
@@ -24,7 +24,7 @@ export default function UpcomingReservations({ reservations }: UpcomingReservati
           <ListItem key={reservation.reservationId} sx={{ px: 0, py: 1 }}>
             <Card sx={{ width: '100%', mb: 1 }}>
               <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                <Typography variant="subtitle2" fontWeight={600} color={Colors.blue}>
+                <Typography variant="subtitle2" fontWeight={600} color={Colors.cerulean}>
                   {reservation.guests.map(guest => guest.name).join(', ')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

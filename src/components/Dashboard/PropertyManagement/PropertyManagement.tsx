@@ -137,7 +137,7 @@ export default function PropertyManagement() {
           <Typography
             variant="h5"
             fontWeight={600}
-            color={Colors.blue}
+            color={Colors.cerulean}
             sx={{ mb: 2 }}
           >
             🧾 Financial Insights
@@ -219,7 +219,7 @@ export default function PropertyManagement() {
           <Typography
             variant="h5"
             fontWeight={600}
-            color={Colors.blue}
+            color={Colors.cerulean}
             sx={{ mb: 2 }}
           >
             ⭐ Reputation Management
@@ -323,7 +323,7 @@ export default function PropertyManagement() {
           <Typography
             variant="h5"
             fontWeight={600}
-            color={Colors.blue}
+            color={Colors.cerulean}
             sx={{ mb: 2 }}
           >
             📊 Analytics Tools
@@ -423,7 +423,7 @@ export default function PropertyManagement() {
           <Typography
             variant="h5"
             fontWeight={600}
-            color={Colors.blue}
+            color={Colors.cerulean}
             sx={{ mb: 2 }}
           >
             🧠 Power Features
@@ -652,3 +652,4 @@ export default function PropertyManagement() {
     </Box>
   );
 }
+

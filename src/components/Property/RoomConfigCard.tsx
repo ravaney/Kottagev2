@@ -28,13 +28,13 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
         '&:hover': {
           transform: 'translateY(-4px)',
           boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
-          borderColor: Colors.blue
+          borderColor: Colors.cerulean
         }
       }}
     >
       <Box 
         sx={{ 
-          background: `linear-gradient(135deg, ${Colors.blue}08 0%, ${Colors.raspberry}08 100%)`,
+          background: `linear-gradient(135deg, ${Colors.cerulean}08 0%, ${Colors.raspberry}08 100%)`,
           p: 2,
           borderBottom: '1px solid #f0f0f0'
         }}
@@ -49,10 +49,10 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
               }}
             >
-              <RoomIcon sx={{ color: Colors.blue, fontSize: 20 }} />
+              <RoomIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
             </Box>
             <Box>
-              <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+              <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                 {room.name}
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -67,10 +67,10 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
               onClick={() => onEdit(room)}
               sx={{ 
                 backgroundColor: 'white',
-                color: Colors.blue,
+                color: Colors.cerulean,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 '&:hover': { 
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   color: 'white',
                   transform: 'scale(1.1)'
                 }

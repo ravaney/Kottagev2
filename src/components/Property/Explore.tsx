@@ -324,7 +324,7 @@ export default function Explore() {
                     onClick={scrollToContent}
                     sx={{
                       backgroundColor: Colors.raspberry,
-                      '&:hover': { backgroundColor: Colors.blue },
+                      '&:hover': { backgroundColor: Colors.cerulean },
                       borderRadius: 2,
                       px: 4,
                       py: 1.5,
@@ -418,7 +418,7 @@ export default function Explore() {
                 backgroundColor: '#f1f1f1',
               },
               '&::-webkit-scrollbar-thumb': {
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.cerulean,
                 borderRadius: '2px',
               },
             }}
@@ -437,15 +437,15 @@ export default function Explore() {
                   py: 1,
                   backgroundColor:
                     selectedRegion.name === region.name
-                      ? Colors.blue
+                      ? Colors.cerulean
                       : 'transparent',
-                  borderColor: Colors.blue,
+                  borderColor: Colors.cerulean,
                   color:
-                    selectedRegion.name === region.name ? 'white' : Colors.blue,
+                    selectedRegion.name === region.name ? 'white' : Colors.cerulean,
                   '&:hover': {
                     backgroundColor:
                       selectedRegion.name === region.name
-                        ? Colors.blue
+                        ? Colors.cerulean
                         : 'rgba(0, 114, 229, 0.1)',
                   },
                   whiteSpace: 'nowrap',
@@ -478,10 +478,10 @@ export default function Explore() {
                   px: 3,
                 },
                 '& .Mui-selected': {
-                  color: Colors.blue,
+                  color: Colors.cerulean,
                 },
                 '& .MuiTabs-indicator': {
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   height: 3,
                 },
               }}
@@ -567,7 +567,7 @@ export default function Explore() {
                       <Typography
                         variant="h5"
                         fontWeight={700}
-                        color={Colors.blue}
+                        color={Colors.cerulean}
                       >
                         Highlights
                       </Typography>
@@ -627,8 +627,8 @@ export default function Explore() {
                         endIcon={<ArrowForwardIcon />}
                         onClick={() => setActiveTab(1)}
                         sx={{
-                          borderColor: Colors.blue,
-                          color: Colors.blue,
+                          borderColor: Colors.cerulean,
+                          color: Colors.cerulean,
                           borderRadius: 2,
                           py: 1,
                           mt: 'auto',
@@ -651,7 +651,7 @@ export default function Explore() {
                 <Typography
                   variant="h4"
                   fontWeight={700}
-                  color={Colors.blue}
+                  color={Colors.cerulean}
                   gutterBottom
                 >
                   Things to Do in {selectedRegion.name}
@@ -701,7 +701,7 @@ export default function Explore() {
                               mb: 1.5,
                               fontWeight: 500,
                               backgroundColor: 'rgba(0, 114, 229, 0.1)',
-                              color: Colors.blue,
+                              color: Colors.cerulean,
                             }}
                           />
                           <Typography
@@ -728,7 +728,7 @@ export default function Explore() {
                 <Typography
                   variant="h4"
                   fontWeight={700}
-                  color={Colors.blue}
+                  color={Colors.cerulean}
                   gutterBottom
                 >
                   Places to Stay in {selectedRegion.name}
@@ -800,3 +800,4 @@ export default function Explore() {
     </Box>
   );
 }
+

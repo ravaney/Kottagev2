@@ -167,8 +167,8 @@ export default function IncomeChartCard({ reservations }: IncomeChartCardProps) 
     <Paper elevation={3} sx={{ p: 2, height: 400, mb: 1 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <TrendingUpIcon sx={{ color: Colors.blue, fontSize: 28 }} />
-          <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+          <TrendingUpIcon sx={{ color: Colors.cerulean, fontSize: 28 }} />
+          <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
             {getTitle()}
           </Typography>
         </Box>
@@ -186,8 +186,8 @@ export default function IncomeChartCard({ reservations }: IncomeChartCardProps) 
               fontSize: '0.75rem'
             },
             '& .Mui-selected': {
-              backgroundColor: `${Colors.blue}15 !important`,
-              color: Colors.blue,
+              backgroundColor: `${Colors.cerulean}15 !important`,
+              color: Colors.cerulean,
               fontWeight: 600
             }
           }}
@@ -221,7 +221,7 @@ export default function IncomeChartCard({ reservations }: IncomeChartCardProps) 
               />
               <Bar
                 dataKey="income"
-                fill={Colors.blue}
+                fill={Colors.cerulean}
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>

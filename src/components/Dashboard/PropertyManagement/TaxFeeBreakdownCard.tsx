@@ -42,7 +42,7 @@ export default function TaxFeeBreakdownCard({ monthly, yearly }: TaxFeeBreakdown
   // Prepare data for pie chart
   const chartData = [
     { name: 'Net Income', value: currentData.netIncome, color: '#4caf50' },
-    { name: 'Platform Fee', value: currentData.platformFee, color: Colors.blue },
+    { name: 'Platform Fee', value: currentData.platformFee, color: Colors.cerulean },
     { name: 'Taxes', value: currentData.taxesWithheld, color: '#f44336' },
     { name: 'Service Fee', value: currentData.serviceFee, color: '#ff9800' },
     { name: 'Cleaning Fee', value: currentData.cleaningFee, color: '#9c27b0' },
@@ -58,8 +58,8 @@ export default function TaxFeeBreakdownCard({ monthly, yearly }: TaxFeeBreakdown
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <ReceiptIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-          <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+          <ReceiptIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+          <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
             Tax & Fee Breakdown
           </Typography>
         </Box>
@@ -77,8 +77,8 @@ export default function TaxFeeBreakdownCard({ monthly, yearly }: TaxFeeBreakdown
               fontSize: '0.7rem'
             },
             '& .Mui-selected': {
-              backgroundColor: `${Colors.blue}15 !important`,
-              color: Colors.blue,
+              backgroundColor: `${Colors.cerulean}15 !important`,
+              color: Colors.cerulean,
               fontWeight: 600
             }
           }}

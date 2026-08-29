@@ -78,6 +78,7 @@ export default function AdminLanding() {
     if (path.includes('/employee-management')) return 'employees';
     if (path.includes('/regional-assignment')) return 'regional';
     if (path.includes('/analytics')) return 'analytics';
+    if (path.includes('/events')) return 'events';
     if (path.includes('/users')) return 'users';
     if (path.includes('/settings')) return 'settings';
     return 'dashboard';
@@ -91,6 +92,7 @@ export default function AdminLanding() {
     { id: 'employees', name: 'Employee Management', icon: <AssignmentIndIcon />, path: '/employee-management' },
     { id: 'regional', name: 'Regional Assignment', icon: <LocationOnIcon />, path: '/regional-assignment' },
     { id: 'analytics', name: 'Analytics', icon: <BarChartIcon />, path: '/analytics' },
+    { id: 'events', name: 'Events', icon: <EventNoteIcon />, path: '/events' },
     { id: 'settings', name: 'Settings', icon: <SettingsIcon />, path: '/settings' }
   ];
 

@@ -50,8 +50,8 @@ export default function HostRoot() {
         minHeight="100vh"
         sx={{ backgroundColor: '#f5f5f5' }}
       >
-        <CircularProgress size={60} sx={{ color: Colors.blue, mb: 2 }} />
-        <Typography variant="h6" color={Colors.blue}>
+        <CircularProgress size={60} sx={{ color: Colors.cerulean, mb: 2 }} />
+        <Typography variant="h6" color={Colors.cerulean}>
           Loading Host Portal...
         </Typography>
       </Box>
@@ -68,3 +68,4 @@ export default function HostRoot() {
   navigate('/dashboard', { replace: true });
   return null;
 }
+

@@ -1,9 +1,12 @@
+import Box from '@mui/material/Box';
 import NavBar from './NavBar';
 import { Outlet, useLocation } from 'react-router-dom';
 import BottomNav from './BottomNav';
+import RouteMetaManager from '../common/RouteMetaManager';
 
 export default function Layout() {
   const location = useLocation();
+  const isSearchPage = location.pathname === '/search';
   const isBookRoomPage =
     location.pathname.includes('/book-room') ||
     location.pathname.includes('/booking-confirmation');
@@ -18,19 +21,31 @@ export default function Layout() {
     location.pathname.includes('/login-select');
 
   const hideNavigation = isBookRoomPage || isAuthPage;
+  const hideFooter = hideNavigation || isSearchPage;
 
   return (
     <div>
+      <RouteMetaManager />
       {!hideNavigation && <NavBar />}
-      <main
-        style={{
+      <Box
+        component="main"
+        sx={{
           minHeight: '100vh',
-          paddingTop: !hideNavigation ? '64px' : '0',
+          ...(isSearchPage && {
+            height: '100vh',
+            boxSizing: 'border-box',
+            overflow: 'hidden',
+          }),
+          pt: hideNavigation
+            ? 0
+            : isSearchPage
+              ? { xs: '64px', sm: '70px' }
+              : { xs: '64px', sm: '70px' },
         }}
       >
         <Outlet />
-      </main>
-      {!hideNavigation && <BottomNav />}
+      </Box>
+      {!hideFooter && <BottomNav />}
     </div>
   );
 }

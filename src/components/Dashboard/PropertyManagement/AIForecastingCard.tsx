@@ -51,8 +51,8 @@ export default function AIForecastingCard({
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <PsychologyIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-          <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+          <PsychologyIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+          <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
             AI Forecasting
           </Typography>
         </Box>
@@ -90,8 +90,8 @@ export default function AIForecastingCard({
               flex: 1
             },
             '& .Mui-selected': {
-              backgroundColor: `${Colors.blue}15 !important`,
-              color: Colors.blue,
+              backgroundColor: `${Colors.cerulean}15 !important`,
+              color: Colors.cerulean,
               fontWeight: 600
             }
           }}
@@ -118,7 +118,7 @@ export default function AIForecastingCard({
             <Line 
               type="monotone" 
               dataKey="actual" 
-              stroke={Colors.blue} 
+              stroke={Colors.cerulean} 
               strokeWidth={2}
               dot={{ r: 4 }}
               name="Actual"

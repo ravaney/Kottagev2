@@ -32,8 +32,8 @@ export default function PayoutSummaryCard({ data }: PayoutSummaryCardProps) {
   return (
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-        <PaymentsIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-        <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+        <PaymentsIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+        <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
           Payout Summary
         </Typography>
       </Box>
@@ -44,7 +44,7 @@ export default function PayoutSummaryCard({ data }: PayoutSummaryCardProps) {
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Pending
             </Typography>
-            <Typography variant="h5" fontWeight={700} color={Colors.blue}>
+            <Typography variant="h5" fontWeight={700} color={Colors.cerulean}>
               ${data.pending.toLocaleString()}
             </Typography>
             <Typography variant="caption" color="text.secondary">
@@ -138,7 +138,7 @@ export default function PayoutSummaryCard({ data }: PayoutSummaryCardProps) {
       <Button 
         variant="text" 
         fullWidth 
-        sx={{ mt: 2, color: Colors.blue }}
+        sx={{ mt: 2, color: Colors.cerulean }}
       >
         View All Transactions
       </Button>

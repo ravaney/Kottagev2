@@ -211,7 +211,7 @@ export default function MyReservations({
             <Typography
               variant="h6"
               fontWeight={600}
-              color={Colors.blue}
+              color={Colors.cerulean}
               gutterBottom
             >
               {reservation.property.name}
@@ -247,7 +247,7 @@ export default function MyReservations({
 
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mb: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <EventIcon sx={{ fontSize: 18, color: Colors.blue }} />
+            <EventIcon sx={{ fontSize: 18, color: Colors.cerulean }} />
             <Box>
               <Typography
                 variant="caption"
@@ -351,8 +351,8 @@ export default function MyReservations({
     <Paper elevation={3} sx={{ mb: 2 }}>
       <Box sx={{ p: 3, pb: 0 }}>
         <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
-          <EventIcon sx={{ color: Colors.blue, fontSize: 28 }} />
-          <Typography variant="h5" fontWeight={600} color={Colors.blue}>
+          <EventIcon sx={{ color: Colors.cerulean, fontSize: 28 }} />
+          <Typography variant="h5" fontWeight={600} color={Colors.cerulean}>
             My Reservations
           </Typography>
         </Box>
@@ -368,7 +368,7 @@ export default function MyReservations({
               fontSize: '0.9rem',
             },
             '& .MuiTabs-indicator': {
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.cerulean,
               height: 3,
             },
           }}
@@ -378,7 +378,7 @@ export default function MyReservations({
             label={`Upcoming (${upcomingReservations.length})`}
             iconPosition="start"
             sx={{
-              color: activeTab === 0 ? Colors.blue : 'text.secondary',
+              color: activeTab === 0 ? Colors.cerulean : 'text.secondary',
             }}
           />
           <Tab
@@ -386,7 +386,7 @@ export default function MyReservations({
             label={`Past (${pastReservations.length})`}
             iconPosition="start"
             sx={{
-              color: activeTab === 1 ? Colors.blue : 'text.secondary',
+              color: activeTab === 1 ? Colors.cerulean : 'text.secondary',
             }}
           />
         </Tabs>
@@ -451,3 +451,4 @@ export default function MyReservations({
     </Paper>
   );
 }
+

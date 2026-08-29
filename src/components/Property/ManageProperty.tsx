@@ -342,7 +342,7 @@ export default function ManageProperty() {
       <Box sx={{ width: '100%', backgroundColor: 'white', pt: 3, pb: 3 }}>
         <Container maxWidth="lg">
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-            <CircularProgress size={60} sx={{ color: Colors.blue }} />
+            <CircularProgress size={60} sx={{ color: Colors.cerulean }} />
           </Box>
         </Container>
       </Box>
@@ -379,7 +379,7 @@ export default function ManageProperty() {
     <Box sx={{ width: '100%', backgroundColor: 'white', pt: 3, pb: 3 }}>
       <Container maxWidth="lg">
         {/* Header Section */}
-        <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="h6" gutterBottom color={Colors.cerulean} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <SettingsIcon />
           Property Management
         </Typography>
@@ -412,7 +412,7 @@ export default function ManageProperty() {
             border: '1px solid #e0e0e0',
             borderBottom: 'none'
           }}>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+            <Typography variant="h6" gutterBottom color={Colors.cerulean} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
               <SettingsIcon />
               Property Overview
             </Typography>
@@ -437,7 +437,7 @@ export default function ManageProperty() {
                   </Grid>
                   <Grid item xs={12} md={8}>
                     <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-                      <Typography variant="h5" fontWeight={600} color={Colors.blue}>
+                      <Typography variant="h5" fontWeight={600} color={Colors.cerulean}>
                         {property.name}
                       </Typography>
                       {getStatusChip(property)}
@@ -451,7 +451,7 @@ export default function ManageProperty() {
                       {property.roomTypes && property.roomTypes.length > 0 && (
                         <Grid item xs={12} sm={4}>
                           <Box sx={{ textAlign: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                            <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                               {property.roomTypes.reduce((total: number, room: RoomType) => total + (room.quantityAvailable || 0), 0)}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
@@ -463,7 +463,7 @@ export default function ManageProperty() {
                       {property.maxGuests && (
                         <Grid item xs={12} sm={4}>
                           <Box sx={{ textAlign: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                            <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                               {property.maxGuests}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
@@ -479,7 +479,7 @@ export default function ManageProperty() {
                         p: 2, 
                         backgroundColor: '#f9f9f9', 
                         borderRadius: 1,
-                        borderLeft: '4px solid ' + Colors.blue
+                        borderLeft: '4px solid ' + Colors.cerulean
                       }}>
                         {property.description.substring(0, 200)}
                         {property.description.length > 200 && '...'}
@@ -494,7 +494,7 @@ export default function ManageProperty() {
           {/* Room Types Section */}
           <Box sx={{ p: 3, borderTop: '1px solid #e0e0e0' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h6" gutterBottom color={Colors.blue}>
+              <Typography variant="h6" gutterBottom color={Colors.cerulean}>
                 🏠 Room Types & Availability
               </Typography>
               <Button
@@ -557,7 +557,7 @@ export default function ManageProperty() {
                       
                       <CardContent sx={{ p: 2 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                          <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                          <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                             {room.name || `Room ${index + 1}`}
                           </Typography>
                           <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -611,7 +611,7 @@ export default function ManageProperty() {
                         <Grid container spacing={2} sx={{ mb: 2 }}>
                           <Grid item xs={6}>
                             <Box sx={{ textAlign: 'center', p: 1, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                              <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                              <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                                 {room.maxOccupancy || 0}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
@@ -621,7 +621,7 @@ export default function ManageProperty() {
                           </Grid>
                           <Grid item xs={6}>
                             <Box sx={{ textAlign: 'center', p: 1, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                              <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                              <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                                 ${room.pricePerNight || 0}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
@@ -692,7 +692,7 @@ export default function ManageProperty() {
                     startIcon={<EditIcon />}
                     onClick={() => setEditDialogOpen(true)}
                     sx={{ 
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       borderRadius: 2,
                       textTransform: 'none',
                       fontWeight: 600
@@ -707,7 +707,7 @@ export default function ManageProperty() {
 
           {/* Promotions Section */}
           <Box sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom color={Colors.cerulean} sx={{ mb: 3 }}>
               🎯 Promotions & Discounts
             </Typography>
             
@@ -718,7 +718,7 @@ export default function ManageProperty() {
                 variant="contained"
                 onClick={() => setPromotionDialogOpen(true)}
                 sx={{ 
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   borderRadius: 2,
                   textTransform: 'none',
                   fontWeight: 600
@@ -762,7 +762,7 @@ export default function ManageProperty() {
                         </Typography>
 
                         <Box sx={{ mb: 2 }}>
-                          <Typography variant="body2" sx={{ fontWeight: 600, color: Colors.blue }}>
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: Colors.cerulean }}>
                             Discount: {promotion.discountType === 'percentage' 
                               ? `${promotion.discountValue}%` 
                               : `$${promotion.discountValue}`}
@@ -808,7 +808,7 @@ export default function ManageProperty() {
                           size="small"
                           startIcon={<EditIcon />}
                           onClick={() => handleEditPromotion(promotion)}
-                          sx={{ color: Colors.blue }}
+                          sx={{ color: Colors.cerulean }}
                         >
                           Edit
                         </Button>
@@ -847,7 +847,7 @@ export default function ManageProperty() {
                   startIcon={<AddIcon />}
                   onClick={() => setPromotionDialogOpen(true)}
                   sx={{ 
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.cerulean,
                     borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: 600
@@ -861,7 +861,7 @@ export default function ManageProperty() {
 
           {/* Action Cards Section */}
           <Box sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom color={Colors.blue} sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom color={Colors.cerulean} sx={{ mb: 3 }}>
               🛠️ Management Actions
             </Typography>
             
@@ -883,7 +883,7 @@ export default function ManageProperty() {
                   onClick={handleViewProperty}
                 >
                   <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                    <VisibilityIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <VisibilityIcon sx={{ fontSize: 48, color: Colors.cerulean, mb: 2 }} />
                     <Typography variant="h6" fontWeight={600} mb={1}>
                       View Property
                     </Typography>
@@ -911,7 +911,7 @@ export default function ManageProperty() {
                   onClick={handleEditProperty}
                 >
                   <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                    <EditIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <EditIcon sx={{ fontSize: 48, color: Colors.cerulean, mb: 2 }} />
                     <Typography variant="h6" fontWeight={600} mb={1}>
                       Edit Property
                     </Typography>
@@ -950,7 +950,7 @@ export default function ManageProperty() {
                     <Typography variant="body2" color="text.secondary">
                       {property.isListed ? 'Remove from public listings' : 'Make available for booking'}
                     </Typography>
-                    {isUpdating && <CircularProgress size={20} sx={{ mt: 1, color: Colors.blue }} />}
+                    {isUpdating && <CircularProgress size={20} sx={{ mt: 1, color: Colors.cerulean }} />}
                   </CardContent>
                 </Card>
               </Grid>
@@ -972,7 +972,7 @@ export default function ManageProperty() {
                   onClick={handleViewAnalytics}
                 >
                   <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                    <BarChartIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <BarChartIcon sx={{ fontSize: 48, color: Colors.cerulean, mb: 2 }} />
                     <Typography variant="h6" fontWeight={600} mb={1}>
                       View Analytics
                     </Typography>
@@ -1000,7 +1000,7 @@ export default function ManageProperty() {
                   onClick={handlePhotoManagement}
                 >
                   <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                    <PhotoLibraryIcon sx={{ fontSize: 48, color: Colors.blue, mb: 2 }} />
+                    <PhotoLibraryIcon sx={{ fontSize: 48, color: Colors.cerulean, mb: 2 }} />
                     <Typography variant="h6" fontWeight={600} mb={1}>
                       Manage Photos
                     </Typography>
@@ -1091,7 +1091,7 @@ export default function ManageProperty() {
             sx: { borderRadius: 3 }
           }}
         >
-          <DialogTitle sx={{ color: Colors.blue, fontWeight: 600 }}>
+          <DialogTitle sx={{ color: Colors.cerulean, fontWeight: 600 }}>
             🗑️ Delete Property
           </DialogTitle>
           <DialogContent>
@@ -1149,7 +1149,7 @@ export default function ManageProperty() {
             gap: 1.5
           }}>
             <Box sx={{ 
-              bgcolor: Colors.blue, 
+              bgcolor: Colors.cerulean, 
               color: 'white', 
               width: 40, 
               height: 40, 
@@ -1161,7 +1161,7 @@ export default function ManageProperty() {
               {editingPromotion ? <EditIcon /> : <LocalOfferIcon />}
             </Box>
             <DialogTitle sx={{ 
-              color: Colors.blue, 
+              color: Colors.cerulean, 
               fontWeight: 600, 
               p: 0,
               fontSize: '1.25rem'
@@ -1175,7 +1175,7 @@ export default function ManageProperty() {
               <Grid container spacing={2}>
                 {/* Section: Basic Information */}
                 <Grid item xs={12}>
-                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.cerulean} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                     <InfoIcon fontSize="small" /> Basic Information
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
@@ -1211,7 +1211,7 @@ export default function ManageProperty() {
 
                 {/* Section: Discount Details */}
                 <Grid item xs={12} sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.cerulean} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                     <PercentIcon fontSize="small" /> Discount Details
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
@@ -1252,7 +1252,7 @@ export default function ManageProperty() {
 
                 {/* Section: Validity Period */}
                 <Grid item xs={12} sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.cerulean} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                     <CalendarTodayIcon fontSize="small" /> Validity Period
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
@@ -1288,7 +1288,7 @@ export default function ManageProperty() {
 
                 {/* Section: Booking Restrictions */}
                 <Grid item xs={12} sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color={Colors.cerulean} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                     <FilterAltIcon fontSize="small" /> Booking Restrictions
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
@@ -1355,7 +1355,7 @@ export default function ManageProperty() {
                 </Grid>
                {/* Days of Week */}
                <Grid item xs={12} sx={{ mt: 2 }}>
-                 <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                 <Typography variant="subtitle2" fontWeight={700} color={Colors.cerulean} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                    <TodayIcon fontSize="small" color="action" /> Valid Days of Week
                  </Typography>
                  <Divider sx={{ mb: 2 }} />
@@ -1373,11 +1373,11 @@ export default function ManageProperty() {
                              height: 36,
                              fontSize: '0.85rem', 
                              borderRadius: 2,
-                             backgroundColor: isSelected ? Colors.blue : 'transparent',
-                             color: isSelected ? 'white' : Colors.blue,
+                             backgroundColor: isSelected ? Colors.cerulean : 'transparent',
+                             color: isSelected ? 'white' : Colors.cerulean,
                              boxShadow: isSelected ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
                              '&:hover': {
-                               backgroundColor: isSelected ? Colors.blue : 'rgba(0, 0, 0, 0.04)'
+                               backgroundColor: isSelected ? Colors.cerulean : 'rgba(0, 0, 0, 0.04)'
                              }
                            }}
                            onClick={() => {
@@ -1406,7 +1406,7 @@ export default function ManageProperty() {
                
                {/* Blackout Dates */}
                <Grid item xs={12} sx={{ mt: 1 }}>
-                 <Typography variant="subtitle2" fontWeight={700} color={Colors.blue} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                 <Typography variant="subtitle2" fontWeight={700} color={Colors.cerulean} sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                    <BlockIcon fontSize="small" color="action" /> Blackout Dates
                  </Typography>
                  <Divider sx={{ mb: 2 }} />
@@ -1450,7 +1450,7 @@ export default function ManageProperty() {
               disabled={isUpdating || !promotionForm.name || !promotionForm.discountValue}
               startIcon={isUpdating ? <CircularProgress size={16} /> : <SaveIcon />}
               sx={{ 
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.cerulean,
                 borderRadius: 2,
                 textTransform: 'none',
                 fontWeight: 600,
@@ -1468,3 +1468,4 @@ export default function ManageProperty() {
     </Box>
   );
 }
+

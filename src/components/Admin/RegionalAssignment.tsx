@@ -180,7 +180,7 @@ export default function RegionalAssignment() {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight={700} color={Colors.blue} gutterBottom>
+        <Typography variant="h4" fontWeight={700} color={Colors.cerulean} gutterBottom>
           Regional Staff Assignment
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -192,7 +192,7 @@ export default function RegionalAssignment() {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ textAlign: 'center', p: 2 }}>
-            <Typography variant="h3" fontWeight={700} color={Colors.blue}>
+            <Typography variant="h3" fontWeight={700} color={Colors.cerulean}>
               {mockStaff.length}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -245,7 +245,7 @@ export default function RegionalAssignment() {
                 startIcon={<PersonAddIcon />}
                 onClick={() => setDialogOpen(true)}
                 sx={{
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.cerulean,
                   '&:hover': { backgroundColor: Colors.raspberry }
                 }}
               >
@@ -268,7 +268,7 @@ export default function RegionalAssignment() {
                             <Chip 
                               label={staff.role} 
                               size="small" 
-                              sx={{ backgroundColor: '#e3f2fd', color: Colors.blue }}
+                              sx={{ backgroundColor: '#e3f2fd', color: Colors.cerulean }}
                             />
                           </Box>
                         }
@@ -353,7 +353,7 @@ export default function RegionalAssignment() {
                         <IconButton
                           size="small"
                           onClick={() => handleEditAssignment(assignment)}
-                          sx={{ color: Colors.blue }}
+                          sx={{ color: Colors.cerulean }}
                         >
                           <EditIcon fontSize="small" />
                         </IconButton>
@@ -382,7 +382,7 @@ export default function RegionalAssignment() {
             
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <Typography variant="subtitle1" fontWeight={600} color={Colors.blue} gutterBottom>
+                <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean} gutterBottom>
                   Parish Coverage
                 </Typography>
                 <Grid container spacing={1}>
@@ -521,7 +521,7 @@ export default function RegionalAssignment() {
             variant="contained"
             startIcon={<SaveIcon />}
             sx={{
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.cerulean,
               '&:hover': { backgroundColor: Colors.raspberry }
             }}
           >
@@ -532,3 +532,4 @@ export default function RegionalAssignment() {
     </Container>
   );
 }
+

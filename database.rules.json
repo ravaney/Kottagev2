@@ -3,13 +3,23 @@
     "userChats": {
       "$uid": {
         ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
+        "$chatId": {
+          ".write": "auth != null && ((newData.child('participants').child('0').val() === auth.uid || newData.child('participants').child('1').val() === auth.uid) && (newData.child('participants').child('0').val() === $uid || newData.child('participants').child('1').val() === $uid))"
+        }
       }
     },
     "messages": {
       "$chatId": {
         ".read": "root.child('userChats').child(auth.uid).child($chatId).exists()",
         ".write": "root.child('userChats').child(auth.uid).child($chatId).exists()"
+      }
+    },
+    "propertyInquiries": {
+      "$hostId": {
+        ".read": "$hostId === auth.uid",
+        "$inquiryId": {
+          ".write": "$hostId === auth.uid || (!data.exists() && newData.hasChildren(['hostId', 'hostName', 'propertyId', 'propertyName', 'guestUid', 'guestName', 'guestEmail', 'guestPhone', 'message', 'source', 'status', 'createdAt']) && newData.child('hostId').val() === $hostId && newData.child('hostName').isString() && newData.child('propertyId').isString() && newData.child('propertyName').isString() && newData.child('guestUid').isString() && newData.child('guestName').isString() && newData.child('guestEmail').isString() && newData.child('guestPhone').isString() && newData.child('message').isString() && newData.child('source').val() === 'property_page' && newData.child('status').val() === 'new' && newData.child('createdAt').isNumber())"
+        }
       }
     },
     "chats": {
@@ -32,6 +42,10 @@
     "reservations": {
       ".read": "auth != null",
       ".write": "auth != null"
+    },
+    "events": {
+      ".read": true,
+      ".write": "auth != null && (auth.token.role === 'admin' || auth.token.role === 'super_admin')"
     },
     "users": {
       "$uid": {

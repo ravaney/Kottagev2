@@ -13,9 +13,15 @@ import {
   MenuItem,
   IconButton,
   Divider,
+  SelectChangeEvent,
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { simulateSubdomain, getSubdomain } from '../../utils/subdomainRouter';
+import {
+  simulateSubdomain,
+  getSubdomain,
+  LOCAL_DEV_SUBDOMAIN_PORTS,
+  LOCAL_DEV_MAIN_PORT,
+} from '../../utils/subdomainRouter';
 import { ClaimsViewer } from '../Debug/ClaimsViewer';
 
 /**
@@ -38,8 +44,8 @@ export default function SubdomainSimulator() {
     setOpen(false);
   };
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setCurrentSubdomain(event.target.value as string);
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    setCurrentSubdomain(event.target.value || null);
   };
 
   const handleApply = () => {
@@ -75,7 +81,15 @@ export default function SubdomainSimulator() {
         <DialogContent>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             This tool allows you to simulate different subdomains during local
-            development.
+            development. On localhost, each portal now opens on its own dev
+            port so you can keep them active side by side.
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Main site: {LOCAL_DEV_MAIN_PORT} | Admin:{' '}
+            {LOCAL_DEV_SUBDOMAIN_PORTS.admin} | Staff:{' '}
+            {LOCAL_DEV_SUBDOMAIN_PORTS.staff} | Host:{' '}
+            {LOCAL_DEV_SUBDOMAIN_PORTS.host}
           </Typography>
 
           <FormControl fullWidth sx={{ mb: 3 }}>
@@ -84,14 +98,20 @@ export default function SubdomainSimulator() {
               labelId="subdomain-select-label"
               value={currentSubdomain || ''}
               label="Subdomain"
-              onChange={handleChange as any}
+              onChange={handleChange}
             >
               <MenuItem value="">
                 <em>None (main site)</em>
               </MenuItem>
-              <MenuItem value="admin">admin (Admin Portal)</MenuItem>
-              <MenuItem value="staff">staff (Staff Portal)</MenuItem>
-              <MenuItem value="host">host (Host Portal)</MenuItem>
+              <MenuItem value="admin">
+                admin (Admin Portal, port {LOCAL_DEV_SUBDOMAIN_PORTS.admin})
+              </MenuItem>
+              <MenuItem value="staff">
+                staff (Staff Portal, port {LOCAL_DEV_SUBDOMAIN_PORTS.staff})
+              </MenuItem>
+              <MenuItem value="host">
+                host (Host Portal, port {LOCAL_DEV_SUBDOMAIN_PORTS.host})
+              </MenuItem>
             </Select>
           </FormControl>
 
@@ -105,7 +125,7 @@ export default function SubdomainSimulator() {
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleApply} variant="contained">
-            Apply & Reload
+            Open Portal
           </Button>
         </DialogActions>
       </Dialog>

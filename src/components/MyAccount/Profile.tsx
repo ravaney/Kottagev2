@@ -247,7 +247,7 @@ export default function Profile() {
       <PageHeader
         title="My Account"
         subtitle="Manage your personal information and settings"
-        icon={<AccountBoxIcon sx={{ color: Colors.blue, fontSize: 32 }} />}
+        icon={<AccountBoxIcon sx={{ color: Colors.cerulean, fontSize: 32 }} />}
       />
 
       <Box sx={{ mt: 1 }}>
@@ -263,11 +263,11 @@ export default function Profile() {
                   sx={{ mb: 3 }}
                 >
                   <Box display="flex" alignItems="center" gap={2}>
-                    <PersonIcon sx={{ color: Colors.blue, fontSize: 24 }} />
+                    <PersonIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
                     <Typography
                       variant="h6"
                       fontWeight={600}
-                      color={Colors.blue}
+                      color={Colors.cerulean}
                     >
                       Personal Information
                     </Typography>
@@ -277,7 +277,7 @@ export default function Profile() {
                       variant="outlined"
                       startIcon={<EditIcon />}
                       onClick={handleEdit}
-                      sx={{ color: Colors.blue, borderColor: Colors.blue }}
+                      sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
                     >
                       Edit Profile
                     </Button>
@@ -288,7 +288,7 @@ export default function Profile() {
                         startIcon={<SaveIcon />}
                         onClick={handleSave}
                         disabled={isPending || isUploadingImage}
-                        sx={{ backgroundColor: Colors.blue }}
+                        sx={{ backgroundColor: Colors.cerulean }}
                       >
                         {isPending
                           ? 'Saving...'
@@ -321,7 +321,7 @@ export default function Profile() {
                     sx={{
                       width: 100,
                       height: 100,
-                      border: `3px solid ${Colors.blue}`,
+                      border: `3px solid ${Colors.cerulean}`,
                       boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                     }}
                   >
@@ -357,7 +357,7 @@ export default function Profile() {
                           variant="outlined"
                           startIcon={<PhotoCameraIcon />}
                           size="small"
-                          sx={{ color: Colors.blue, borderColor: Colors.blue }}
+                          sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
                           disabled={isUploadingImage}
                         >
                           {selectedImage ? 'Change Photo' : 'Upload Photo'}
@@ -491,8 +491,8 @@ export default function Profile() {
               {/* Address Section */}
               <Box sx={{ p: 3 }}>
                 <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
-                  <LocationOnIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-                  <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                  <LocationOnIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+                  <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                     Address Information
                   </Typography>
                 </Box>
@@ -615,7 +615,7 @@ export default function Profile() {
                   <SecurityIcon
                     sx={{ color: Colors.raspberry, fontSize: 24 }}
                   />
-                  <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                  <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                     Security Settings
                   </Typography>
                 </Box>
@@ -643,7 +643,7 @@ export default function Profile() {
                     variant="outlined"
                     size="small"
                     onClick={() => setEmailDialog(true)}
-                    sx={{ color: Colors.blue, borderColor: Colors.blue }}
+                    sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
                   >
                     Change Email
                   </Button>
@@ -674,7 +674,7 @@ export default function Profile() {
                     variant="outlined"
                     size="small"
                     onClick={() => setPhoneDialog(true)}
-                    sx={{ color: Colors.blue, borderColor: Colors.blue }}
+                    sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
                   >
                     Change Phone
                   </Button>
@@ -705,7 +705,7 @@ export default function Profile() {
                     variant="outlined"
                     size="small"
                     onClick={() => setPasswordDialog(true)}
-                    sx={{ color: Colors.blue, borderColor: Colors.blue }}
+                    sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
                   >
                     Change Password
                   </Button>
@@ -718,7 +718,7 @@ export default function Profile() {
               <Box sx={{ p: 3 }}>
                 <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
                   <PaymentIcon sx={{ color: Colors.raspberry, fontSize: 24 }} />
-                  <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+                  <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
                     Payment Methods
                   </Typography>
                 </Box>
@@ -730,7 +730,7 @@ export default function Profile() {
                   sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}
                 >
                   <FaCcMastercard
-                    style={{ fontSize: '32px', color: Colors.blue }}
+                    style={{ fontSize: '32px', color: Colors.cerulean }}
                   />
                   <Box>
                     <Typography variant="body2" fontWeight={600}>
@@ -751,7 +751,7 @@ export default function Profile() {
                 <Button
                   variant="outlined"
                   fullWidth
-                  sx={{ mt: 2, color: Colors.blue, borderColor: Colors.blue }}
+                  sx={{ mt: 2, color: Colors.cerulean, borderColor: Colors.cerulean }}
                 >
                   Add Payment Method
                 </Button>
@@ -781,3 +781,4 @@ export default function Profile() {
     </Box>
   );
 }
+

@@ -1,6 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { database, auth } from '../firebase';
 import { ref, push, set, onValue, update, get, query, orderByChild } from 'firebase/database';
+import {
+  playNotificationSound,
+  primeNotificationSound,
+} from '../utils/notificationSound';
 
 interface Message {
   id: string;
@@ -28,7 +32,16 @@ interface ChatContextType {
   messages: Message[];
   loading: boolean;
   error: string | null;
+  currentUserId: string;
+  totalUnreadMessages: number;
   sendMessage: (text: string) => Promise<void>;
+  sendDirectMessageToUser: (
+    userId: string,
+    userName: string,
+    text: string,
+    propertyId?: string,
+    propertyName?: string
+  ) => Promise<string>;
   setCurrentChat: (chat: Chat | null) => void;
   startNewChat: (userId: string, userName: string, propertyId?: string, propertyName?: string) => Promise<string>;
   markChatAsRead: (chatId: string) => Promise<void>;
@@ -42,53 +55,75 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string>('');
+  const previousUnreadCountRef = useRef<number | null>(null);
 
-  // Load user's chats
+  // Keep chat subscriptions in sync with auth state so badges update without refresh.
   useEffect(() => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      setLoading(false);
-      return;
-    }
+    let unsubscribeUserChats: (() => void) | null = null;
 
-    const userChatsRef = ref(database, `userChats/${currentUser.uid}`);
-    
-    const unsubscribe = onValue(userChatsRef, (snapshot) => {
-      const data = snapshot.val();
-      const chatList: Chat[] = [];
-      
-      if (data) {
-        Object.keys(data).forEach((chatId) => {
-          const chatData = data[chatId];
-          chatList.push({
-            id: chatId,
-            participants: chatData.participants || [],
-            participantNames: chatData.participantNames || {},
-            lastMessage: chatData.lastMessage,
-            lastMessageTimestamp: chatData.lastMessageTimestamp,
-            propertyId: chatData.propertyId,
-            propertyName: chatData.propertyName,
-            unreadCount: chatData.unreadCount || {}
-          });
-        });
+    const unsubscribeAuth = auth.onAuthStateChanged(currentUser => {
+      if (unsubscribeUserChats) {
+        unsubscribeUserChats();
+        unsubscribeUserChats = null;
       }
-      
-      // Sort by timestamp
-      chatList.sort((a, b) => {
-        if (!a.lastMessageTimestamp) return 1;
-        if (!b.lastMessageTimestamp) return -1;
-        return b.lastMessageTimestamp - a.lastMessageTimestamp;
+
+      setError(null);
+      setCurrentUserId(currentUser?.uid || '');
+
+      if (!currentUser) {
+        setChats([]);
+        setCurrentChat(null);
+        setMessages([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+
+      const userChatsRef = ref(database, `userChats/${currentUser.uid}`);
+
+      unsubscribeUserChats = onValue(userChatsRef, (snapshot) => {
+        const data = snapshot.val();
+        const chatList: Chat[] = [];
+
+        if (data) {
+          Object.keys(data).forEach((chatId) => {
+            const chatData = data[chatId];
+            chatList.push({
+              id: chatId,
+              participants: chatData.participants || [],
+              participantNames: chatData.participantNames || {},
+              lastMessage: chatData.lastMessage,
+              lastMessageTimestamp: chatData.lastMessageTimestamp,
+              propertyId: chatData.propertyId,
+              propertyName: chatData.propertyName,
+              unreadCount: chatData.unreadCount || {}
+            });
+          });
+        }
+
+        chatList.sort((a, b) => {
+          if (!a.lastMessageTimestamp) return 1;
+          if (!b.lastMessageTimestamp) return -1;
+          return b.lastMessageTimestamp - a.lastMessageTimestamp;
+        });
+
+        setChats(chatList);
+        setLoading(false);
+      }, (listenerError) => {
+        console.error('Error loading chats:', listenerError);
+        setError('Failed to load chats');
+        setLoading(false);
       });
-      
-      setChats(chatList);
-      setLoading(false);
-    }, (error) => {
-      console.error('Error loading chats:', error);
-      setError('Failed to load chats');
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribeUserChats) {
+        unsubscribeUserChats();
+      }
+      unsubscribeAuth();
+    };
   }, []);
 
   // Load messages for current chat
@@ -123,11 +158,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       setMessages(messageList);
-      
-      // Mark messages as read
-      if (currentChat && auth.currentUser) {
-        markChatAsRead(currentChat.id);
-      }
     }, (error) => {
       console.error('Error loading messages:', error);
       setError('Failed to load messages');
@@ -135,6 +165,75 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => unsubscribe();
   }, [currentChat]);
+
+  const ensureChatWithUser = async (
+    userId: string,
+    userName: string,
+    propertyId?: string,
+    propertyName?: string
+  ): Promise<Chat> => {
+    if (!auth.currentUser) throw new Error('User not authenticated');
+
+    const userChatsRef = ref(database, `userChats/${auth.currentUser.uid}`);
+    const snapshot = await get(userChatsRef);
+    const data = snapshot.val() || {};
+
+    let existingChatId: string | null = null;
+    Object.keys(data).forEach(chatId => {
+      const chatData = data[chatId];
+      if (chatData.participants && chatData.participants.includes(userId)) {
+        existingChatId = chatId;
+      }
+    });
+
+    if (existingChatId) {
+      const existingChatData = data[existingChatId];
+      return {
+        id: existingChatId,
+        participants: existingChatData.participants || [],
+        participantNames: existingChatData.participantNames || {},
+        lastMessage: existingChatData.lastMessage,
+        lastMessageTimestamp: existingChatData.lastMessageTimestamp,
+        propertyId: existingChatData.propertyId,
+        propertyName: existingChatData.propertyName,
+        unreadCount: existingChatData.unreadCount || {},
+      };
+    }
+
+    const timestamp = Date.now();
+    const chatId = push(ref(database, 'chats')).key;
+
+    if (!chatId) throw new Error('Failed to generate chat ID');
+
+    const participants = [auth.currentUser.uid, userId];
+    const participantNames: Record<string, string> = {
+      [auth.currentUser.uid]: auth.currentUser.displayName || 'User',
+      [userId]: userName,
+    };
+
+    const chatData = {
+      participants,
+      participantNames,
+      createdAt: timestamp,
+      lastMessageTimestamp: timestamp,
+      unreadCount: { [auth.currentUser.uid]: 0, [userId]: 0 },
+      ...(propertyId && propertyName ? { propertyId, propertyName } : {}),
+    };
+
+    for (const participantId of participants) {
+      await set(ref(database, `userChats/${participantId}/${chatId}`), chatData);
+    }
+
+    return {
+      id: chatId,
+      participants,
+      participantNames,
+      propertyId,
+      propertyName,
+      lastMessageTimestamp: timestamp,
+      unreadCount: { [auth.currentUser.uid]: 0, [userId]: 0 },
+    };
+  };
 
   const sendMessage = async (text: string) => {
     if (!currentChat || !auth.currentUser) return;
@@ -154,27 +253,43 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const newMessageRef = push(messagesRef);
       await set(newMessageRef, messageData);
 
-      // Update chat metadata for all participants
-      for (const participantId of currentChat.participants) {
-        const userChatRef = ref(database, `userChats/${participantId}/${currentChat.id}`);
-        
-        // Create proper unread count object
-        const newUnreadCount = { ...currentChat.unreadCount };
-        
+      const newUnreadCount = { ...(currentChat.unreadCount || {}) };
+
+      currentChat.participants.forEach(participantId => {
         if (participantId !== auth.currentUser?.uid) {
-          newUnreadCount[participantId] = (currentChat.unreadCount?.[participantId] || 0) + 1;
+          newUnreadCount[participantId] =
+            (currentChat.unreadCount?.[participantId] || 0) + 1;
         } else {
-          newUnreadCount[auth.currentUser.uid] = 0;
+          newUnreadCount[auth.currentUser!.uid] = 0;
         }
-        
+      });
+
+      const participantIds = [
+        auth.currentUser.uid,
+        ...currentChat.participants.filter(id => id !== auth.currentUser?.uid),
+      ];
+
+      for (const participantId of participantIds) {
+        const userChatRef = ref(
+          database,
+          `userChats/${participantId}/${currentChat.id}`
+        );
+
         const updates = {
           lastMessage: text,
           lastMessageTimestamp: timestamp,
           unreadCount: newUnreadCount
         };
-        
-        await update(userChatRef, updates);
-        console.log(`Updated chat metadata for participant: ${participantId}`);
+
+        try {
+          await update(userChatRef, updates);
+          console.log(`Updated chat metadata for participant: ${participantId}`);
+        } catch (participantError) {
+          console.error(
+            `Error updating chat metadata for participant ${participantId}:`,
+            participantError
+          );
+        }
       }
     } catch (err) {
       console.error('Error sending message:', err);
@@ -188,74 +303,88 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     propertyId?: string, 
     propertyName?: string
   ): Promise<string> => {
-    if (!auth.currentUser) throw new Error('User not authenticated');
-
     try {
-      // Check if chat already exists between these users
-      const userChatsRef = ref(database, `userChats/${auth.currentUser.uid}`);
-      const snapshot = await get(userChatsRef);
-      const data = snapshot.val() || {};
-      
-      // Find existing chat with this user
-      let existingChatId = null;
-      Object.keys(data).forEach((chatId) => {
-        const chatData = data[chatId];
-        if (chatData.participants && chatData.participants.includes(userId)) {
-          existingChatId = chatId;
-        }
-      });
-
-      if (existingChatId) {
-        const existingChat = {
-          id: existingChatId,
-          ...data[existingChatId]
-        };
-        setCurrentChat(existingChat as Chat);
-        return existingChatId;
-      }
-
-      // Create new chat
-      const timestamp = Date.now();
-      const chatId = push(ref(database, 'chats')).key;
-      
-      if (!chatId) throw new Error('Failed to generate chat ID');
-      
-      const participants = [auth.currentUser.uid, userId];
-      const participantNames: Record<string, string> = {};
-      participantNames[auth.currentUser.uid] = auth.currentUser.displayName || 'User';
-      participantNames[userId] = userName;
-
-      const chatData = {
-        participants,
-        participantNames,
-        createdAt: timestamp,
-        lastMessageTimestamp: timestamp,
-        unreadCount: { [auth.currentUser.uid]: 0, [userId]: 0 }
-      };
-
-      if (propertyId && propertyName) {
-        Object.assign(chatData, { propertyId, propertyName });
-      }
-
-      // Add chat reference to each participant
-      for (const participantId of participants) {
-        await set(ref(database, `userChats/${participantId}/${chatId}`), chatData);
-      }
-      
-      const newChat = {
-        id: chatId,
-        participants,
-        participantNames,
+      const chat = await ensureChatWithUser(
+        userId,
+        userName,
         propertyId,
-        propertyName,
-        unreadCount: { [auth.currentUser.uid]: 0, [userId]: 0 }
-      };
-      
-      setCurrentChat(newChat);
-      return chatId;
+        propertyName
+      );
+
+      setCurrentChat(chat);
+      return chat.id;
     } catch (err) {
       console.error('Error starting new chat:', err);
       setError('Failed to start new chat');
+      throw err;
+    }
+  };
+
+  const sendDirectMessageToUser = async (
+    userId: string,
+    userName: string,
+    text: string,
+    propertyId?: string,
+    propertyName?: string
+  ): Promise<string> => {
+    if (!auth.currentUser) throw new Error('User not authenticated');
+
+    try {
+      const chat = await ensureChatWithUser(
+        userId,
+        userName,
+        propertyId,
+        propertyName
+      );
+      const timestamp = Date.now();
+      const messageData = {
+        text,
+        senderId: auth.currentUser.uid,
+        senderName: auth.currentUser.displayName || 'User',
+        timestamp,
+        read: false,
+      };
+
+      const messagesRef = ref(database, `messages/${chat.id}`);
+      const newMessageRef = push(messagesRef);
+      await set(newMessageRef, messageData);
+
+      const newUnreadCount = { ...(chat.unreadCount || {}) };
+      chat.participants.forEach(participantId => {
+        if (participantId !== auth.currentUser?.uid) {
+          newUnreadCount[participantId] = (chat.unreadCount?.[participantId] || 0) + 1;
+        } else {
+          newUnreadCount[participantId] = 0;
+        }
+      });
+
+      const updates = {
+        participants: chat.participants,
+        participantNames: chat.participantNames,
+        propertyId: propertyId || chat.propertyId || '',
+        propertyName: propertyName || chat.propertyName || '',
+        lastMessage: text,
+        lastMessageTimestamp: timestamp,
+        unreadCount: newUnreadCount,
+      };
+
+      for (const participantId of chat.participants) {
+        await update(ref(database, `userChats/${participantId}/${chat.id}`), updates);
+      }
+
+      setCurrentChat({
+        ...chat,
+        propertyId: propertyId || chat.propertyId,
+        propertyName: propertyName || chat.propertyName,
+        lastMessage: text,
+        lastMessageTimestamp: timestamp,
+        unreadCount: newUnreadCount,
+      });
+
+      return chat.id;
+    } catch (err) {
+      console.error('Error sending direct message:', err);
+      setError('Failed to send direct message');
       throw err;
     }
   };
@@ -272,13 +401,29 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (chatData && chatData.unreadCount?.[auth.currentUser.uid] > 0) {
         const newUnreadCount = { ...chatData.unreadCount };
         newUnreadCount[auth.currentUser.uid] = 0;
-        
-        // Update all participants' chat documents
-        for (const participantId of chatData.participants || []) {
-          const participantChatRef = ref(database, `userChats/${participantId}/${chatId}`);
-          await update(participantChatRef, {
-            unreadCount: newUnreadCount
-          });
+
+        const participantIds = [
+          auth.currentUser.uid,
+          ...(chatData.participants || []).filter(
+            (participantId: string) => participantId !== auth.currentUser?.uid
+          ),
+        ];
+
+        for (const participantId of participantIds) {
+          const participantChatRef = ref(
+            database,
+            `userChats/${participantId}/${chatId}`
+          );
+          try {
+            await update(participantChatRef, {
+              unreadCount: newUnreadCount
+            });
+          } catch (participantError) {
+            console.error(
+              `Error updating read state for participant ${participantId}:`,
+              participantError
+            );
+          }
         }
         console.log('Marked chat as read:', chatId);
       }
@@ -286,6 +431,32 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Error marking chat as read:', err);
     }
   };
+
+  const totalUnreadMessages = chats.reduce((total, chat) => {
+    return total + (chat.unreadCount?.[currentUserId] || 0);
+  }, 0);
+
+  useEffect(() => {
+    primeNotificationSound();
+  }, []);
+
+  useEffect(() => {
+    if (!currentUserId) {
+      previousUnreadCountRef.current = null;
+      return;
+    }
+
+    if (previousUnreadCountRef.current === null) {
+      previousUnreadCountRef.current = totalUnreadMessages;
+      return;
+    }
+
+    if (totalUnreadMessages > previousUnreadCountRef.current) {
+      void playNotificationSound();
+    }
+
+    previousUnreadCountRef.current = totalUnreadMessages;
+  }, [currentUserId, totalUnreadMessages]);
 
   return (
     <ChatContext.Provider
@@ -295,7 +466,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         messages,
         loading,
         error,
+        currentUserId,
+        totalUnreadMessages,
         sendMessage,
+        sendDirectMessageToUser,
         setCurrentChat,
         startNewChat,
         markChatAsRead

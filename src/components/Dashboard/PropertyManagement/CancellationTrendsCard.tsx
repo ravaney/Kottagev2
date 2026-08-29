@@ -63,14 +63,14 @@ export default function CancellationTrendsCard({
     value: timing.count
   }));
   
-  const COLORS = [Colors.blue, '#4caf50', '#ff9800', '#f44336', '#9c27b0', '#607d8b'];
+  const COLORS = [Colors.cerulean, '#4caf50', '#ff9800', '#f44336', '#9c27b0', '#607d8b'];
   
   return (
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box display="flex" alignItems="center" gap={1}>
           <MdFreeCancellation style={{ color: Colors.raspberry, fontSize: 24 }} />
-          <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+          <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
             Cancellation Trends
           </Typography>
         </Box>

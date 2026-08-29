@@ -19,20 +19,23 @@ import {
   Menu as MuiMenu,
   MenuItem,
   Divider,
+  Tooltip,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
   Mail as MailIcon,
+  Home as HomeIcon,
   Explore as ExploreIcon,
+  LaptopMac as LaptopMacIcon,
   Event as EventIcon,
-  DirectionsCar as CarIcon,
   Restaurant as RestaurantIcon,
   TravelExplore as TravelIcon,
   Close as CloseIcon,
+  LocalActivity as LocalActivityIcon,
 } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth, useEventWallet } from '../../hooks';
 import { useUserClaims } from '../../hooks/useUserClaims';
 import { AnimatedBadge } from '../common/AnimatedBadge';
 import { Colors } from '../constants';
@@ -46,7 +49,8 @@ interface NavBarProps {
 const NavBar = ({ transparent = false }: NavBarProps) => {
   const { firebaseUser, loading, appUser } = useAuth();
   const { user: claimsUser, loading: claimsLoading } = useUserClaims();
-  const { chats } = useChat();
+  const { chats, currentUserId, totalUnreadMessages, setCurrentChat } = useChat();
+  const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -55,19 +59,22 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationAnchor, setNotificationAnchor] =
     useState<null | HTMLElement>(null);
+  const { totalCount: eventWalletCount } = useEventWallet();
 
   // Use either firebaseUser from useAuth or claimsUser from useUserClaims
   const currentUser = firebaseUser || claimsUser;
   const isLoading = loading && claimsLoading;
 
-  // Calculate total unread messages
-  const totalUnreadMessages = chats.reduce((total, chat) => {
-    const currentUserId = currentUser?.uid || '';
-    return total + (chat.unreadCount?.[currentUserId] || 0);
-  }, 0);
+  const unreadChats = chats.filter(chat => {
+    return (chat.unreadCount?.[currentUserId] || 0) > 0;
+  });
 
   const handleMessageClick = () => {
     navigate('/MyAccount/Dashboard/messages');
+  };
+
+  const handleEventWalletClick = () => {
+    navigate('/MyAccount/TicketsAndCoupons');
   };
 
   const handleNotificationClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -78,8 +85,19 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
     setNotificationAnchor(null);
   };
 
+  const handleUnreadChatClick = (chatId: string) => {
+    const selectedChat = chats.find(chat => chat.id === chatId) || null;
+    setCurrentChat(selectedChat);
+    navigate('/MyAccount/Dashboard/messages');
+    handleNotificationClose();
+  };
+
   const navigationItems = [
+    ...(location.pathname !== '/'
+      ? [{ label: 'Home', icon: <HomeIcon />, path: '/' }]
+      : []),
     { label: 'Explore', icon: <ExploreIcon />, path: '/Explore' },
+    { label: 'Nomads', icon: <LaptopMacIcon />, path: '/nomad-network' },
     { label: 'Excursions', icon: <TravelIcon />, path: '/Excursions' },
     { label: 'Events', icon: <EventIcon />, path: '/Events' },
     { label: 'Restaurants', icon: <RestaurantIcon />, path: '/Restaurants' },
@@ -89,18 +107,37 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const navBackgroundColor = transparent
+    ? 'rgba(7,20,33,0.78)'
+    : 'rgba(7,20,33,0.92)';
+  const navTextColor = 'rgba(245,248,252,0.92)';
+  const navMutedTextColor = 'rgba(245,248,252,0.72)';
+  const navHoverBackground = 'rgba(209,85,182,0.18)';
+  const navSoftHoverBackground = 'rgba(255,255,255,0.08)';
+  const navBorderColor = 'rgba(255,255,255,0.08)';
+
+  const isActiveNavPath = (path: string) => {
+    const currentPath = location.pathname.toLowerCase();
+    const targetPath = path.toLowerCase();
+
+    if (targetPath === '/') {
+      return currentPath === '/';
+    }
+
+    return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+  };
+
   return (
     <>
       <AppBar
         // position={transparent ? "absolute" : "sticky"}
         elevation={0}
         sx={{
-          backgroundColor: transparent
-            ? 'transparent'
-            : 'rgba(255,255,255,0.95)',
-          backdropFilter: transparent ? 'none' : 'blur(10px)',
-          borderBottom: transparent ? 'none' : '1px solid rgba(0,0,0,0.08)',
-          color: 'inherit',
+          backgroundColor: navBackgroundColor,
+          backdropFilter: 'blur(16px)',
+          borderBottom: `1px solid ${navBorderColor}`,
+          color: navTextColor,
+          boxShadow: '0 14px 34px rgba(4, 11, 20, 0.22)',
         }}
       >
         <Toolbar
@@ -116,6 +153,7 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
               display: 'flex',
               alignItems: 'center',
               flexShrink: 0,
+              pl: { xs: 0.5, sm: 0.75, md: 1 },
             }}
           >
             <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
@@ -126,6 +164,7 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                   height: isSmallMobile ? '35px' : isMobile ? '40px' : '55px',
                   width: 'auto',
                   objectFit: 'contain',
+                  filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.24))',
                 }}
               />
             </Link>
@@ -140,39 +179,42 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                 gap: { xs: 0.5, sm: 1 },
                 flex: 1,
                 justifyContent: 'center',
-                maxWidth: 600,
+                px: { md: 2 },
                 minWidth: 0,
-                overflow: 'hidden',
+                overflow: 'visible',
               }}
             >
-              {navigationItems.map(item => (
-                <Button
-                  key={item.label}
-                  startIcon={item.icon}
-                  onClick={() => navigate(item.path)}
-                  sx={{
-                    color: Colors.blue,
-                    fontWeight: 500,
-                    fontSize: { xs: '12px', sm: '13px', md: '14px' },
-                    textTransform: 'none',
-                    px: { xs: 1, sm: 1.5, md: 2 },
-                    py: 1,
-                    borderRadius: 2,
-                    minWidth: 'auto',
-                    flexShrink: 1,
-                    '&:hover': {
-                      backgroundColor: transparent
-                        ? 'rgba(255,255,255,0.1)'
-                        : `${Colors.raspberry}10`,
-                      color: Colors.raspberry,
-                      transform: 'translateY(-1px)',
-                    },
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  {item.label}
-                </Button>
-              ))}
+              {navigationItems.map(item => {
+                const isActive = isActiveNavPath(item.path);
+
+                return (
+                  <Button
+                    key={item.label}
+                    startIcon={item.icon}
+                    onClick={() => navigate(item.path)}
+                    sx={{
+                      color: isActive ? Colors.raspberry : navTextColor,
+                      backgroundColor: isActive ? navHoverBackground : 'transparent',
+                      fontWeight: isActive ? 600 : 500,
+                      fontSize: { xs: '12px', sm: '13px', md: '14px' },
+                      textTransform: 'none',
+                      px: { xs: 1, sm: 1.5, md: 2 },
+                      py: 1,
+                      borderRadius: 2,
+                      minWidth: 'auto',
+                      flexShrink: 1,
+                      '&:hover': {
+                        backgroundColor: navHoverBackground,
+                        color: Colors.raspberry,
+                        transform: 'translateY(-1px)',
+                      },
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                );
+              })}
             </Box>
           )}
 
@@ -202,11 +244,9 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                         <IconButton
                           onClick={handleMessageClick}
                           sx={{
-                            color: Colors.blue,
+                            color: navTextColor,
                             '&:hover': {
-                              backgroundColor: transparent
-                                ? 'rgba(255,255,255,0.1)'
-                                : `${Colors.raspberry}10`,
+                              backgroundColor: navSoftHoverBackground,
                               color: Colors.raspberry,
                             },
                           }}
@@ -217,15 +257,41 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                     )}
 
                     {/* Notifications */}
-                    <AnimatedBadge badgeContent={3} color="secondary" animate>
+                    <AnimatedBadge
+                      badgeContent={eventWalletCount}
+                      color="primary"
+                      animate={eventWalletCount > 0}
+                      invisible={eventWalletCount === 0}
+                    >
+                      <Tooltip title="Tickets & Coupons">
+                        <IconButton
+                          onClick={handleEventWalletClick}
+                          sx={{
+                            color: navTextColor,
+                            '&:hover': {
+                              backgroundColor: navSoftHoverBackground,
+                              color: Colors.raspberry,
+                            },
+                          }}
+                        >
+                          <LocalActivityIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </AnimatedBadge>
+
+                    {/* Notifications */}
+                    <AnimatedBadge
+                      badgeContent={totalUnreadMessages}
+                      color="secondary"
+                      animate={totalUnreadMessages > 0}
+                      invisible={totalUnreadMessages === 0}
+                    >
                       <IconButton
                         onClick={handleNotificationClick}
                         sx={{
-                          color: Colors.blue,
+                          color: navTextColor,
                           '&:hover': {
-                            backgroundColor: transparent
-                              ? 'rgba(255,255,255,0.1)'
-                              : `${Colors.raspberry}10`,
+                            backgroundColor: navSoftHoverBackground,
                             color: Colors.raspberry,
                           },
                         }}
@@ -255,16 +321,14 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                       to="/Login"
                       variant="text"
                       sx={{
-                        color: Colors.blue,
+                        color: navTextColor,
                         textTransform: 'none',
                         fontWeight: 500,
                         px: { xs: 1.5, md: 3 },
                         fontSize: { xs: '14px', md: '16px' },
                         minWidth: 'auto',
                         '&:hover': {
-                          backgroundColor: transparent
-                            ? 'rgba(255,255,255,0.1)'
-                            : `${Colors.raspberry}10`,
+                          backgroundColor: navSoftHoverBackground,
                           color: Colors.raspberry,
                         },
                       }}
@@ -276,13 +340,14 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                       to="/signup"
                       variant="contained"
                       sx={{
-                        backgroundColor: Colors.blue,
+                        backgroundColor: 'rgba(255,255,255,0.12)',
                         color: 'white',
                         textTransform: 'none',
-                        fontWeight: 500,
+                        fontWeight: 600,
                         px: { xs: 1.5, md: 3 },
                         fontSize: { xs: '14px', md: '16px' },
                         minWidth: 'auto',
+                        border: '1px solid rgba(255,255,255,0.14)',
                         boxShadow: 'none',
                         '&:hover': {
                           backgroundColor: Colors.raspberry,
@@ -305,12 +370,10 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
               <IconButton
                 onClick={toggleMobileMenu}
                 sx={{
-                  color: Colors.blue,
+                  color: navTextColor,
                   p: 1,
                   '&:hover': {
-                    backgroundColor: transparent
-                      ? 'rgba(255,255,255,0.1)'
-                      : `${Colors.raspberry}10`,
+                    backgroundColor: navSoftHoverBackground,
                     color: Colors.raspberry,
                   },
                 }}
@@ -333,7 +396,8 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
           sx={{
             width: 280,
             height: '100%',
-            backgroundColor: 'white',
+            backgroundColor: 'rgba(7,20,33,0.98)',
+            color: navTextColor,
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -345,13 +409,13 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               p: 2,
-              borderBottom: '1px solid rgba(0,0,0,0.08)',
+              borderBottom: `1px solid ${navBorderColor}`,
             }}
           >
-            <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+            <Typography variant="h6" fontWeight={600} color={navTextColor}>
               Menu
             </Typography>
-            <IconButton onClick={toggleMobileMenu}>
+            <IconButton onClick={toggleMobileMenu} sx={{ color: navTextColor }}>
               <CloseIcon />
             </IconButton>
           </Box>
@@ -361,13 +425,13 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
             <Box
               sx={{
                 p: 2,
-                borderBottom: '1px solid rgba(0,0,0,0.08)',
+                borderBottom: `1px solid ${navBorderColor}`,
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
               }}
             >
-              <Avatar sx={{ bgcolor: Colors.blue, width: 40, height: 40 }}>
+              <Avatar sx={{ bgcolor: Colors.cerulean, width: 40, height: 40 }}>
                 {appUser?.firstName?.charAt(0) ||
                   currentUser.email?.charAt(0) ||
                   'U'}
@@ -376,13 +440,13 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                 <Typography
                   variant="subtitle1"
                   fontWeight={600}
-                  color={Colors.blue}
+                  color={navTextColor}
                 >
                   {appUser?.firstName && appUser?.lastName
                     ? `${appUser.firstName} ${appUser.lastName}`
                     : currentUser.displayName || currentUser.email}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{ color: navMutedTextColor }}>
                   Member
                 </Typography>
               </Box>
@@ -401,11 +465,11 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                     }}
                     sx={{
                       '&:hover': {
-                        backgroundColor: `${Colors.blue}10`,
+                        backgroundColor: navSoftHoverBackground,
                       },
                     }}
                   >
-                    <ListItemIcon sx={{ color: Colors.blue }}>
+                    <ListItemIcon sx={{ color: navTextColor }}>
                       <Badge badgeContent={totalUnreadMessages} color="primary">
                         <MailIcon />
                       </Badge>
@@ -414,12 +478,43 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                       primary="Messages"
                       primaryTypographyProps={{
                         fontWeight: 500,
-                        color: Colors.blue,
+                        color: navTextColor,
                       }}
                     />
                   </ListItemButton>
                 </ListItem>
               )}
+
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    handleEventWalletClick();
+                    toggleMobileMenu();
+                  }}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: navSoftHoverBackground,
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ color: navTextColor }}>
+                    <Badge
+                      badgeContent={eventWalletCount}
+                      color="primary"
+                      invisible={eventWalletCount === 0}
+                    >
+                      <LocalActivityIcon />
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Tickets & Coupons"
+                    primaryTypographyProps={{
+                      fontWeight: 500,
+                      color: navTextColor,
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
 
               <ListItem disablePadding>
                 <ListItemButton
@@ -429,12 +524,16 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                   }}
                   sx={{
                     '&:hover': {
-                      backgroundColor: `${Colors.blue}10`,
+                      backgroundColor: navSoftHoverBackground,
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ color: Colors.blue }}>
-                    <Badge badgeContent={3} color="secondary">
+                  <ListItemIcon sx={{ color: navTextColor }}>
+                    <Badge
+                      badgeContent={totalUnreadMessages}
+                      color="secondary"
+                      invisible={totalUnreadMessages === 0}
+                    >
                       <NotificationsIcon />
                     </Badge>
                   </ListItemIcon>
@@ -442,7 +541,7 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                     primary="Notifications"
                     primaryTypographyProps={{
                       fontWeight: 500,
-                      color: Colors.blue,
+                      color: navTextColor,
                     }}
                   />
                 </ListItemButton>
@@ -453,38 +552,45 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
           {/* Navigation Items */}
           <List sx={{ mt: currentUser ? 0 : 1, flex: 1 }}>
             {currentUser && <Divider sx={{ my: 1 }} />}
-            {navigationItems.map(item => (
-              <ListItem key={item.label} disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    navigate(item.path);
-                    toggleMobileMenu();
-                  }}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: `${Colors.raspberry}10`,
-                      '& .MuiListItemIcon-root': {
-                        color: Colors.raspberry,
-                      },
-                      '& .MuiListItemText-primary': {
-                        color: Colors.raspberry,
-                      },
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ color: Colors.blue }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.label}
-                    primaryTypographyProps={{
-                      fontWeight: 500,
-                      color: Colors.blue,
+            {navigationItems.map(item => {
+              const isActive = isActiveNavPath(item.path);
+
+              return (
+                <ListItem key={item.label} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      navigate(item.path);
+                      toggleMobileMenu();
                     }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
+                    sx={{
+                      backgroundColor: isActive ? navHoverBackground : 'transparent',
+                      '&:hover': {
+                        backgroundColor: navHoverBackground,
+                        '& .MuiListItemIcon-root': {
+                          color: Colors.raspberry,
+                        },
+                        '& .MuiListItemText-primary': {
+                          color: Colors.raspberry,
+                        },
+                      },
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{ color: isActive ? Colors.raspberry : navTextColor }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.label}
+                      primaryTypographyProps={{
+                        fontWeight: isActive ? 600 : 500,
+                        color: isActive ? Colors.raspberry : navTextColor,
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
           </List>
 
           {/* Bottom Section */}
@@ -492,8 +598,8 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
             {/* User Menu Options (when logged in) */}
             {!isLoading && currentUser && (
               <Box
-                sx={{
-                  borderTop: '1px solid rgba(0,0,0,0.08)',
+              sx={{
+                  borderTop: `1px solid ${navBorderColor}`,
                   p: 2,
                   display: 'flex',
                   justifyContent: 'center',
@@ -508,7 +614,7 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
               <Box
                 sx={{
                   p: 2,
-                  borderTop: '1px solid rgba(0,0,0,0.08)',
+                  borderTop: `1px solid ${navBorderColor}`,
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 1,
@@ -521,12 +627,12 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                   fullWidth
                   onClick={toggleMobileMenu}
                   sx={{
-                    color: Colors.blue,
+                    color: navTextColor,
                     textTransform: 'none',
                     fontWeight: 500,
                     py: 1.5,
                     '&:hover': {
-                      backgroundColor: `${Colors.blue}10`,
+                      backgroundColor: navSoftHoverBackground,
                     },
                   }}
                 >
@@ -539,11 +645,12 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                   fullWidth
                   onClick={toggleMobileMenu}
                   sx={{
-                    backgroundColor: Colors.blue,
+                    backgroundColor: 'rgba(255,255,255,0.12)',
                     color: 'white',
                     textTransform: 'none',
-                    fontWeight: 500,
+                    fontWeight: 600,
                     py: 1.5,
+                    border: '1px solid rgba(255,255,255,0.14)',
                     boxShadow: 'none',
                     '&:hover': {
                       backgroundColor: Colors.raspberry,
@@ -583,43 +690,64 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
           </Typography>
         </Box>
         <Divider />
-        <MenuItem onClick={handleNotificationClose}>
-          <Box sx={{ py: 1 }}>
-            <Typography variant="body2" fontWeight={500}>
-              New booking request
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Mountain Cabin - 2 hours ago
-            </Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem onClick={handleNotificationClose}>
-          <Box sx={{ py: 1 }}>
-            <Typography variant="body2" fontWeight={500}>
-              Payment received
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Beach House booking - 5 hours ago
-            </Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem onClick={handleNotificationClose}>
-          <Box sx={{ py: 1 }}>
-            <Typography variant="body2" fontWeight={500}>
-              New review posted
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              City Loft - 1 day ago
-            </Typography>
-          </Box>
-        </MenuItem>
+        {unreadChats.length > 0 ? (
+          unreadChats.slice(0, 5).map(chat => {
+            const currentUserId = currentUser?.uid || '';
+            const otherParticipantId =
+              chat.participants.find(id => id !== currentUserId) || '';
+            const unreadForCurrentUser = chat.unreadCount?.[currentUserId] || 0;
+            const conversationName =
+              chat.propertyName ||
+              chat.participantNames?.[otherParticipantId] ||
+              'Conversation';
+
+            return (
+              <MenuItem
+                key={chat.id}
+                onClick={() => handleUnreadChatClick(chat.id)}
+              >
+                <Box sx={{ py: 1, minWidth: 0 }}>
+                  <Typography variant="body2" fontWeight={600} noWrap>
+                    {conversationName}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      display: 'block',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {chat.lastMessage || 'New unread message'}
+                  </Typography>
+                  <Typography variant="caption" color={Colors.raspberry}>
+                    {unreadForCurrentUser} unread
+                  </Typography>
+                </Box>
+              </MenuItem>
+            );
+          })
+        ) : (
+          <MenuItem onClick={handleNotificationClose} disabled>
+            <Box sx={{ py: 1 }}>
+              <Typography variant="body2" fontWeight={500}>
+                No new messages
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                You&apos;re all caught up.
+              </Typography>
+            </Box>
+          </MenuItem>
+        )}
         <Divider />
         <MenuItem
           onClick={() => {
             navigate('/MyAccount/Dashboard');
             handleNotificationClose();
           }}
-          sx={{ justifyContent: 'center', color: Colors.blue }}
+          sx={{ justifyContent: 'center', color: Colors.cerulean }}
         >
           <Typography variant="body2" fontWeight={500}>
             View All Notifications
@@ -631,3 +759,4 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
 };
 
 export default NavBar;
+

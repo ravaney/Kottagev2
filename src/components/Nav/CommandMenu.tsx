@@ -73,7 +73,7 @@ export default function CommandMenu() {
               iconName: "EatDrink",
               styles: {
                 root: {
-                  color: Colors.blue,
+                  color: Colors.cerulean,
                   fontSize: getIconSize(),
                 },
               },
@@ -89,7 +89,7 @@ export default function CommandMenu() {
               iconName: "Car",
               styles: {
                 root: {
-                  color: Colors.blue,
+                  color: Colors.cerulean,
                   fontSize: getIconSize(),
                 },
               },
@@ -107,7 +107,7 @@ export default function CommandMenu() {
               iconName: "ExploreIcon",
               styles: {
                 root: {
-                  color: Colors.blue,
+                  color: Colors.cerulean,
                   fontSize: getIconSize(),
                 },
               },
@@ -125,7 +125,7 @@ export default function CommandMenu() {
               iconName: "MdModeOfTravel",
               styles: {
                 root: {
-                  color: Colors.blue,
+                  color: Colors.cerulean,
                   fontSize: getIconSize(),
                 },
               },
@@ -141,7 +141,7 @@ export default function CommandMenu() {
               iconName: "GiPartyFlags",
               styles: {
                 root: {
-                  color: Colors.blue,
+                  color: Colors.cerulean,
                   fontSize: getIconSize(),
                 },
               },
@@ -154,3 +154,4 @@ export default function CommandMenu() {
     </Stack>
   );
 }
+

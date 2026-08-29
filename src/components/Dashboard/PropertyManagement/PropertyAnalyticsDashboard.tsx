@@ -63,7 +63,7 @@ const MetricCard: React.FC<{
   growth?: number;
   color?: string;
   isLoading?: boolean;
-}> = ({ title, value, subtitle, icon, growth, color = Colors.blue, isLoading }) => {
+}> = ({ title, value, subtitle, icon, growth, color = Colors.cerulean, isLoading }) => {
   const trendIndicator = growth !== undefined ? getTrendIndicator(growth) : null;
 
   return (
@@ -202,7 +202,7 @@ export default function PropertyAnalyticsDashboard({ propertyId, propertyName }:
     <Box>
       {/* Header */}
       <Box mb={4}>
-        <Typography variant="h4" fontWeight={600} color={Colors.blue} gutterBottom>
+        <Typography variant="h4" fontWeight={600} color={Colors.cerulean} gutterBottom>
           Analytics Dashboard
         </Typography>
         <Typography variant="h6" color="text.secondary">
@@ -558,3 +558,4 @@ export default function PropertyAnalyticsDashboard({ propertyId, propertyName }:
     </Box>
   );
 }
+

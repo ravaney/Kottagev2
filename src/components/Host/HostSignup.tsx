@@ -125,7 +125,7 @@ export default function HostSignup() {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ color: Colors.blue, fontWeight: 600 }}
+              sx={{ color: Colors.cerulean, fontWeight: 600 }}
             >
               Tell us about your business
             </Typography>
@@ -194,7 +194,7 @@ export default function HostSignup() {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ color: Colors.blue, fontWeight: 600 }}
+              sx={{ color: Colors.cerulean, fontWeight: 600 }}
             >
               Personal Information
             </Typography>
@@ -288,7 +288,7 @@ export default function HostSignup() {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ color: Colors.blue, fontWeight: 600 }}
+              sx={{ color: Colors.cerulean, fontWeight: 600 }}
             >
               Property Location
             </Typography>
@@ -369,7 +369,7 @@ export default function HostSignup() {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ color: Colors.blue, fontWeight: 600 }}
+              sx={{ color: Colors.cerulean, fontWeight: 600 }}
             >
               Agreement & Verification
             </Typography>
@@ -413,11 +413,11 @@ export default function HostSignup() {
                 label={
                   <Typography variant="body2">
                     I agree to the{' '}
-                    <Link to="/terms" style={{ color: Colors.blue }}>
+                    <Link to="/terms" style={{ color: Colors.cerulean }}>
                       Terms of Service
                     </Link>{' '}
                     and{' '}
-                    <Link to="/privacy" style={{ color: Colors.blue }}>
+                    <Link to="/privacy" style={{ color: Colors.cerulean }}>
                       Privacy Policy
                     </Link>
                   </Typography>
@@ -435,7 +435,7 @@ export default function HostSignup() {
                 label={
                   <Typography variant="body2">
                     I agree to the{' '}
-                    <Link to="/host-terms" style={{ color: Colors.blue }}>
+                    <Link to="/host-terms" style={{ color: Colors.cerulean }}>
                       Host Terms & Conditions
                     </Link>{' '}
                     and understand my responsibilities as a property host
@@ -501,7 +501,7 @@ export default function HostSignup() {
               <Typography
                 variant="h4"
                 fontWeight={700}
-                color={Colors.blue}
+                color={Colors.cerulean}
                 gutterBottom
               >
                 Become a Host
@@ -523,10 +523,10 @@ export default function HostSignup() {
                   mb: 3,
                 }}
               >
-                <BusinessIcon sx={{ color: Colors.blue, fontSize: 20 }} />
+                <BusinessIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
                 <Typography
                   variant="body2"
-                  color={Colors.blue}
+                  color={Colors.cerulean}
                   fontWeight={600}
                 >
                   Professional host registration
@@ -573,7 +573,7 @@ export default function HostSignup() {
                     variant="contained"
                     disabled={isPending || !agreeToTerms || !agreeToHostTerms}
                     sx={{
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       '&:hover': { backgroundColor: Colors.raspberry },
                       minWidth: 150,
                       py: 1.5,
@@ -596,7 +596,7 @@ export default function HostSignup() {
                     onClick={handleNext}
                     variant="contained"
                     sx={{
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       '&:hover': { backgroundColor: Colors.raspberry },
                       minWidth: 100,
                     }}
@@ -616,7 +616,7 @@ export default function HostSignup() {
                 <Link
                   to="/login"
                   style={{
-                    color: Colors.blue,
+                    color: Colors.cerulean,
                     textDecoration: 'none',
                     fontWeight: 600,
                   }}
@@ -629,7 +629,7 @@ export default function HostSignup() {
                 <Link
                   to="/guest-signup"
                   style={{
-                    color: Colors.blue,
+                    color: Colors.cerulean,
                     textDecoration: 'none',
                     fontWeight: 600,
                   }}
@@ -644,3 +644,4 @@ export default function HostSignup() {
     </Box>
   );
 }
+

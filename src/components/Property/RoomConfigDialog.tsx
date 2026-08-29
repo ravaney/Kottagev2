@@ -115,7 +115,7 @@ export default function RoomConfigDialog({
     >
       <Box 
         sx={{ 
-          background: `linear-gradient(135deg, ${Colors.blue}15 0%, ${Colors.raspberry}15 100%)`,
+          background: `linear-gradient(135deg, ${Colors.cerulean}15 0%, ${Colors.raspberry}15 100%)`,
           p: 3,
           borderBottom: '1px solid #e0e0e0'
         }}
@@ -129,10 +129,10 @@ export default function RoomConfigDialog({
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
             }}
           >
-            <RoomIcon sx={{ color: Colors.blue, fontSize: 28 }} />
+            <RoomIcon sx={{ color: Colors.cerulean, fontSize: 28 }} />
           </Box>
           <Box>
-            <Typography variant="h5" fontWeight={700} color={Colors.blue}>
+            <Typography variant="h5" fontWeight={700} color={Colors.cerulean}>
               {editingRoom ? 'Edit Room Configuration' : 'Add Room Configuration'}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -152,13 +152,13 @@ export default function RoomConfigDialog({
                 border: '2px solid #f0f0f0',
                 borderRadius: 2,
                 '&:focus-within': {
-                  borderColor: Colors.blue
+                  borderColor: Colors.cerulean
                 }
               }}
             >
               <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-                <RoomIcon sx={{ color: Colors.blue, fontSize: 20 }} />
-                <Typography variant="h6" color={Colors.blue} fontWeight={600}>
+                <RoomIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
+                <Typography variant="h6" color={Colors.cerulean} fontWeight={600}>
                   Room Information
                 </Typography>
               </Box>
@@ -188,8 +188,8 @@ export default function RoomConfigDialog({
               }}
             >
               <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-                <NumbersIcon sx={{ color: Colors.blue, fontSize: 20 }} />
-                <Typography variant="h6" color={Colors.blue} fontWeight={600}>
+                <NumbersIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
+                <Typography variant="h6" color={Colors.cerulean} fontWeight={600}>
                   Quantity & Pricing
                 </Typography>
               </Box>
@@ -241,8 +241,8 @@ export default function RoomConfigDialog({
               }}
             >
               <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-                <ImageIcon sx={{ color: Colors.blue, fontSize: 20 }} />
-                <Typography variant="h6" color={Colors.blue} fontWeight={600}>
+                <ImageIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
+                <Typography variant="h6" color={Colors.cerulean} fontWeight={600}>
                   Room Images
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -266,8 +266,8 @@ export default function RoomConfigDialog({
               }}
             >
               <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-                <DescriptionIcon sx={{ color: Colors.blue, fontSize: 20 }} />
-                <Typography variant="h6" color={Colors.blue} fontWeight={600}>
+                <DescriptionIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
+                <Typography variant="h6" color={Colors.cerulean} fontWeight={600}>
                   Description
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -314,7 +314,7 @@ export default function RoomConfigDialog({
           disabled={!isValid || isLoading}
           startIcon={isLoading ? <CircularProgress size={20} /> : <SaveIcon />}
           sx={{ 
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.cerulean,
             '&:hover': { backgroundColor: Colors.raspberry },
             borderRadius: 2,
             px: 4,

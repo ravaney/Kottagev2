@@ -18,6 +18,15 @@ export interface IUser {
   bio?: string;
   occupation?: string;
   company?: string;
+  nomadPass?: INomadPass;
+}
+
+export interface INomadPass {
+  active: boolean;
+  reservationId: string;
+  purchasedAt: string;
+  validFrom: string;
+  validTo: string;
 }
 export interface IInitUser {
   email: string;

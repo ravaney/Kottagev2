@@ -13,6 +13,7 @@ import Grid from '@mui/material/GridLegacy';
 import { useNavigate } from 'react-router-dom';
 import { Colors } from '../constants';
 import { useAuth } from '../../hooks';
+import { useMyProperties } from '../../hooks/propertyHooks';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
 import MessageIcon from '@mui/icons-material/Message';
@@ -21,13 +22,14 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 export default function HostDashboardHome() {
   const navigate = useNavigate();
   const { appUser } = useAuth();
+  const { data: myProperties = [] } = useMyProperties();
 
   const dashboardCards = [
     {
       title: 'Property Management',
       description:
         'Manage your properties, add new listings, and update details',
-      icon: <HolidayVillageIcon sx={{ fontSize: 40, color: Colors.blue }} />,
+      icon: <HolidayVillageIcon sx={{ fontSize: 40, color: Colors.cerulean }} />,
       path: '/dashboard/properties',
       buttonText: 'Manage Properties',
       color: '#e3f2fd',
@@ -61,7 +63,11 @@ export default function HostDashboardHome() {
   ];
 
   const quickStats = [
-    { label: 'Total Properties', value: '3', color: Colors.blue },
+    {
+      label: 'Total Properties',
+      value: myProperties.length.toString(),
+      color: Colors.cerulean,
+    },
     { label: 'Active Bookings', value: '12', color: Colors.raspberry },
     { label: 'This Month Revenue', value: '$4,250', color: '#2e7d32' },
     { label: 'Avg Rating', value: '4.8', color: '#ed6c02' },
@@ -74,7 +80,7 @@ export default function HostDashboardHome() {
         <Typography
           variant="h4"
           fontWeight={600}
-          color={Colors.blue}
+          color={Colors.cerulean}
           gutterBottom
         >
           Welcome back, {appUser?.firstName || 'Host'}!
@@ -177,7 +183,7 @@ export default function HostDashboardHome() {
                     fullWidth
                     onClick={() => navigate(card.path)}
                     sx={{
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       '&:hover': { backgroundColor: Colors.raspberry },
                       py: 1,
                       fontWeight: 600,
@@ -237,7 +243,7 @@ export default function HostDashboardHome() {
                     label={activity.type}
                     size="small"
                     sx={{
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.cerulean,
                       color: 'white',
                       textTransform: 'capitalize',
                     }}
@@ -255,3 +261,4 @@ export default function HostDashboardHome() {
     </Box>
   );
 }
+

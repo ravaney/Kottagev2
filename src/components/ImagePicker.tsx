@@ -89,7 +89,7 @@ function ImagePicker({ setSelectedImages, selectedImages }: Props) {
       elevation={1}
       sx={{
         p: 3,
-        border: `2px dashed ${Colors.blue}`,
+        border: `2px dashed ${Colors.cerulean}`,
         borderRadius: 3,
         backgroundColor: 'rgba(25, 118, 210, 0.02)'
       }}
@@ -98,7 +98,7 @@ function ImagePicker({ setSelectedImages, selectedImages }: Props) {
         variant="subtitle1" 
         sx={{ 
           mb: 2, 
-          color: Colors.blue, 
+          color: Colors.cerulean, 
           fontWeight: 600,
           display: 'flex',
           alignItems: 'center',
@@ -115,7 +115,7 @@ function ImagePicker({ setSelectedImages, selectedImages }: Props) {
         {...getRootProps()}
         sx={{
           minHeight: 80,
-          border: `1px dashed ${Colors.blue}`,
+          border: `1px dashed ${Colors.cerulean}`,
           borderRadius: 2,
           backgroundColor: 'white',
           cursor: 'pointer',
@@ -131,8 +131,8 @@ function ImagePicker({ setSelectedImages, selectedImages }: Props) {
         }}
       >
         <input {...getInputProps()} />
-        <CloudUploadIcon sx={{ color: Colors.blue }} />
-        <Typography color={Colors.blue} fontWeight={500}>
+        <CloudUploadIcon sx={{ color: Colors.cerulean }} />
+        <Typography color={Colors.cerulean} fontWeight={500}>
           {selectedImages.length === 0 ? 'Add Images' : 'Add More Images'}
         </Typography>
       </Box>
@@ -149,3 +149,4 @@ function ImagePicker({ setSelectedImages, selectedImages }: Props) {
 }
 
 export default ImagePicker;
+

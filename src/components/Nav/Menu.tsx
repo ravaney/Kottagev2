@@ -45,11 +45,15 @@ export default function CommandMenu() {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        style={{
-          color: 'black',
+        sx={{
+          color: 'rgba(245,248,252,0.92)',
           border: 'none',
           cursor: 'pointer',
           backgroundColor: 'transparent',
+          '&:hover': {
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            color: '#d155b6',
+          },
         }}
       >
         <MdOutlineManageAccounts />

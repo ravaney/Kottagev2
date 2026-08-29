@@ -14,6 +14,9 @@ interface ReservationSummaryProps {
   cleaningFee: number;
   serviceFee: number;
   total: number;
+  nomadPassSelected?: boolean;
+  nomadPassPrice?: number;
+  nomadPerks?: string[];
   promotionalPricing?: {
     isPromotionApplied: boolean;
     originalPrice: number;
@@ -47,6 +50,9 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   cleaningFee,
   serviceFee,
   total,
+  nomadPassSelected = false,
+  nomadPassPrice = 0,
+  nomadPerks = [],
   promotionalPricing,
   totalSavings,
   roomForPricing,
@@ -73,7 +79,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     >
       <Typography
         variant="h6"
-        sx={{ mb: 2, fontWeight: 600, color: Colors.blue }}
+        sx={{ mb: 2, fontWeight: 600, color: Colors.cerulean }}
       >
         Reservation & Pricing Summary
       </Typography>
@@ -176,6 +182,20 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
         <Typography variant="body2">{formatMoney(serviceFee)}</Typography>
       </Box>
 
+      {nomadPassSelected && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+          <Box>
+            <Typography variant="body2">Nomad Pass</Typography>
+            {nomadPerks.length > 0 && (
+              <Typography variant="caption" color="text.secondary">
+                {nomadPerks.join(' • ')}
+              </Typography>
+            )}
+          </Box>
+          <Typography variant="body2">{formatMoney(nomadPassPrice)}</Typography>
+        </Box>
+      )}
+
       <Divider sx={{ my: 1 }} />
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -270,3 +290,4 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
 };
 
 export default ReservationSummary;
+

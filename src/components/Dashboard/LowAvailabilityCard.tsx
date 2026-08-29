@@ -26,7 +26,7 @@ export default function LowAvailabilityCard({ alerts }: LowAvailabilityCardProps
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
         <WarningAmberIcon sx={{ color: Colors.raspberry, fontSize: 24 }} />
-        <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+        <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
           Low Availability Alerts
         </Typography>
       </Box>

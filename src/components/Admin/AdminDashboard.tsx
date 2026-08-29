@@ -35,7 +35,7 @@ const dashboardStats = [
     change: '+12%', 
     trend: 'up',
     icon: <HomeWorkIcon sx={{ fontSize: 40 }}/>, 
-    color: Colors.blue 
+    color: Colors.cerulean 
   },
   { 
     title: 'Active Bookings', 
@@ -72,7 +72,7 @@ const recentActivities = [
 ];
 
 const quickActions = [
-  { title: 'Review Pending Properties', count: 12, color: Colors.blue, path: '/admin/properties' },
+  { title: 'Review Pending Properties', count: 12, color: Colors.cerulean, path: '/admin/properties' },
   { title: 'Assign Staff to Regions', count: 3, color: Colors.raspberry, path: '/admin/regional-assignment' },
   { title: 'Resolve Support Tickets', count: 8, color: '#4caf50', path: '/admin/support' },
   { title: 'Process Payouts', count: 15, color: '#ff9800', path: '/admin/payouts' },
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Welcome Header */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight={700} color={Colors.blue} gutterBottom>
+        <Typography variant="h4" fontWeight={700} color={Colors.cerulean} gutterBottom>
           Admin Dashboard
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -205,7 +205,7 @@ export default function AdminDashboard() {
                 <React.Fragment key={activity.id}>
                   <ListItem sx={{ px: 0 }}>
                     <ListItemIcon>
-                      <Avatar sx={{ width: 32, height: 32, bgcolor: Colors.blue, fontSize: '0.8rem' }}>
+                      <Avatar sx={{ width: 32, height: 32, bgcolor: Colors.cerulean, fontSize: '0.8rem' }}>
                         {activity.type[0].toUpperCase()}
                       </Avatar>
                     </ListItemIcon>
@@ -228,7 +228,7 @@ export default function AdminDashboard() {
             <Button 
               fullWidth 
               variant="text" 
-              sx={{ mt: 2, color: Colors.blue }}
+              sx={{ mt: 2, color: Colors.cerulean }}
               onClick={() => navigate('/admin/activity')}
             >
               View All Activity
@@ -248,9 +248,9 @@ export default function AdminDashboard() {
                 startIcon={<AssignmentIndIcon />}
                 onClick={() => navigate('/admin/regional-assignment')}
                 sx={{
-                  borderColor: Colors.blue,
-                  color: Colors.blue,
-                  '&:hover': { backgroundColor: `${Colors.blue}10` }
+                  borderColor: Colors.cerulean,
+                  color: Colors.cerulean,
+                  '&:hover': { backgroundColor: `${Colors.cerulean}10` }
                 }}
               >
                 Manage Assignments
@@ -309,3 +309,4 @@ export default function AdminDashboard() {
     </Container>
   );
 }
+

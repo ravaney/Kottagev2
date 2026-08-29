@@ -227,8 +227,8 @@ export default function PhotoManagementDialog({
       <DialogTitle>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <PhotoLibraryIcon sx={{ color: Colors.blue }} />
-            <Typography variant="h5" fontWeight={600} color={Colors.blue}>
+            <PhotoLibraryIcon sx={{ color: Colors.cerulean }} />
+            <Typography variant="h5" fontWeight={600} color={Colors.cerulean}>
               Photo Management
             </Typography>
           </Box>
@@ -281,7 +281,7 @@ export default function PhotoManagementDialog({
           {/* Property Gallery Tab */}
           <TabPanel value={tabValue} index={0}>
           <Box sx={{ px: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, color: Colors.blue }}>
+            <Typography variant="h6" sx={{ mb: 2, color: Colors.cerulean }}>
               Property Gallery Management
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -310,7 +310,7 @@ export default function PhotoManagementDialog({
                       startIcon={isUploading ? <CircularProgress size={16} /> : <CloudUploadIcon />}
                       onClick={handlePropertyImageUpload}
                       disabled={isUploading}
-                      sx={{ backgroundColor: Colors.blue }}
+                      sx={{ backgroundColor: Colors.cerulean }}
                     >
                       {isUploading ? 'Uploading...' : 'Upload Images'}
                     </Button>
@@ -406,7 +406,7 @@ export default function PhotoManagementDialog({
         {/* Room Photos Tab */}
         <TabPanel value={tabValue} index={1}>
           <Box sx={{ px: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, color: Colors.blue }}>
+            <Typography variant="h6" sx={{ mb: 2, color: Colors.cerulean }}>
               Room Photos Management
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -419,7 +419,7 @@ export default function PhotoManagementDialog({
                   <Grid item xs={12} md={6} key={room.id}>
                     <Card variant="outlined">
                       <CardContent>
-                        <Typography variant="h6" sx={{ mb: 2, color: Colors.blue }}>
+                        <Typography variant="h6" sx={{ mb: 2, color: Colors.cerulean }}>
                           {room.name || `Room Type ${roomIndex + 1}`}
                         </Typography>
 
@@ -504,7 +504,7 @@ export default function PhotoManagementDialog({
                                 startIcon={isUploading ? <CircularProgress size={16} /> : <CloudUploadIcon />}
                                 onClick={() => handleUploadRoomImages(room.id)}
                                 disabled={isUploading}
-                                sx={{ backgroundColor: Colors.blue }}
+                                sx={{ backgroundColor: Colors.cerulean }}
                               >
                                 {isUploading ? 'Uploading...' : 'Upload Photos'}
                               </Button>
@@ -611,3 +611,4 @@ export default function PhotoManagementDialog({
     </Dialog>
   );
 }
+

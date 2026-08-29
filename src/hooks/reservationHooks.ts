@@ -49,6 +49,17 @@ export interface PaymentDetails {
   paidAt?: string;
   amount?: number; // Amount paid, if applicable
 }
+
+export interface NomadAddOn {
+  enabled: boolean;
+  price: number;
+  perks: {
+    coworkingAccess: boolean;
+    fastWifi: boolean;
+    privateWorkspace: boolean;
+  };
+}
+
 export interface Reservation {
   reservationId: string;
   userId: string;
@@ -67,6 +78,7 @@ export interface Reservation {
   // Required fields for date blocking functionality
   propertyId: string;
   roomTypeId: string;
+  nomadAddOn?: NomadAddOn;
   edits?: Array<{
     userId: string;
     timestamp: string;
@@ -94,10 +106,10 @@ export const useCreateReservation = () => {
       if (!user) throw new Error('Not authenticated');
 
       const newReservationRef = push(ref(database, 'reservations'));
-      const reservationId = `BK-${newReservationRef.key!}-RES`;      
-      
+      const reservationId =
+        reservation.reservationId || `BK-${newReservationRef.key!}-RES`;
 
-     const updates: Record<string, any> = {
+      const updates: Record<string, any> = {
         [`reservations/${reservationId}`]: {
           ...reservation,
           reservationId
@@ -107,12 +119,15 @@ export const useCreateReservation = () => {
       };
 
       await update(ref(database), updates);
+      return reservationId;
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
       queryClient.invalidateQueries({ queryKey: ['blockedDates'] });
+      queryClient.invalidateQueries({ queryKey: ['userReservations'] });
+      queryClient.invalidateQueries({ queryKey: ['myPropertyReservations'] });
     },
   });
 };
@@ -137,6 +152,8 @@ export const useUpdateReservation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['userReservations'] });
+      queryClient.invalidateQueries({ queryKey: ['myPropertyReservations'] });
     },
   });
 };
@@ -156,6 +173,8 @@ export const useDeleteReservation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
       queryClient.invalidateQueries({ queryKey: ['myProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['userReservations'] });
+      queryClient.invalidateQueries({ queryKey: ['myPropertyReservations'] });
     },
   });
 };

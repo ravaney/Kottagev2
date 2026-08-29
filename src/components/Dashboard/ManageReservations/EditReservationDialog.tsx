@@ -92,7 +92,7 @@ export default function EditReservationDialog({
       fullWidth
     >
       <DialogTitle sx={{ 
-        backgroundColor: success ? 'success.light' : Colors.blue, 
+        backgroundColor: success ? 'success.light' : Colors.cerulean, 
         color: success ? 'success.dark' : 'white',
         display: 'flex',
         justifyContent: 'space-between',
@@ -281,7 +281,7 @@ export default function EditReservationDialog({
           <Button 
             onClick={handleSave} 
             variant="contained"
-            sx={{ backgroundColor: Colors.blue }}
+            sx={{ backgroundColor: Colors.cerulean }}
           >
             Confirm
           </Button>

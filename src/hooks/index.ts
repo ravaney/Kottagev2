@@ -8,3 +8,4 @@ export * from './reservationHooks';
 export * from './userHooks';
 export * from './useSignOut';
 export * from './useUpdateprofile';
+export * from './useEventWallet';

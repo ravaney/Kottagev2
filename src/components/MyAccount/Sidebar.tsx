@@ -14,6 +14,7 @@ import { auth } from '../../firebase';
 import { Colors } from '../constants';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -28,6 +29,11 @@ export default function Sidebar() {
     { path: '/MyAccount/Dashboard', icon: DashboardIcon, label: 'Dashboard' },
     { path: '/MyAccount/Profile', icon: AccountBoxIcon, label: 'My Account' },
     { path: '/MyAccount/Favourites', icon: FavoriteIcon, label: 'Favourites' },
+    {
+      path: '/MyAccount/TicketsAndCoupons',
+      icon: LocalActivityIcon,
+      label: 'Tickets & Coupons',
+    },
     { path: '/MyAccount/Settings', icon: SettingsIcon, label: 'Settings' },
   ];
 
@@ -60,14 +66,14 @@ export default function Sidebar() {
           <Link
             to="/"
             style={{
-              color: Colors.blue,
+              color: Colors.cerulean,
               textDecoration: 'none',
               display: 'flex',
               alignItems: 'center',
             }}
           >
             <HomeIcon sx={{ fontSize: 16, mr: 0.5 }} />
-            <Typography variant="body2" color={Colors.blue}>
+            <Typography variant="body2" color={Colors.cerulean}>
               Kottage
             </Typography>
           </Link>
@@ -83,12 +89,12 @@ export default function Sidebar() {
               height: 120,
               mx: 'auto',
               mb: 2,
-              border: `4px solid ${Colors.blue}`,
+              border: `4px solid ${Colors.cerulean}`,
               boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
             }}
             src={auth.currentUser?.photoURL as string}
           />
-          <Typography variant="h6" fontWeight={600} color={Colors.blue}>
+          <Typography variant="h6" fontWeight={600} color={Colors.cerulean}>
             {appUser?.firstName || 'User'}
           </Typography>
           <Typography
@@ -120,11 +126,11 @@ export default function Sidebar() {
               sx={{
                 borderRadius: 2,
                 mb: 1,
-                backgroundColor: isActive ? Colors.blue : 'transparent',
+                backgroundColor: isActive ? Colors.cerulean : 'transparent',
                 color: isActive ? 'white' : 'inherit',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  backgroundColor: isActive ? Colors.blue : `${Colors.blue}15`,
+                  backgroundColor: isActive ? Colors.cerulean : `${Colors.cerulean}15`,
                   transform: 'translateX(4px)',
                 },
                 textDecoration: 'none',
@@ -135,9 +141,9 @@ export default function Sidebar() {
                   sx={{
                     color: isActive
                       ? 'white'
-                      : item.label === 'Favourites'
+                      : item.label === 'Favourites' || item.label === 'Tickets & Coupons'
                       ? Colors.raspberry
-                      : Colors.blue,
+                      : Colors.cerulean,
                     fontSize: 22,
                   }}
                 />
@@ -156,3 +162,4 @@ export default function Sidebar() {
     </Paper>
   );
 }
+

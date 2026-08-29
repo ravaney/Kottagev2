@@ -70,21 +70,21 @@ export default function TopPropertiesCard({ properties }: TopPropertiesCardProps
   const getColor = (property: PropertyPerformance) => {
     switch (metric) {
       case 'income':
-        return Colors.blue;
+        return Colors.cerulean;
       case 'rating':
         return '#ff9800';
       case 'occupancy':
         return '#4caf50';
       default:
-        return Colors.blue;
+        return Colors.cerulean;
     }
   };
 
   return (
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-        <StarIcon sx={{ color: Colors.blue, fontSize: 24 }} />
-        <Typography variant="subtitle1" fontWeight={600} color={Colors.blue}>
+        <StarIcon sx={{ color: Colors.cerulean, fontSize: 24 }} />
+        <Typography variant="subtitle1" fontWeight={600} color={Colors.cerulean}>
           Top Performing Properties
         </Typography>
       </Box>
@@ -106,8 +106,8 @@ export default function TopPropertiesCard({ properties }: TopPropertiesCardProps
               flex: 1
             },
             '& .Mui-selected': {
-              backgroundColor: `${Colors.blue}15 !important`,
-              color: Colors.blue,
+              backgroundColor: `${Colors.cerulean}15 !important`,
+              color: Colors.cerulean,
               fontWeight: 600
             }
           }}

@@ -4,12 +4,15 @@
 
 import {
   Kottage,
+  NomadAddOn,
   Reservation,
   ReservationStatus,
   RoomType,
 } from '../../../hooks';
+import { database } from '../../../firebase';
 import { analyticsService } from '../../../services/analyticsService';
 import { blockDatesForReservation } from '../../../utils/blockingUtils';
+import { ref, update } from 'firebase/database';
 
 export interface ConfirmPaymentParams {
   startDate: Date;
@@ -20,12 +23,12 @@ export interface ConfirmPaymentParams {
   appUser: any;
   total: number;
   guests: number;
-  createReservation: (data: Reservation) => Promise<any>;
+  nomadAddOn?: NomadAddOn;
+  createReservation: (data: Reservation) => Promise<string>;
   updateProperty: {
     mutateAsync: (data: { id: string; roomTypes: RoomType[] }) => Promise<any>;
   };
   refetchBlockedDates: () => void;
-  setPaymentSuccess: (success: boolean) => void;
   setPaymentError: (error: string) => void;
   navigate: (path: string, options?: { state?: any }) => void;
 }
@@ -50,9 +53,6 @@ export const hasBlockedDatesInRange = (
   blockedDates: string[]
 ): boolean => {
   if (!start || !end || start >= end) return false;
-
-  const startStr = start.toISOString().split('T')[0];
-  const endStr = end.toISOString().split('T')[0];
 
   // Generate all dates between start and end (exclusive of end date)
   const datesInRange: string[] = [];
@@ -118,7 +118,6 @@ export const handleConfirmPayment = async (
     createReservation,
     updateProperty,
     refetchBlockedDates,
-    setPaymentSuccess,
     setPaymentError,
   } = params;
 
@@ -126,11 +125,8 @@ export const handleConfirmPayment = async (
     // Track booking attempt
     analyticsService.trackBookingAttempt(kottage.id);
 
-    // Generate a temporary reservation ID
-    const tempReservationId = `BK-${Date.now()}-RES`;
-
     const reservationData: Reservation = {
-      reservationId: tempReservationId,
+      reservationId: '',
       userId: String(uid),
       checkIn: startDate.toISOString(),
       checkOut: endDate.toISOString(),
@@ -157,10 +153,11 @@ export const handleConfirmPayment = async (
       // Add required fields for date blocking
       propertyId: kottage.id,
       roomTypeId: room.id,
+      nomadAddOn: params.nomadAddOn,
     };
 
     // Create the reservation first
-    await createReservation(reservationData);
+    const reservationId = await createReservation(reservationData);
     console.log('Reservation created successfully');
 
     // Only if reservation creation succeeds, then block dates
@@ -170,7 +167,7 @@ export const handleConfirmPayment = async (
         room.id,
         startDate,
         endDate,
-        tempReservationId,
+        reservationId,
         String(uid)
       );
       console.log('Dates blocked successfully');
@@ -203,6 +200,18 @@ export const handleConfirmPayment = async (
       // Don't throw here - the reservation was successful
     }
 
+    if (params.nomadAddOn?.enabled) {
+      await update(ref(database), {
+        [`users/${uid}/nomadPass`]: {
+          active: true,
+          reservationId,
+          purchasedAt: new Date().toISOString(),
+          validFrom: startDate.toISOString(),
+          validTo: endDate.toISOString(),
+        },
+      });
+    }
+
     // Refetch blocked dates to update the UI
     refetchBlockedDates();
 
@@ -217,12 +226,10 @@ export const handleConfirmPayment = async (
       endDate.toISOString()
     );
 
-    setPaymentSuccess(true);
-
     // Navigate to confirmation page
     params.navigate('/booking-confirmation', {
       state: {
-        reservationId: tempReservationId,
+        reservationId,
         roomName: room.name,
         propertyName: kottage.name,
         checkInDate: startDate.toISOString(),
@@ -230,6 +237,7 @@ export const handleConfirmPayment = async (
         guests,
         nights: calculateNights(startDate, endDate),
         total,
+        nomadAddOn: params.nomadAddOn,
       },
     });
   } catch (error) {
