@@ -1,14 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./index.css";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import App from "./App";
-import theme from "./theme";
+import React, { createContext } from 'react';
+import ReactDOM from 'react-dom/client';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import App from './App';
+import theme from './theme';
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById('root') as HTMLElement
 );
+
+const ThemeContext = createContext(theme);
 
 root.render(
   <React.StrictMode>

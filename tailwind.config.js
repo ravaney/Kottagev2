@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         brand: [
+          'Playfair Display',
           'League Spartan',
           'Segoe UI',
           'Helvetica Neue',

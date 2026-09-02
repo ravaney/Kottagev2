@@ -5,6 +5,7 @@ const brandBlueDark = '#005E80';
 const brandBlueLight = '#3298BC';
 const accentRaspberry = '#D155B6';
 const brandFont = [
+  'Playfair Display',
   'League Spartan',
   'Segoe UI',
   'Helvetica Neue',
