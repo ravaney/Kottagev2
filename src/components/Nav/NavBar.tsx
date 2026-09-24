@@ -33,6 +33,8 @@ import {
   TravelExplore as TravelIcon,
   Close as CloseIcon,
   LocalActivity as LocalActivityIcon,
+  DarkMode as DarkModeIcon,
+  LightMode as LightModeIcon,
 } from '@mui/icons-material';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, useEventWallet } from '../../hooks';
@@ -46,10 +48,23 @@ interface NavBarProps {
   transparent?: boolean;
 }
 
+type NavThemeMode = 'dark' | 'light';
+
+const getInitialNavTheme = (): NavThemeMode => {
+  try {
+    return window.localStorage.getItem('bk-nav-theme') === 'light'
+      ? 'light'
+      : 'dark';
+  } catch {
+    return 'dark';
+  }
+};
+
 const NavBar = ({ transparent = false }: NavBarProps) => {
   const { firebaseUser, loading, appUser } = useAuth();
   const { user: claimsUser, loading: claimsLoading } = useUserClaims();
-  const { chats, currentUserId, totalUnreadMessages, setCurrentChat } = useChat();
+  const { chats, currentUserId, totalUnreadMessages, setCurrentChat } =
+    useChat();
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -57,6 +72,8 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
   const isSmallMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [navThemeMode, setNavThemeMode] =
+    useState<NavThemeMode>(getInitialNavTheme);
   const [notificationAnchor, setNotificationAnchor] =
     useState<null | HTMLElement>(null);
   const { totalCount: eventWalletCount } = useEventWallet();
@@ -107,14 +124,41 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const navBackgroundColor = transparent
-    ? 'rgba(7,20,33,0.78)'
-    : 'rgba(7,20,33,0.92)';
-  const navTextColor = 'rgba(245,248,252,0.92)';
-  const navMutedTextColor = 'rgba(245,248,252,0.72)';
-  const navHoverBackground = 'rgba(209,85,182,0.18)';
-  const navSoftHoverBackground = 'rgba(255,255,255,0.08)';
-  const navBorderColor = 'rgba(255,255,255,0.08)';
+  const toggleNavTheme = () => {
+    setNavThemeMode(currentMode => {
+      const nextMode = currentMode === 'dark' ? 'light' : 'dark';
+
+      try {
+        window.localStorage.setItem('bk-nav-theme', nextMode);
+      } catch {
+        // The theme still changes for this session if storage is unavailable.
+      }
+
+      return nextMode;
+    });
+  };
+
+  const isLightNavTheme = navThemeMode === 'light';
+  const navBackgroundColor = isLightNavTheme
+    ? '#f9f4f0'
+    : transparent
+      ? 'rgba(7,20,33,0.78)'
+      : 'rgba(7,20,33,0.92)';
+  const navTextColor = isLightNavTheme
+    ? 'rgba(7,20,33,0.88)'
+    : 'rgba(245,248,252,0.92)';
+  const navMutedTextColor = isLightNavTheme
+    ? 'rgba(7,20,33,0.62)'
+    : 'rgba(245,248,252,0.72)';
+  const navHoverBackground = isLightNavTheme
+    ? 'rgba(209,85,182,0.12)'
+    : 'rgba(209,85,182,0.18)';
+  const navSoftHoverBackground = isLightNavTheme
+    ? 'rgba(7,20,33,0.06)'
+    : 'rgba(255,255,255,0.08)';
+  const navBorderColor = isLightNavTheme
+    ? 'rgba(7,20,33,0.1)'
+    : 'rgba(255,255,255,0.08)';
 
   const isActiveNavPath = (path: string) => {
     const currentPath = location.pathname.toLowerCase();
@@ -124,7 +168,9 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
       return currentPath === '/';
     }
 
-    return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+    return (
+      currentPath === targetPath || currentPath.startsWith(`${targetPath}/`)
+    );
   };
 
   return (
@@ -137,12 +183,17 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
           backdropFilter: 'blur(16px)',
           borderBottom: `1px solid ${navBorderColor}`,
           color: navTextColor,
-          boxShadow: '0 14px 34px rgba(4, 11, 20, 0.22)',
+          boxShadow: isLightNavTheme
+            ? '0 10px 28px rgba(38,50,56,0.1)'
+            : '0 14px 34px rgba(4,11,20,0.22)',
+          transition:
+            'background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease',
         }}
       >
         <Toolbar
           sx={{
-            minHeight: { xs: 64, sm: 70 },
+            height: { xs: 64, sm: 70 },
+            minHeight: { xs: '64px !important', sm: '70px !important' },
             px: { xs: 1, sm: 2, md: 3 },
             justifyContent: 'space-between',
           }}
@@ -153,18 +204,27 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
               display: 'flex',
               alignItems: 'center',
               flexShrink: 0,
-              pl: { xs: 0.5, sm: 0.75, md: 1 },
+              pl: { xs: 0.5, sm: 0.75, md: 2 },
+              pt: 1,
             }}
+            id="logo home link"
           >
             <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
               <img
-                src="/blue logo.png"
+                src={
+                  isLightNavTheme
+                    ? '/bk_brand/bk-wordmark.png'
+                    : '/bk_brand/bk_whitewordmarkV2.png'
+                }
                 alt="Kottage Logo"
                 style={{
                   height: isSmallMobile ? '35px' : isMobile ? '40px' : '55px',
                   width: 'auto',
                   objectFit: 'contain',
-                  filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.24))',
+                  filter: isLightNavTheme
+                    ? 'drop-shadow(0 5px 12px rgba(0,123,167,0.12))'
+                    : 'drop-shadow(0 8px 18px rgba(0,0,0,0.24))',
+                  margin: 'auto',
                 }}
               />
             </Link>
@@ -194,7 +254,9 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                     onClick={() => navigate(item.path)}
                     sx={{
                       color: isActive ? Colors.raspberry : navTextColor,
-                      backgroundColor: isActive ? navHoverBackground : 'transparent',
+                      backgroundColor: isActive
+                        ? navHoverBackground
+                        : 'transparent',
                       fontWeight: isActive ? 600 : 500,
                       fontSize: { xs: '12px', sm: '13px', md: '14px' },
                       textTransform: 'none',
@@ -228,6 +290,24 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
               justifyContent: 'flex-end',
             }}
           >
+            <Tooltip
+              title={`Switch to ${isLightNavTheme ? 'dark' : 'light'} theme`}
+            >
+              <IconButton
+                aria-label={`Switch to ${isLightNavTheme ? 'dark' : 'light'} navbar theme`}
+                onClick={toggleNavTheme}
+                sx={{
+                  color: navTextColor,
+                  '&:hover': {
+                    backgroundColor: navSoftHoverBackground,
+                    color: Colors.raspberry,
+                  },
+                }}
+              >
+                {isLightNavTheme ? <DarkModeIcon /> : <LightModeIcon />}
+              </IconButton>
+            </Tooltip>
+
             {/* Desktop: User Actions and Auth */}
             {!isMobile && (
               <>
@@ -302,7 +382,10 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
 
                     {/* User Avatar/Menu */}
                     <Box sx={{ ml: 1 }}>
-                      <UserMenu />
+                      <UserMenu
+                        color={navTextColor}
+                        hoverBackground={navSoftHoverBackground}
+                      />
                     </Box>
                   </>
                 )}
@@ -340,14 +423,20 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                       to="/signup"
                       variant="contained"
                       sx={{
-                        backgroundColor: 'rgba(255,255,255,0.12)',
+                        backgroundColor: isLightNavTheme
+                          ? Colors.cerulean
+                          : 'rgba(255,255,255,0.12)',
                         color: 'white',
                         textTransform: 'none',
                         fontWeight: 600,
                         px: { xs: 1.5, md: 3 },
                         fontSize: { xs: '14px', md: '16px' },
                         minWidth: 'auto',
-                        border: '1px solid rgba(255,255,255,0.14)',
+                        border: `1px solid ${
+                          isLightNavTheme
+                            ? Colors.cerulean
+                            : 'rgba(255,255,255,0.14)'
+                        }`,
                         boxShadow: 'none',
                         '&:hover': {
                           backgroundColor: Colors.raspberry,
@@ -396,7 +485,7 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
           sx={{
             width: 280,
             height: '100%',
-            backgroundColor: 'rgba(7,20,33,0.98)',
+            backgroundColor: isLightNavTheme ? '#f9f4f0' : 'rgba(7,20,33,0.98)',
             color: navTextColor,
             display: 'flex',
             flexDirection: 'column',
@@ -563,7 +652,9 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                       toggleMobileMenu();
                     }}
                     sx={{
-                      backgroundColor: isActive ? navHoverBackground : 'transparent',
+                      backgroundColor: isActive
+                        ? navHoverBackground
+                        : 'transparent',
                       '&:hover': {
                         backgroundColor: navHoverBackground,
                         '& .MuiListItemIcon-root': {
@@ -598,14 +689,17 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
             {/* User Menu Options (when logged in) */}
             {!isLoading && currentUser && (
               <Box
-              sx={{
+                sx={{
                   borderTop: `1px solid ${navBorderColor}`,
                   p: 2,
                   display: 'flex',
                   justifyContent: 'center',
                 }}
               >
-                <UserMenu />
+                <UserMenu
+                  color={navTextColor}
+                  hoverBackground={navSoftHoverBackground}
+                />
               </Box>
             )}
 
@@ -645,12 +739,18 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                   fullWidth
                   onClick={toggleMobileMenu}
                   sx={{
-                    backgroundColor: 'rgba(255,255,255,0.12)',
+                    backgroundColor: isLightNavTheme
+                      ? Colors.cerulean
+                      : 'rgba(255,255,255,0.12)',
                     color: 'white',
                     textTransform: 'none',
                     fontWeight: 600,
                     py: 1.5,
-                    border: '1px solid rgba(255,255,255,0.14)',
+                    border: `1px solid ${
+                      isLightNavTheme
+                        ? Colors.cerulean
+                        : 'rgba(255,255,255,0.14)'
+                    }`,
                     boxShadow: 'none',
                     '&:hover': {
                       backgroundColor: Colors.raspberry,
@@ -759,4 +859,3 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
 };
 
 export default NavBar;
-

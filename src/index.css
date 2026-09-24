@@ -1,6 +1,22 @@
 :root {
   --brand-primary: #007ba7;
-  --brand-font: 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --brand-font: 'Playfair Display', serif;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --white: #fff;
+  --gold: #f5c242;
+}
+
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 body {
@@ -8,7 +24,7 @@ body {
   font-family: var(--brand-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9f1f0 !important ;
+  background-color: #f9f4f0 !important;
   min-width: 350px;
   padding: 0;
   overflow-x: hidden;

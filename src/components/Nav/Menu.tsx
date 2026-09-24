@@ -21,7 +21,15 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useSignOut } from '../../hooks/useSignOut';
 import { useAuth } from '../../hooks';
 
-export default function CommandMenu() {
+interface CommandMenuProps {
+  color?: string;
+  hoverBackground?: string;
+}
+
+export default function CommandMenu({
+  color = 'rgba(245,248,252,0.92)',
+  hoverBackground = 'rgba(255,255,255,0.08)',
+}: CommandMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,12 +54,12 @@ export default function CommandMenu() {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         sx={{
-          color: 'rgba(245,248,252,0.92)',
+          color,
           border: 'none',
           cursor: 'pointer',
           backgroundColor: 'transparent',
           '&:hover': {
-            backgroundColor: 'rgba(255,255,255,0.08)',
+            backgroundColor: hoverBackground,
             color: '#d155b6',
           },
         }}

@@ -85,16 +85,20 @@ export default function DashboardMenu() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box
+      sx={{
+        width: '100%',
+        height: 'calc(100dvh - 90px)',
+        display: 'grid',
+        gridTemplateRows: '170px minmax(0, 1fr)',
+      }}
+    >
       <Box
         sx={{
           p: 3,
           mb: 0,
           pb: 0,
-          position: 'sticky',
-          top: 60,
           backgroundColor: 'white',
-          zIndex: 100,
           borderBottom: '1px solid #e0e0e0',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         }}
@@ -124,7 +128,9 @@ export default function DashboardMenu() {
                   label={isHost ? 'Host' : 'Guest'}
                   size="small"
                   sx={{
-                    backgroundColor: isHost ? Colors.cerulean : Colors.raspberry,
+                    backgroundColor: isHost
+                      ? Colors.cerulean
+                      : Colors.raspberry,
                     color: 'white',
                     fontWeight: 600,
                     fontSize: '0.75rem',
@@ -173,7 +179,8 @@ export default function DashboardMenu() {
                 label="Home"
                 iconPosition="start"
                 sx={{
-                  color: getActiveTab() === 0 ? Colors.cerulean : 'text.secondary',
+                  color:
+                    getActiveTab() === 0 ? Colors.cerulean : 'text.secondary',
                 }}
               />
             )}
@@ -198,7 +205,8 @@ export default function DashboardMenu() {
                 label="Action Center"
                 iconPosition="start"
                 sx={{
-                  color: getActiveTab() === 1 ? Colors.cerulean : 'text.secondary',
+                  color:
+                    getActiveTab() === 1 ? Colors.cerulean : 'text.secondary',
                 }}
               />
             )}
@@ -234,7 +242,8 @@ export default function DashboardMenu() {
                 label="My Reservations"
                 iconPosition="start"
                 sx={{
-                  color: getActiveTab() === 1 ? Colors.cerulean : 'text.secondary',
+                  color:
+                    getActiveTab() === 1 ? Colors.cerulean : 'text.secondary',
                 }}
               />
             )}
@@ -265,10 +274,17 @@ export default function DashboardMenu() {
         </Box>
       </Box>
 
-      <Box sx={{ p: 0, pt: 1 }}>
+      <Box
+        sx={{
+          p: 0,
+          pt: 1,
+          minHeight: 0,
+          display: 'flex',
+          overflow: 'hidden',
+        }}
+      >
         <Outlet />
       </Box>
     </Box>
   );
 }
-

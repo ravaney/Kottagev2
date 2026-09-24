@@ -4,7 +4,6 @@ import { Colors } from '../constants';
 import RoomIcon from '@mui/icons-material/Room';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ImageIcon from '@mui/icons-material/Image';
 import { RoomType } from '../../hooks';
 
 interface RoomConfigCardProps {
@@ -13,12 +12,16 @@ interface RoomConfigCardProps {
   onDelete: (roomId: string) => void;
 }
 
-export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCardProps) {
+export default function RoomConfigCard({
+  room,
+  onEdit,
+  onDelete,
+}: RoomConfigCardProps) {
   return (
-    <Card 
-      sx={{ 
-        height: 220, 
-        display: 'flex', 
+    <Card
+      sx={{
+        height: 220,
+        display: 'flex',
         flexDirection: 'column',
         borderRadius: 3,
         boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
@@ -28,25 +31,25 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
         '&:hover': {
           transform: 'translateY(-4px)',
           boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
-          borderColor: Colors.cerulean
-        }
+          borderColor: Colors.cerulean,
+        },
       }}
     >
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           background: `linear-gradient(135deg, ${Colors.cerulean}08 0%, ${Colors.raspberry}08 100%)`,
           p: 2,
-          borderBottom: '1px solid #f0f0f0'
+          borderBottom: '1px solid #f0f0f0',
         }}
       >
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center" gap={1}>
-            <Box 
-              sx={{ 
-                p: 1, 
-                borderRadius: 2, 
+            <Box
+              sx={{
+                p: 1,
+                borderRadius: 2,
                 backgroundColor: 'white',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               }}
             >
               <RoomIcon sx={{ color: Colors.cerulean, fontSize: 20 }} />
@@ -56,40 +59,41 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
                 {room.name}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {room.quantityAvailable} room{room.quantityAvailable > 1 ? 's' : ''} available
+                {room.quantityAvailable} room
+                {room.quantityAvailable > 1 ? 's' : ''} available
               </Typography>
             </Box>
           </Box>
-          
+
           <Box display="flex" gap={0.5}>
-            <IconButton 
-              size="small" 
+            <IconButton
+              size="small"
               onClick={() => onEdit(room)}
-              sx={{ 
+              sx={{
                 backgroundColor: 'white',
                 color: Colors.cerulean,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                '&:hover': { 
+                '&:hover': {
                   backgroundColor: Colors.cerulean,
                   color: 'white',
-                  transform: 'scale(1.1)'
-                }
+                  transform: 'scale(1.1)',
+                },
               }}
             >
               <EditIcon fontSize="small" />
             </IconButton>
-            <IconButton 
-              size="small" 
+            <IconButton
+              size="small"
               onClick={() => onDelete(room.id)}
-              sx={{ 
+              sx={{
                 backgroundColor: 'white',
                 color: 'error.main',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                '&:hover': { 
+                '&:hover': {
                   backgroundColor: 'error.main',
                   color: 'white',
-                  transform: 'scale(1.1)'
-                }
+                  transform: 'scale(1.1)',
+                },
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -97,28 +101,40 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
           </Box>
         </Box>
       </Box>
-      
-      <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
-        <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-          <Typography 
-            variant="h5" 
+
+      <CardContent
+        sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 2 }}
+      >
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ mb: 2 }}
+        >
+          <Typography
+            variant="h5"
             fontWeight={700}
-            sx={{ 
+            sx={{
               color: Colors.raspberry,
-              textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+              textShadow: '0 1px 2px rgba(0,0,0,0.1)',
             }}
           >
             ${room.pricePerNight.toFixed(2)}
-            <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 0.5 }}>
+            <Typography
+              component="span"
+              variant="body2"
+              color="text.secondary"
+              sx={{ ml: 0.5 }}
+            >
               /night
             </Typography>
           </Typography>
         </Box>
-        
-        <Typography 
-          variant="body2" 
+
+        <Typography
+          variant="body2"
           color="text.secondary"
-          sx={{ 
+          sx={{
             flex: 1,
             height: 40,
             overflow: 'hidden',
@@ -126,13 +142,11 @@ export default function RoomConfigCard({ room, onEdit, onDelete }: RoomConfigCar
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
-            lineHeight: 1.4
+            lineHeight: 1.4,
           }}
         >
           {room.description || 'No description available'}
         </Typography>
-        
-       
       </CardContent>
     </Card>
   );

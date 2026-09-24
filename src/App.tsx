@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { ChatProvider } from './contexts/ChatContext';
 import { isSubdomain } from './utils/subdomainRouter';
-import Splash from './components/Home/Splash';
+import Home from './components/Home/Home';
 import SearchPage from './components/Home/SearchPage';
 import NomadNetworkPage from './components/Home/NomadNetworkPage';
 import EventsPage from './components/Events/EventsPage';
@@ -91,7 +91,7 @@ function App() {
           children: [
             {
               index: true,
-              element: <Splash />,
+              element: <Home />,
             },
             {
               path: '/search',
@@ -138,7 +138,9 @@ function App() {
               element: <ProtectedRoute children={<MyAccount />} />,
               children: [
                 {
-                  element: <Navigate to="/MyAccount/Dashboard/myreservations" />,
+                  element: (
+                    <Navigate to="/MyAccount/Dashboard/myreservations" />
+                  ),
                   index: true,
                 },
                 {

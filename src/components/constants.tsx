@@ -21,4 +21,7 @@ export enum Colors {
   white = '#ffffff',
   background = '#F9F1F0',
   cerulean = '#007BA7',
+  darkBlue = '#041A33',
+  chipTeal = '#60C3BF',
+  chipPink = '#C43091',
 }

@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import { auth, database } from '../firebase';
 import { get, push, ref, set, update } from 'firebase/database';
 import {
@@ -44,7 +49,13 @@ export interface RoomType {
 export interface ApprovalDocument {
   id: string;
   name: string;
-  type: 'title_deed' | 'utility_bill' | 'property_tax' | 'lease_agreement' | 'authorization_letter' | 'other';
+  type:
+    | 'title_deed'
+    | 'utility_bill'
+    | 'property_tax'
+    | 'lease_agreement'
+    | 'authorization_letter'
+    | 'other';
   url: string;
   uploadedAt: string;
   status: 'pending' | 'approved' | 'rejected';
@@ -52,7 +63,12 @@ export interface ApprovalDocument {
 }
 
 export interface PropertyApproval {
-  status: 'pending' | 'under_review' | 'approved' | 'rejected' | 'requires_documents';
+  status:
+    | 'pending'
+    | 'under_review'
+    | 'approved'
+    | 'rejected'
+    | 'requires_documents';
   submittedAt?: string;
   reviewedAt?: string;
   reviewedBy?: string;
@@ -104,7 +120,14 @@ export interface Kottage {
   approval: PropertyApproval;
   createdAt: string;
   updatedAt?: string;
-  propertyType?: 'villa' | 'apartment' | 'house' | 'cabin' | 'cottage' | 'resort' | 'other';
+  propertyType?:
+    | 'villa'
+    | 'apartment'
+    | 'house'
+    | 'cabin'
+    | 'cottage'
+    | 'resort'
+    | 'other';
   maxGuests?: number;
   bedrooms?: number;
   bathrooms?: number;
@@ -112,6 +135,7 @@ export interface Kottage {
   host?: IHostInfo;
   nomad?: NomadInfo;
   coordinates?: PropertyCoordinates;
+  highlights?: string[];
 }
 
 export const useAddProperty = () => {
@@ -138,9 +162,11 @@ export const useAddProperty = () => {
           const userData = userSnapshot.val();
           hostInfo = {
             id: currentUserId,
-            name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || userData.email,
+            name:
+              `${userData.firstName || ''} ${userData.lastName || ''}`.trim() ||
+              userData.email,
             avatar: userData.photoURL || auth?.currentUser?.photoURL || '',
-            superhost: false // Default to false, can be updated later based on business logic
+            superhost: false, // Default to false, can be updated later based on business logic
           };
         }
       }
@@ -154,10 +180,10 @@ export const useAddProperty = () => {
           'Recent Utility Bill',
           'Property Tax Receipt',
           'Lease Agreement',
-          'Notarized Letter of Authorization'
+          'Notarized Letter of Authorization',
         ],
         submittedDocuments: [],
-        approvalScore: 0
+        approvalScore: 0,
       };
 
       const fullProperty: Kottage = {
@@ -180,35 +206,43 @@ export const useAddProperty = () => {
 
       // Upload approval documents
       if (approvalDocuments && approvalDocuments.length > 0) {
-        const documentUploadPromises = approvalDocuments.map(async (file: File, index: number) => {
-          const snapshot = await uploadBytesResumable(
-            ref2(getStorage(), `approvalDocuments/${propertyId}/${file.name}`),
-            file
-          );
-          const url = await getDownloadURL(snapshot.ref);
-          
-          const document: ApprovalDocument = {
-            id: `doc_${index}_${Date.now()}`,
-            name: file.name,
-            type: 'other', // This would be determined by file type or user selection
-            url,
-            uploadedAt: new Date().toISOString(),
-            status: 'pending'
-          };
+        const documentUploadPromises = approvalDocuments.map(
+          async (file: File, index: number) => {
+            const snapshot = await uploadBytesResumable(
+              ref2(
+                getStorage(),
+                `approvalDocuments/${propertyId}/${file.name}`
+              ),
+              file
+            );
+            const url = await getDownloadURL(snapshot.ref);
 
-          await set(
-            ref(database, `properties/${propertyId}/approval/submittedDocuments/${document.id}`),
-            document
-          );
+            const document: ApprovalDocument = {
+              id: `doc_${index}_${Date.now()}`,
+              name: file.name,
+              type: 'other', // This would be determined by file type or user selection
+              url,
+              uploadedAt: new Date().toISOString(),
+              status: 'pending',
+            };
 
-          return document;
-        });
+            await set(
+              ref(
+                database,
+                `properties/${propertyId}/approval/submittedDocuments/${document.id}`
+              ),
+              document
+            );
+
+            return document;
+          }
+        );
 
         await Promise.all(documentUploadPromises);
 
         // Update approval status to pending if documents are submitted
         await update(ref(database, `properties/${propertyId}/approval`), {
-          status: 'pending'
+          status: 'pending',
         });
       }
 
@@ -245,9 +279,11 @@ export const useMyProperties = (): UseQueryResult<Kottage[]> => {
       seededProperties.forEach(property => {
         merged.set(property.id, property);
       });
-      properties.filter((property) => property !== null).forEach(property => {
-        merged.set(property.id, property);
-      });
+      properties
+        .filter(property => property !== null)
+        .forEach(property => {
+          merged.set(property.id, property);
+        });
 
       return Array.from(merged.values());
     },
@@ -264,8 +300,8 @@ export const useAllProperties = () => {
 
       const propertiesData = snapshot.val();
       const properties: Kottage[] = Object.values(propertiesData);
-      
-      return properties.filter((property) => property !== null);
+
+      return properties.filter(property => property !== null);
     },
     // This query is for staff use, so it doesn't depend on current user
   });
@@ -276,10 +312,12 @@ export const useGetPropertyById = (propertyId: string | undefined) => {
     queryKey: ['property', propertyId],
     queryFn: async (): Promise<Kottage | null> => {
       if (!propertyId) return null;
-      
-      const propertySnapshot = await get(ref(database, `properties/${propertyId}`));
+
+      const propertySnapshot = await get(
+        ref(database, `properties/${propertyId}`)
+      );
       if (!propertySnapshot.exists()) return getSeededPropertyById(propertyId);
-      
+
       return propertySnapshot.val() as Kottage;
     },
     enabled: !!propertyId,
@@ -309,7 +347,7 @@ export const useAddPropertyImages = () => {
       });
 
       const imageUrls = await Promise.all(uploadPromises);
-      
+
       // Store as an array of URLs instead of an object
       await set(
         ref(database, 'properties/' + propertyId + '/images'),
@@ -363,38 +401,45 @@ export const useUploadApprovalDocuments = () => {
       documents: File[];
       documentTypes: ApprovalDocument['type'][];
     }) => {
-      const uploadPromises = documents.map(async (file: File, index: number) => {
-        const snapshot = await uploadBytesResumable(
-          ref2(getStorage(), `approvalDocuments/${propertyId}/${file.name}`),
-          file
-        );
-        const url = await getDownloadURL(snapshot.ref);
-        
-        const document: ApprovalDocument = {
-          id: `doc_${index}_${Date.now()}`,
-          name: file.name,
-          type: documentTypes[index] || 'other',
-          url,
-          uploadedAt: new Date().toISOString(),
-          status: 'pending'
-        };
+      const uploadPromises = documents.map(
+        async (file: File, index: number) => {
+          const snapshot = await uploadBytesResumable(
+            ref2(getStorage(), `approvalDocuments/${propertyId}/${file.name}`),
+            file
+          );
+          const url = await getDownloadURL(snapshot.ref);
 
-        await set(
-          ref(database, `properties/${propertyId}/approval/submittedDocuments/${document.id}`),
-          document
-        );
+          const document: ApprovalDocument = {
+            id: `doc_${index}_${Date.now()}`,
+            name: file.name,
+            type: documentTypes[index] || 'other',
+            url,
+            uploadedAt: new Date().toISOString(),
+            status: 'pending',
+          };
 
-        return document;
-      });
+          await set(
+            ref(
+              database,
+              `properties/${propertyId}/approval/submittedDocuments/${document.id}`
+            ),
+            document
+          );
+
+          return document;
+        }
+      );
 
       const uploadedDocuments = await Promise.all(uploadPromises);
 
       // Update approval status to pending if it was requires_documents
-      const propertySnapshot = await get(ref(database, `properties/${propertyId}/approval/status`));
+      const propertySnapshot = await get(
+        ref(database, `properties/${propertyId}/approval/status`)
+      );
       if (propertySnapshot.val() === 'requires_documents') {
         await update(ref(database, `properties/${propertyId}/approval`), {
           status: 'pending',
-          submittedAt: new Date().toISOString()
+          submittedAt: new Date().toISOString(),
         });
       }
 
@@ -437,9 +482,12 @@ export const useUpdateApprovalStatus = () => {
       }
 
       console.log('Updating approval status:', { propertyId, updateData });
-      
+
       try {
-        await update(ref(database, `properties/${propertyId}/approval`), updateData);
+        await update(
+          ref(database, `properties/${propertyId}/approval`),
+          updateData
+        );
         console.log('Approval status updated successfully');
       } catch (error) {
         console.error('Error updating approval status:', error);
@@ -452,9 +500,9 @@ export const useUpdateApprovalStatus = () => {
       queryClient.invalidateQueries({ queryKey: ['allProperties'] });
       queryClient.invalidateQueries({ queryKey: ['properties'] });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Mutation failed:', error);
-    }
+    },
   });
 };
 
@@ -473,7 +521,10 @@ export const useUploadRoomImages = () => {
     }) => {
       const uploadPromises = images.map(async (image: File, index: number) => {
         const snapshot = await uploadBytesResumable(
-          ref2(getStorage(), `roomImages/${propertyId}/${roomId}/${Date.now()}_${index}_${image.name}`),
+          ref2(
+            getStorage(),
+            `roomImages/${propertyId}/${roomId}/${Date.now()}_${index}_${image.name}`
+          ),
           image
         );
         const url = await getDownloadURL(snapshot.ref);
@@ -495,17 +546,20 @@ export const useUpdateProperty = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Kottage> & { id: string }) => {
+    mutationFn: async ({
+      id,
+      ...updates
+    }: Partial<Kottage> & { id: string }) => {
       const updateData: Record<string, any> = {};
-      
+
       // Build Firebase update paths
       Object.entries(updates).forEach(([key, value]) => {
         updateData[`properties/${id}/${key}`] = value;
       });
-      
+
       // Always update the updatedAt timestamp
       updateData[`properties/${id}/updatedAt`] = new Date().toISOString();
-      
+
       await update(ref(database), updateData);
     },
     onSuccess: () => {
@@ -516,4 +570,3 @@ export const useUpdateProperty = () => {
     },
   });
 };
-

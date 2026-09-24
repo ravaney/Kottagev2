@@ -1,11 +1,9 @@
-import { Label, Stack } from '@fluentui/react';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Divider } from '@mui/material';
 
 type Props = {};
 
-export default function BottomNav({}: Props) {
+export default function Footer({}: Props) {
   const footerLinks = [
     { label: 'About', href: '/about' },
     { label: 'Help', href: '/help' },

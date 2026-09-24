@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SearchBar } from './SearchBar';
 import { SearchData } from '../../hooks/usePropertySearch';
-import PopularKottages from './PopularKottages';
+import PopularKottages from './Popular Kottages/PopularKottages';
 import {
   Typography,
   Box,
@@ -13,8 +13,6 @@ import {
   Chip,
   Card,
   Button,
-  Avatar,
-  Rating,
   useTheme,
   alpha,
 } from '@mui/material';
@@ -31,7 +29,7 @@ import {
   Schedule,
 } from '@mui/icons-material';
 
-export const Splash = () => {
+export const Home = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = React.useState(false);
@@ -57,7 +55,7 @@ export const Splash = () => {
 
   const scrollToContent = () => {
     const element = document.querySelector('#content-section');
-    element?.scrollIntoView({ behavior: 'smooth' });
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -428,360 +426,281 @@ export const Splash = () => {
         </IconButton>
       </Box>
 
-      {/* Content Sections */}
-      <Box id="content-section">
-        <PopularKottages />
+      <PopularKottages />
 
-        {/* Features Section */}
-        <Box sx={{ py: 8, backgroundColor: '#f8f9fa' }}>
-          <Container maxWidth="lg">
-            <Typography
-              variant="h3"
-              sx={{
-                textAlign: 'center',
-                mb: 2,
-                fontWeight: 700,
-                color: '#333',
-              }}
-            >
-              Why Choose Blue Kottage?
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                textAlign: 'center',
-                mb: 6,
-                color: '#666',
-                maxWidth: '600px',
-                mx: 'auto',
-              }}
-            >
-              Experience the best of Jamaica with our premium accommodations and
-              exceptional service
-            </Typography>
+      {/* Features Section
+      <Box sx={{ py: 8, backgroundColor: '#f8f9fa' }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h3"
+            sx={{
+              textAlign: 'center',
+              mb: 2,
+              fontWeight: 700,
+              color: '#333',
+            }}
+          >
+            Why Choose Blue Kottage?
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              textAlign: 'center',
+              mb: 6,
+              color: '#666',
+              maxWidth: '600px',
+              mx: 'auto',
+            }}
+          >
+            Experience the best of Jamaica with our premium accommodations and
+            exceptional service
+          </Typography>
 
-            <Grid container spacing={4}>
-              <Grid item xs={12} md={4}>
-                <Card
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={4}>
+              <Card
+                sx={{
+                  height: '100%',
+                  textAlign: 'center',
+                  p: 3,
+                  border: 'none',
+                  boxShadow: 3,
+                }}
+              >
+                <Security
                   sx={{
-                    height: '100%',
-                    textAlign: 'center',
-                    p: 3,
-                    border: 'none',
-                    boxShadow: 3,
+                    fontSize: 60,
+                    color: theme.palette.primary.main,
+                    mb: 2,
                   }}
-                >
-                  <Security
-                    sx={{
-                      fontSize: 60,
-                      color: theme.palette.primary.main,
-                      mb: 2,
-                    }}
-                  />
-                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-                    Secure Booking
-                  </Typography>
-                  <Typography color="text.secondary">
-                    Your payments are protected with bank-level security. Book
-                    with confidence knowing your information is safe.
-                  </Typography>
-                </Card>
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    textAlign: 'center',
-                    p: 3,
-                    border: 'none',
-                    boxShadow: 3,
-                  }}
-                >
-                  <SupportAgent
-                    sx={{
-                      fontSize: 60,
-                      color: theme.palette.primary.main,
-                      mb: 2,
-                    }}
-                  />
-                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-                    24/7 Support
-                  </Typography>
-                  <Typography color="text.secondary">
-                    Our dedicated team is available round the clock to assist
-                    you with any questions or concerns.
-                  </Typography>
-                </Card>
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    textAlign: 'center',
-                    p: 3,
-                    border: 'none',
-                    boxShadow: 3,
-                  }}
-                >
-                  <Verified
-                    sx={{
-                      fontSize: 60,
-                      color: theme.palette.primary.main,
-                      mb: 2,
-                    }}
-                  />
-                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-                    Verified Properties
-                  </Typography>
-                  <Typography color="text.secondary">
-                    Every property is personally inspected and verified to
-                    ensure it meets our high standards.
-                  </Typography>
-                </Card>
-              </Grid>
-            </Grid>
-          </Container>
-        </Box>
-
-        {/* Testimonials Section */}
-        <Box sx={{ py: 8, backgroundColor: 'white' }}>
-          <Container maxWidth="lg">
-            <Typography
-              variant="h3"
-              sx={{
-                textAlign: 'center',
-                mb: 6,
-                fontWeight: 700,
-                color: '#333',
-              }}
-            >
-              What Our Guests Say
-            </Typography>
-
-            <Grid container spacing={4}>
-              {[
-                {
-                  name: 'Sarah Johnson',
-                  location: 'New York, USA',
-                  rating: 5,
-                  comment:
-                    "Absolutely incredible experience! The property was exactly as described and the host was amazing. Can't wait to come back to Jamaica!",
-                  avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-                },
-                {
-                  name: 'Michael Chen',
-                  location: 'Toronto, Canada',
-                  rating: 5,
-                  comment:
-                    'Perfect getaway spot! The location was stunning and the amenities were top-notch. Yaad made booking so easy and secure.',
-                  avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-                },
-                {
-                  name: 'Emma Wilson',
-                  location: 'London, UK',
-                  rating: 5,
-                  comment:
-                    'Best vacation rental platform for Jamaica! The customer service was exceptional and the property exceeded all expectations.',
-                  avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-                },
-              ].map((testimonial, index) => (
-                <Grid item xs={12} md={4} key={index}>
-                  <Card sx={{ height: '100%', p: 3, boxShadow: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Avatar src={testimonial.avatar} sx={{ mr: 2 }} />
-                      <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                          {testimonial.name}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {testimonial.location}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Rating
-                      value={testimonial.rating}
-                      readOnly
-                      sx={{ mb: 2 }}
-                    />
-                    <Typography
-                      color="text.secondary"
-                      sx={{ fontStyle: 'italic' }}
-                    >
-                      "{testimonial.comment}"
-                    </Typography>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </Container>
-        </Box>
-
-        {/* How It Works Section */}
-        <Box sx={{ py: 8, backgroundColor: 'white' }}>
-          <Container maxWidth="lg">
-            <Typography
-              variant="h3"
-              sx={{
-                textAlign: 'center',
-                mb: 6,
-                fontWeight: 700,
-                color: '#333',
-              }}
-            >
-              How Yaad Works
-            </Typography>
-
-            <Grid container spacing={4}>
-              {[
-                {
-                  step: '01',
-                  title: 'Search & Discover',
-                  description:
-                    "Browse our curated collection of verified properties across Jamaica's most beautiful locations.",
-                  icon: <LocationOn sx={{ fontSize: 40 }} />,
-                },
-                {
-                  step: '02',
-                  title: 'Book Securely',
-                  description:
-                    'Reserve your perfect stay with our secure booking system and flexible cancellation policies.',
-                  icon: <Security sx={{ fontSize: 40 }} />,
-                },
-                {
-                  step: '03',
-                  title: 'Enjoy Your Stay',
-                  description:
-                    'Experience Jamaica like a local with our premium accommodations and 24/7 support.',
-                  icon: <Star sx={{ fontSize: 40 }} />,
-                },
-              ].map((step, index) => (
-                <Grid item xs={12} md={4} key={index}>
-                  <Box sx={{ textAlign: 'center', position: 'relative' }}>
-                    <Typography
-                      variant="h1"
-                      sx={{
-                        fontSize: '4rem',
-                        fontWeight: 800,
-                        color: alpha(theme.palette.primary.main, 0.1),
-                        mb: -2,
-                      }}
-                    >
-                      {step.step}
-                    </Typography>
-                    <Box
-                      sx={{
-                        color: theme.palette.primary.main,
-                        mb: 2,
-                        position: 'relative',
-                        zIndex: 1,
-                      }}
-                    >
-                      {step.icon}
-                    </Box>
-                    <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-                      {step.title}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      {step.description}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Container>
-        </Box>
-
-        {/* Contact/CTA Section */}
-        <Box sx={{ py: 8, backgroundColor: '#333', color: 'white' }}>
-          <Container maxWidth="lg">
-            <Grid container spacing={4} alignItems="center">
-              <Grid item xs={12} md={8}>
-                <Typography variant="h3" sx={{ fontWeight: 700, mb: 2 }}>
-                  Ready to Experience Jamaica?
+                />
+                <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+                  Secure Booking
                 </Typography>
-                <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
-                  Join thousands of travelers who have discovered their perfect
-                  Jamaican getaway with Yaad.
+                <Typography color="text.secondary">
+                  Your payments are protected with bank-level security. Book
+                  with confidence knowing your information is safe.
                 </Typography>
+              </Card>
+            </Grid>
 
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                  <Button
-                    variant="contained"
-                    size="large"
+            <Grid item xs={12} md={4}>
+              <Card
+                sx={{
+                  height: '100%',
+                  textAlign: 'center',
+                  p: 3,
+                  border: 'none',
+                  boxShadow: 3,
+                }}
+              >
+                <SupportAgent
+                  sx={{
+                    fontSize: 60,
+                    color: theme.palette.primary.main,
+                    mb: 2,
+                  }}
+                />
+                <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+                  24/7 Support
+                </Typography>
+                <Typography color="text.secondary">
+                  Our dedicated team is available round the clock to assist you
+                  with any questions or concerns.
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <Card
+                sx={{
+                  height: '100%',
+                  textAlign: 'center',
+                  p: 3,
+                  border: 'none',
+                  boxShadow: 3,
+                }}
+              >
+                <Verified
+                  sx={{
+                    fontSize: 60,
+                    color: theme.palette.primary.main,
+                    mb: 2,
+                  }}
+                />
+                <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+                  Verified Properties
+                </Typography>
+                <Typography color="text.secondary">
+                  Every property is personally inspected and verified to ensure
+                  it meets our high standards.
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box> */}
+
+      {/* How It Works Section */}
+      {/* <Box sx={{ py: 8, backgroundColor: 'white' }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h3"
+            sx={{
+              textAlign: 'center',
+              mb: 6,
+              fontWeight: 700,
+              color: '#333',
+            }}
+          >
+            How Yaad Works
+          </Typography>
+
+          <Grid container spacing={4}>
+            {[
+              {
+                step: '01',
+                title: 'Search & Discover',
+                description:
+                  "Browse our curated collection of verified properties across Jamaica's most beautiful locations.",
+                icon: <LocationOn sx={{ fontSize: 40 }} />,
+              },
+              {
+                step: '02',
+                title: 'Book Securely',
+                description:
+                  'Reserve your perfect stay with our secure booking system and flexible cancellation policies.',
+                icon: <Security sx={{ fontSize: 40 }} />,
+              },
+              {
+                step: '03',
+                title: 'Enjoy Your Stay',
+                description:
+                  'Experience Jamaica like a local with our premium accommodations and 24/7 support.',
+                icon: <Star sx={{ fontSize: 40 }} />,
+              },
+            ].map((step, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Box sx={{ textAlign: 'center', position: 'relative' }}>
+                  <Typography
+                    variant="h1"
                     sx={{
-                      backgroundColor: 'white',
-                      color: '#333',
-                      '&:hover': { backgroundColor: '#f5f5f5' },
+                      fontSize: '4rem',
+                      fontWeight: 800,
+                      color: alpha(theme.palette.primary.main, 0.1),
+                      mb: -2,
                     }}
                   >
-                    Start Searching
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    sx={{
-                      borderColor: 'white',
-                      color: 'white',
-                      '&:hover': {
-                        borderColor: 'white',
-                        backgroundColor: 'rgba(255,255,255,0.1)',
-                      },
-                    }}
-                  >
-                    Learn More
-                  </Button>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <Box sx={{ textAlign: 'center' }}>
+                    {step.step}
+                  </Typography>
                   <Box
-                    sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                    sx={{
+                      color: theme.palette.primary.main,
+                      mb: 2,
+                      position: 'relative',
+                      zIndex: 1,
+                    }}
                   >
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 1,
-                      }}
-                    >
-                      <Phone sx={{ fontSize: 20 }} />
-                      <Typography>+1-876-555-YAAD</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 1,
-                      }}
-                    >
-                      <Email sx={{ fontSize: 20 }} />
-                      <Typography>hello@yaad.com</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 1,
-                      }}
-                    >
-                      <Schedule sx={{ fontSize: 20 }} />
-                      <Typography>24/7 Support Available</Typography>
-                    </Box>
+                    {step.icon}
                   </Box>
+                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+                    {step.title}
+                  </Typography>
+                  <Typography color="text.secondary">
+                    {step.description}
+                  </Typography>
                 </Box>
               </Grid>
-            </Grid>
-          </Container>
-        </Box>
+            ))}
+          </Grid>
+        </Container>
+      </Box> */}
 
-      </Box>
+      {/* Contact/CTA Section */}
+      {/* <Box sx={{ py: 8, backgroundColor: '#333', color: 'white' }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={8}>
+              <Typography variant="h3" sx={{ fontWeight: 700, mb: 2 }}>
+                Ready to Experience Jamaica?
+              </Typography>
+              <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
+                Join thousands of travelers who have discovered their perfect
+                Jamaican getaway with Yaad.
+              </Typography>
+
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    backgroundColor: 'white',
+                    color: '#333',
+                    '&:hover': { backgroundColor: '#f5f5f5' },
+                  }}
+                >
+                  Start Searching
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  sx={{
+                    borderColor: 'white',
+                    color: 'white',
+                    '&:hover': {
+                      borderColor: 'white',
+                      backgroundColor: 'rgba(255,255,255,0.1)',
+                    },
+                  }}
+                >
+                  Learn More
+                </Button>
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <Box sx={{ textAlign: 'center' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <Phone sx={{ fontSize: 20 }} />
+                    <Typography>+1-876-555-YAAD</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <Email sx={{ fontSize: 20 }} />
+                    <Typography>hello@yaad.com</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <Schedule sx={{ fontSize: 20 }} />
+                    <Typography>24/7 Support Available</Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box> */}
     </>
   );
 };
-export default Splash;
+export default Home;
