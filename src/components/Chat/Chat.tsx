@@ -79,7 +79,7 @@ const ChatWorkspace = () => {
   return (
     <Box
       sx={{
-        height: '100%',
+        // height: '100%',
         minHeight: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -212,6 +212,7 @@ const ChatWorkspace = () => {
               minHeight: 0,
               overflow: 'hidden',
               backgroundColor: '#ffffff',
+              height: '200px',
             }}
           >
             <ChatWindow

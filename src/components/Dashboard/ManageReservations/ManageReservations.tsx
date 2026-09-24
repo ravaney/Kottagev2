@@ -345,7 +345,11 @@ export default function ManageReservations() {
             />
           </TableCell>
           <TableCell>
-            <Typography variant="body2" fontWeight={600} color={Colors.cerulean}>
+            <Typography
+              variant="body2"
+              fontWeight={600}
+              color={Colors.cerulean}
+            >
               {reservation.amount}
             </Typography>
           </TableCell>
@@ -896,8 +900,18 @@ export default function ManageReservations() {
   };
 
   return (
-    <Box>
-      <Paper elevation={3} sx={{ p: 2 }}>
+    <Box sx={{ height: '100%', minHeight: 0, display: 'flex', flex: 1 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 2,
+          flex: 1,
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -1026,7 +1040,7 @@ export default function ManageReservations() {
           </Box>
         </Box>
 
-        <TableContainer>
+        <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -1068,4 +1082,3 @@ export default function ManageReservations() {
     </Box>
   );
 }
-
