@@ -300,7 +300,7 @@ export default function TicketDrawer({
                         color: 'rgba(255,255,255,0.55)',
                       }}
                     >
-                      Blu Kottage Events
+                      Blue Kottage Events
                     </Typography>
                     <Typography
                       sx={{

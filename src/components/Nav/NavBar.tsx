@@ -216,7 +216,7 @@ const NavBar = ({ transparent = false }: NavBarProps) => {
                     ? '/bk_brand/bk-wordmark.png'
                     : '/bk_brand/bk_whitewordmarkV2.png'
                 }
-                alt="Kottage Logo"
+                alt="Blue Kottage Logo"
                 style={{
                   height: isSmallMobile ? '35px' : isMobile ? '40px' : '55px',
                   width: 'auto',

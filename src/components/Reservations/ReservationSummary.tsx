@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Paper, Divider, alpha } from '@mui/material';
-import { Colors } from '../../constants';
+import { Colors } from '../constants';
 import './ReservationSummary.css';
 
 interface ReservationSummaryProps {
@@ -290,4 +290,3 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
 };
 
 export default ReservationSummary;
-

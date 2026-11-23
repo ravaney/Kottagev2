@@ -86,7 +86,7 @@ export default function HostDashboardHome() {
           Welcome back, {appUser?.firstName || 'Host'}!
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Manage your properties and grow your hosting business with Blu Kottage
+          Manage your properties and grow your hosting business with Blue Kottage
         </Typography>
       </Box>
 

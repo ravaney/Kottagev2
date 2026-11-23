@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Kingston",
+    "image": "/images/kingston.jpg",
+    "tagline": "The cultural heart of Jamaica",
+    "description": "Experience the vibrant capital city with its rich history, museums, and bustling markets.",
+    "categories": ["Culture", "History", "Nightlife"]
+  },
+  {
+    "name": "Montego Bay",
+    "image": "/images/mobay.png",
+    "tagline": "Where paradise meets luxury",
+    "description": "Discover pristine beaches, world-class resorts, and vibrant nightlife in Jamaica's tourism capital.",
+    "categories": ["Beaches", "Resorts", "Shopping"]
+  },
+  {
+    "name": "Ocho Rios",
+    "image": "/images/ocho-rios.jpg",
+    "tagline": "Adventure awaits in paradise",
+    "description": "Climb the famous Dunn's River Falls and explore lush rainforests in this adventure-filled destination.",
+    "categories": ["Waterfalls", "Adventure", "Nature"]
+  },
+  {
+    "name": "Negril",
+    "image": "/images/negril.jpg",
+    "tagline": "Seven miles of pure bliss",
+    "description": "Relax on the famous seven-mile beach and witness breathtaking sunsets at the iconic cliff resorts.",
+    "categories": ["Beaches", "Sunsets", "Relaxation"]
+  },
+  {
+    "name": "Portland",
+    "image": "/images/portland.png",
+    "tagline": "Nature's untouched paradise",
+    "description": "Explore the lush landscapes, waterfalls, and pristine beaches of Portland.",
+    "categories": ["Nature", "Waterfalls", "Beaches"]
+  }
+]

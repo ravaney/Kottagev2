@@ -13,7 +13,7 @@ import {
   Menu,
   MenuItem,
   Avatar,
-  ListItemButton
+  ListItemButton,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
@@ -83,28 +83,88 @@ export default function AdminLanding() {
     if (path.includes('/settings')) return 'settings';
     return 'dashboard';
   };
-  
+
   const activeModule = getActiveModule();
 
   // Admin-specific modules
   const adminOnlyModules = [
-    { id: 'dashboard', name: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-    { id: 'employees', name: 'Employee Management', icon: <AssignmentIndIcon />, path: '/employee-management' },
-    { id: 'regional', name: 'Regional Assignment', icon: <LocationOnIcon />, path: '/regional-assignment' },
-    { id: 'analytics', name: 'Analytics', icon: <BarChartIcon />, path: '/analytics' },
+    {
+      id: 'dashboard',
+      name: 'Dashboard',
+      icon: <DashboardIcon />,
+      path: '/dashboard',
+    },
+    {
+      id: 'employees',
+      name: 'Employee Management',
+      icon: <AssignmentIndIcon />,
+      path: '/employee-management',
+    },
+    {
+      id: 'regional',
+      name: 'Regional Assignment',
+      icon: <LocationOnIcon />,
+      path: '/regional-assignment',
+    },
+    {
+      id: 'analytics',
+      name: 'Analytics',
+      icon: <BarChartIcon />,
+      path: '/analytics',
+    },
     { id: 'events', name: 'Events', icon: <EventNoteIcon />, path: '/events' },
-    { id: 'settings', name: 'Settings', icon: <SettingsIcon />, path: '/settings' }
+    {
+      id: 'settings',
+      name: 'Settings',
+      icon: <SettingsIcon />,
+      path: '/settings',
+    },
   ];
 
   // Staff operation modules (inherited from staff portal)
   const staffOperationModules = [
-    { id: 'properties', name: 'Properties', icon: <HomeWorkIcon />, path: '/properties' },
-    { id: 'bookings', name: 'Bookings', icon: <EventNoteIcon />, path: '/bookings' },
-    { id: 'reservations', name: 'Reservation Support', icon: <EventNoteIcon />, path: '/reservation-support' },
-    { id: 'guests', name: 'Guests/Hosts', icon: <PeopleIcon />, path: '/guests' },
-    { id: 'reviews', name: 'Review Moderation', icon: <RateReviewIcon />, path: '/review-moderation' },
-    { id: 'integrity', name: 'Platform Integrity', icon: <SecurityIcon />, path: '/platform-integrity' },
-    { id: 'payouts', name: 'Payout & Disputes', icon: <PaymentIcon />, path: '/payout-dispute' }
+    {
+      id: 'properties',
+      name: 'Properties',
+      icon: <HomeWorkIcon />,
+      path: '/properties',
+    },
+    {
+      id: 'bookings',
+      name: 'Bookings',
+      icon: <EventNoteIcon />,
+      path: '/bookings',
+    },
+    {
+      id: 'reservations',
+      name: 'Reservation Support',
+      icon: <EventNoteIcon />,
+      path: '/reservation-support',
+    },
+    {
+      id: 'guests',
+      name: 'Guests/Hosts',
+      icon: <PeopleIcon />,
+      path: '/guests',
+    },
+    {
+      id: 'reviews',
+      name: 'Review Moderation',
+      icon: <RateReviewIcon />,
+      path: '/review-moderation',
+    },
+    {
+      id: 'integrity',
+      name: 'Platform Integrity',
+      icon: <SecurityIcon />,
+      path: '/platform-integrity',
+    },
+    {
+      id: 'payouts',
+      name: 'Payout & Disputes',
+      icon: <PaymentIcon />,
+      path: '/payout-dispute',
+    },
   ];
 
   const handleModuleClick = (moduleId: string, path: string) => {
@@ -118,33 +178,41 @@ export default function AdminLanding() {
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Left Navigation */}
-      <Box sx={{ 
-        width: 240, 
-        flexShrink: 0,
-        backgroundColor: '#1a237e', // Darker blue for admin
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRight: '1px solid #e0e0e0'
-      }}>
-        {/* Logo Area */}
-        <Box sx={{ 
-          p: 2, 
-          display: 'flex', 
+      <Box
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          backgroundColor: '#1a237e', // Darker blue for admin
+          color: 'white',
+          display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', 
-          borderBottom: '1px solid rgba(255,255,255,0.1)'
-        }}>
+          borderRight: '1px solid #e0e0e0',
+        }}
+      >
+        {/* Logo Area */}
+        <Box
+          sx={{
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
           <Box
             component="img"
-            src="/logoType.png"
-            alt="Yaad Admin"
+            src="/bk_brand/bk-wordmark.png"
+            alt="Blue Kottage Admin"
             sx={{
               height: 48,
-              mb: 1
+              mb: 1,
             }}
           />
-          <Typography variant="h6" fontWeight={600} sx={{ letterSpacing: '0.5px' }}>
+          <Typography
+            variant="h6"
+            fontWeight={600}
+            sx={{ letterSpacing: '0.5px' }}
+          >
             ADMIN PORTAL
           </Typography>
         </Box>
@@ -152,7 +220,7 @@ export default function AdminLanding() {
         {/* Navigation Menu */}
         <Box sx={{ flexGrow: 1, overflow: 'auto', pt: 2 }}>
           {/* Admin-only modules */}
-          {adminOnlyModules.map((module) => (
+          {adminOnlyModules.map(module => (
             <Button
               key={module.id}
               fullWidth
@@ -162,15 +230,24 @@ export default function AdminLanding() {
                 justifyContent: 'flex-start',
                 py: 1.5,
                 px: 2,
-                color: activeModule === module.id ? 'white' : 'rgba(255,255,255,0.7)',
-                backgroundColor: activeModule === module.id ? 'rgba(255,255,255,0.1)' : 'transparent',
-                borderLeft: activeModule === module.id ? '4px solid white' : '4px solid transparent',
+                color:
+                  activeModule === module.id
+                    ? 'white'
+                    : 'rgba(255,255,255,0.7)',
+                backgroundColor:
+                  activeModule === module.id
+                    ? 'rgba(255,255,255,0.1)'
+                    : 'transparent',
+                borderLeft:
+                  activeModule === module.id
+                    ? '4px solid white'
+                    : '4px solid transparent',
                 borderRadius: 0,
                 '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.05)'
+                  backgroundColor: 'rgba(255,255,255,0.05)',
                 },
                 textTransform: 'none',
-                fontWeight: 500
+                fontWeight: 500,
               }}
             >
               {module.name}
@@ -181,7 +258,9 @@ export default function AdminLanding() {
           <Button
             fullWidth
             startIcon={<WorkIcon />}
-            endIcon={staffOperationsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            endIcon={
+              staffOperationsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />
+            }
             onClick={toggleStaffOperations}
             sx={{
               justifyContent: 'space-between',
@@ -192,11 +271,11 @@ export default function AdminLanding() {
               borderLeft: '4px solid transparent',
               borderRadius: 0,
               '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.1)'
+                backgroundColor: 'rgba(255,255,255,0.1)',
               },
               textTransform: 'none',
               fontWeight: 600,
-              mt: 1
+              mt: 1,
             }}
           >
             Staff Operations
@@ -205,17 +284,26 @@ export default function AdminLanding() {
           {/* Collapsible Staff Operations */}
           <Collapse in={staffOperationsOpen} timeout="auto" unmountOnExit>
             <List disablePadding>
-              {staffOperationModules.map((module) => (
-                <ListItem 
+              {staffOperationModules.map(module => (
+                <ListItem
                   key={module.id}
                   disablePadding
                   sx={{
-                    color: activeModule === module.id ? 'white' : 'rgba(255,255,255,0.6)',
-                    backgroundColor: activeModule === module.id ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    borderLeft: activeModule === module.id ? '4px solid white' : '4px solid transparent',
+                    color:
+                      activeModule === module.id
+                        ? 'white'
+                        : 'rgba(255,255,255,0.6)',
+                    backgroundColor:
+                      activeModule === module.id
+                        ? 'rgba(255,255,255,0.1)'
+                        : 'transparent',
+                    borderLeft:
+                      activeModule === module.id
+                        ? '4px solid white'
+                        : '4px solid transparent',
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.05)'
-                    }
+                      backgroundColor: 'rgba(255,255,255,0.05)',
+                    },
                   }}
                 >
                   <ListItemButton
@@ -225,18 +313,23 @@ export default function AdminLanding() {
                       px: 0,
                     }}
                   >
-                    <ListItemIcon sx={{ 
-                      color: activeModule === module.id ? 'white' : 'rgba(255,255,255,0.6)',
-                      minWidth: 40,
-                      pl: 2
-                    }}>
+                    <ListItemIcon
+                      sx={{
+                        color:
+                          activeModule === module.id
+                            ? 'white'
+                            : 'rgba(255,255,255,0.6)',
+                        minWidth: 40,
+                        pl: 2,
+                      }}
+                    >
                       {module.icon}
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary={module.name}
                       primaryTypographyProps={{
                         fontSize: '14px',
-                        fontWeight: 500
+                        fontWeight: 500,
                       }}
                     />
                   </ListItemButton>
@@ -247,10 +340,12 @@ export default function AdminLanding() {
         </Box>
 
         {/* User Info */}
-        <Box sx={{ 
-          p: 2, 
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-        }}>
+        <Box
+          sx={{
+            p: 2,
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
           <Button
             fullWidth
             onClick={handleMenuOpen}
@@ -262,26 +357,31 @@ export default function AdminLanding() {
               color: 'white',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.1)'
-              }
+                backgroundColor: 'rgba(255,255,255,0.1)',
+              },
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'rgba(255,255,255,0.2)' }}>
+              <Avatar
+                sx={{ width: 32, height: 32, bgcolor: 'rgba(255,255,255,0.2)' }}
+              >
                 <PersonIcon fontSize="small" />
               </Avatar>
               <Box sx={{ textAlign: 'left' }}>
                 <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  {appUser?.firstName ? `${appUser.firstName} ${appUser.lastName}` : firebaseUser?.email?.split('@')[0] || 'Admin User'}
+                  {appUser?.firstName
+                    ? `${appUser.firstName} ${appUser.lastName}`
+                    : firebaseUser?.email?.split('@')[0] || 'Admin User'}
                 </Typography>
                 <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                  {claims?.role === 'super_admin' ? 'Super Admin' : 'Admin'} • Online
+                  {claims?.role === 'super_admin' ? 'Super Admin' : 'Admin'} •
+                  Online
                 </Typography>
               </Box>
             </Box>
             <ExpandMoreIcon fontSize="small" />
           </Button>
-          
+
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -306,7 +406,15 @@ export default function AdminLanding() {
       </Box>
 
       {/* Main Content */}
-      <Box sx={{ flexGrow: 1, overflow: 'auto', backgroundColor: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflow: 'auto',
+          backgroundColor: '#f5f5f5',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Content from child routes */}
         <Outlet />
       </Box>

@@ -22,8 +22,8 @@ import TicketsAndCoupons from './components/MyAccount/TicketsAndCoupons';
 import PageNotFound from './components/Nav/PageNotFound';
 import ProtectedRoute from './ProtectedRoute';
 import ViewKottage from './components/Property/ViewKottage';
-import BookRoom from './components/Property/Reservations/BookRoom';
-import BookingConfirmation from './components/Property/Reservations/BookingConfirmation';
+import BookRoom from './components/Reservations/BookRoom';
+import BookingConfirmation from './components/Reservations/BookingConfirmation';
 import { setIconOptions } from '@fluentui/react';
 import { QueryProvider } from './providers/QueryProvider';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -32,7 +32,6 @@ import DashboardMenu from './components/Dashboard/DashboardMenu';
 import { analyticsService } from './services/analyticsService';
 import ManageReservations from './components/Dashboard/ManageReservations/ManageReservations';
 import PropertyManagement from './components/Dashboard/PropertyManagement/PropertyManagement';
-import Explore from './components/Property/Explore';
 import PropertyAnalyticsPage from './components/Dashboard/PropertyManagement/PropertyAnalyticsPage';
 import ManageProperty from './components/Property/ManageProperty';
 import AdminLanding from './components/Admin/AdminLanding';
@@ -66,6 +65,7 @@ import HostLanding from './components/Host/HostLanding';
 import HostLayout from './components/Host/HostLayout';
 import HostDashboardHome from './components/Host/HostDashboardHome';
 import HostRoot from './components/Host/HostRoot';
+import { Explore } from './components/Explore/Explore';
 
 function App() {
   setIconOptions({ disableWarnings: true });

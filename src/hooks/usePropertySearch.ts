@@ -6,7 +6,7 @@ import { checkPropertyAvailability } from './useAvailability';
 import {
   getSeededPropertyById,
   mergeSeededProperties,
-} from '../data/seededProperties';
+} from '../mockData/seededProperties';
 
 export interface SearchData {
   location: string;
@@ -44,7 +44,9 @@ export interface SearchFilters {
 // Extended Kottage type with Firebase key
 export type KottageWithId = Kottage & { key: string };
 
-const collectApprovedDatabaseProperties = async (): Promise<KottageWithId[]> => {
+const collectApprovedDatabaseProperties = async (): Promise<
+  KottageWithId[]
+> => {
   try {
     const propertiesRef = ref(database, 'properties');
     const snapshot = await get(propertiesRef);
@@ -87,7 +89,10 @@ export const useProperties = () => {
 };
 
 // Hook to search properties with filters
-export const useSearchProperties = (searchData: SearchData, filters?: SearchFilters) => {
+export const useSearchProperties = (
+  searchData: SearchData,
+  filters?: SearchFilters
+) => {
   return useQuery({
     queryKey: ['properties', 'search', searchData, filters],
     queryFn: async () => {
@@ -100,21 +105,24 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
       // Location filter
       if (searchData.location.trim()) {
         const locationQuery = searchData.location.toLowerCase().trim();
-        filteredProperties = filteredProperties.filter(property => 
-          property.name.toLowerCase().includes(locationQuery) ||
-          property.description.toLowerCase().includes(locationQuery) ||
-          property.address?.city?.toLowerCase().includes(locationQuery) ||
-          property.address?.state?.toLowerCase().includes(locationQuery) ||
-          property.address?.address1?.toLowerCase().includes(locationQuery)
+        filteredProperties = filteredProperties.filter(
+          property =>
+            property.name.toLowerCase().includes(locationQuery) ||
+            property.description.toLowerCase().includes(locationQuery) ||
+            property.address?.city?.toLowerCase().includes(locationQuery) ||
+            property.address?.state?.toLowerCase().includes(locationQuery) ||
+            property.address?.address1?.toLowerCase().includes(locationQuery)
         );
       }
 
       // Guest capacity filter
       if (searchData.guests > 0) {
         filteredProperties = filteredProperties.filter(property => {
-          const maxGuests = property.maxGuests || 
-                          (property.roomTypes && Math.max(...property.roomTypes.map(rt => rt.maxOccupancy))) || 
-                          4;
+          const maxGuests =
+            property.maxGuests ||
+            (property.roomTypes &&
+              Math.max(...property.roomTypes.map(rt => rt.maxOccupancy))) ||
+            4;
           return maxGuests >= searchData.guests;
         });
       }
@@ -125,34 +133,38 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
         if (priceRange) {
           filteredProperties = filteredProperties.filter(property => {
             // Get the lowest price from all room types
-            const lowestPrice = property.roomTypes?.length ? 
-              Math.min(...property.roomTypes.map(room => room.pricePerNight)) : 
-              0;
-            return lowestPrice >= priceRange.min && lowestPrice <= priceRange.max;
+            const lowestPrice = property.roomTypes?.length
+              ? Math.min(...property.roomTypes.map(room => room.pricePerNight))
+              : 0;
+            return (
+              lowestPrice >= priceRange.min && lowestPrice <= priceRange.max
+            );
           });
         }
       }
 
       // Property type filter
       if (searchData.propertyType || filters?.propertyTypes?.length) {
-        const types = searchData.propertyType ? [searchData.propertyType] : filters?.propertyTypes || [];
-        filteredProperties = filteredProperties.filter(property => 
+        const types = searchData.propertyType
+          ? [searchData.propertyType]
+          : filters?.propertyTypes || [];
+        filteredProperties = filteredProperties.filter(property =>
           types.includes(property.propertyType || 'other')
         );
       }
 
       // Amenities filter
       if (searchData.amenities?.length || filters?.amenities?.length) {
-        const requiredAmenities = searchData.amenities || filters?.amenities || [];
-        filteredProperties = filteredProperties.filter(property => 
-          requiredAmenities.every(amenity => 
+        const requiredAmenities =
+          searchData.amenities || filters?.amenities || [];
+        filteredProperties = filteredProperties.filter(property =>
+          requiredAmenities.every(amenity =>
             property.amenities?.includes(amenity)
           )
         );
       }
 
-      const nomadVerified =
-        searchData.nomadVerified || filters?.nomadVerified;
+      const nomadVerified = searchData.nomadVerified || filters?.nomadVerified;
       if (nomadVerified) {
         filteredProperties = filteredProperties.filter(
           property => property.nomad?.isVerified
@@ -175,8 +187,7 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
         );
       }
 
-      const wifiSpeedMin =
-        searchData.wifiSpeedMin || filters?.wifiSpeedMin;
+      const wifiSpeedMin = searchData.wifiSpeedMin || filters?.wifiSpeedMin;
       if (wifiSpeedMin) {
         filteredProperties = filteredProperties.filter(
           property => (property.nomad?.wifiSpeedMbps || 0) >= wifiSpeedMin
@@ -185,14 +196,14 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
 
       // Rating filter
       if (filters?.minRating) {
-        filteredProperties = filteredProperties.filter(property => 
-          property.rating >= filters.minRating!
+        filteredProperties = filteredProperties.filter(
+          property => property.rating >= filters.minRating!
         );
       }
 
       // Availability filter - check if dates are provided
       if (searchData.checkIn && searchData.checkOut) {
-        const availabilityPromises = filteredProperties.map(async (property) => {
+        const availabilityPromises = filteredProperties.map(async property => {
           const isAvailable = await checkPropertyAvailability(
             property.key,
             searchData.checkIn!,
@@ -201,10 +212,10 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
           );
           return isAvailable ? property : null;
         });
-        
+
         const availabilityResults = await Promise.all(availabilityPromises);
-        filteredProperties = availabilityResults.filter((property): property is KottageWithId => 
-          property !== null
+        filteredProperties = availabilityResults.filter(
+          (property): property is KottageWithId => property !== null
         );
       }
 
@@ -212,11 +223,16 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
       if (filters?.sortBy) {
         filteredProperties.sort((a, b) => {
           let aValue: number, bValue: number;
-           
+
           switch (filters.sortBy) {
             case 'price':
-              aValue = a.roomTypes?.length ? Math.min(...a.roomTypes.map(room => room.pricePerNight)) : 0;
-              bValue = b.roomTypes?.length ? Math.min(...b.roomTypes.map(room => room.pricePerNight)) : 0;              break;
+              aValue = a.roomTypes?.length
+                ? Math.min(...a.roomTypes.map(room => room.pricePerNight))
+                : 0;
+              bValue = b.roomTypes?.length
+                ? Math.min(...b.roomTypes.map(room => room.pricePerNight))
+                : 0;
+              break;
             case 'rating':
               aValue = a.rating;
               bValue = b.rating;
@@ -229,8 +245,10 @@ export const useSearchProperties = (searchData: SearchData, filters?: SearchFilt
             default:
               return 0;
           }
-          
-          return filters.sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
+
+          return filters.sortOrder === 'desc'
+            ? bValue - aValue
+            : aValue - bValue;
         });
       }
       // Convert to SearchResults Property format
@@ -247,14 +265,17 @@ export const usePopularProperties = (limit: number = 6) => {
     queryKey: ['properties', 'popular', limit],
     queryFn: async () => {
       const databaseProperties = await collectApprovedDatabaseProperties();
-      const properties = mergeSeededProperties<KottageWithId>(databaseProperties);
+      const properties =
+        mergeSeededProperties<KottageWithId>(databaseProperties);
 
       // Sort by popularity score (with fallback to rating-based calculation)
       const sortedProperties = properties
         .sort((a, b) => {
           // Use calculated popularity score if available, otherwise fallback to rating * log formula
-          const aScore = (a as any).popularityScore || (a.rating * Math.log((0) + 1));
-          const bScore = (b as any).popularityScore || (b.rating * Math.log((0) + 1));
+          const aScore =
+            (a as any).popularityScore || a.rating * Math.log(0 + 1);
+          const bScore =
+            (b as any).popularityScore || b.rating * Math.log(0 + 1);
           return bScore - aScore;
         })
         .slice(0, limit);
@@ -274,7 +295,8 @@ export const usePropertiesByRegion = (region: string) => {
       const properties = mergeSeededProperties<KottageWithId>(
         databaseProperties
       ).filter(
-        property => property.address?.state?.toLowerCase() === region.toLowerCase()
+        property =>
+          property.address?.state?.toLowerCase() === region.toLowerCase()
       );
 
       return properties;

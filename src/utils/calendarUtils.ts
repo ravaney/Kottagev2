@@ -1,10 +1,17 @@
 import { EventRecord } from '../hooks/eventHooks';
 
 const formatCalendarDate = (dateString: string) =>
-  new Date(dateString).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+  new Date(dateString)
+    .toISOString()
+    .replace(/[-:]/g, '')
+    .replace(/\.\d{3}Z$/, 'Z');
 
 const escapeCalendarText = (value: string) =>
-  value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+  value
+    .replace(/\\/g, '\\\\')
+    .replace(/\n/g, '\\n')
+    .replace(/,/g, '\\,')
+    .replace(/;/g, '\\;');
 
 export const getEventGoogleCalendarUrl = (event: EventRecord) => {
   const params = new URLSearchParams({
@@ -22,9 +29,9 @@ export const downloadEventCalendarFile = (event: EventRecord) => {
   const ics = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Yaad//Events//EN',
+    'PRODID:-//BK//Events//EN',
     'BEGIN:VEVENT',
-    `UID:${event.id}@yaad-events`,
+    `UID:${event.id}@bluekottage-events`,
     `DTSTAMP:${formatCalendarDate(new Date().toISOString())}`,
     `DTSTART:${formatCalendarDate(event.startDate)}`,
     `DTEND:${formatCalendarDate(event.endDate)}`,
@@ -47,4 +54,3 @@ export const downloadEventCalendarFile = (event: EventRecord) => {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 };
-

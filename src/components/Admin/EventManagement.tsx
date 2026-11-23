@@ -779,7 +779,7 @@ export default function EventManagement() {
         category: formState.category,
         status: formState.status,
         featured: formState.featured,
-        organizer: formState.organizer.trim() || 'Yaad Events',
+        organizer: formState.organizer.trim() || 'Blue Kottage Events',
         venue: {
           name: formState.venueName.trim(),
           city: formState.city.trim(),

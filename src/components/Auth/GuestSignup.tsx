@@ -113,8 +113,8 @@ export default function GuestSignup() {
             <Box textAlign="center" mb={4}>
               <Box
                 component="img"
-                src="/logoType.png"
-                alt="Yaad Guest Registration"
+                src="/bk_brand/bk-wordmark.png"
+                alt="Blue Kottage Guest Registration"
                 sx={{
                   height: 60,
                   mb: 2,
@@ -126,7 +126,7 @@ export default function GuestSignup() {
                 color="#2c3e50"
                 gutterBottom
               >
-                Join Yaad
+                Join BlueKottage
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 Discover amazing stays across Jamaica
@@ -185,7 +185,10 @@ export default function GuestSignup() {
                     onClick={openFileSelector}
                     startIcon={<PhotoCameraIcon />}
                     size="small"
-                    sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
+                    sx={{
+                      color: Colors.cerulean,
+                      borderColor: Colors.cerulean,
+                    }}
                   >
                     Change Photo
                   </Button>
@@ -208,7 +211,10 @@ export default function GuestSignup() {
                     onClick={openFileSelector}
                     startIcon={<PhotoCameraIcon />}
                     size="small"
-                    sx={{ color: Colors.cerulean, borderColor: Colors.cerulean }}
+                    sx={{
+                      color: Colors.cerulean,
+                      borderColor: Colors.cerulean,
+                    }}
                   >
                     Add Photo
                   </Button>
@@ -562,4 +568,3 @@ export default function GuestSignup() {
     </Box>
   );
 }
-

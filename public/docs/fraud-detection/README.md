@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Fraud Detection System is a comprehensive solution designed to automatically identify and flag potentially fraudulent bookings on the Yaad platform. It uses multiple detection algorithms, risk scoring, and machine learning capabilities to protect both hosts and guests from fraudulent activities.
+The Fraud Detection System is a comprehensive solution designed to automatically identify and flag potentially fraudulent bookings on the blue kottage platform. It uses multiple detection algorithms, risk scoring, and machine learning capabilities to protect both hosts and guests from fraudulent activities.
 
 ## Table of Contents
 
@@ -43,21 +43,25 @@ The Fraud Detection System is a comprehensive solution designed to automatically
 The system employs 10 different fraud detection algorithms:
 
 ### 1. New User Risk Detection
+
 **Purpose**: Identify suspicious activity from new users
 **Triggers**:
+
 - High-value booking (>$500) within 24 hours of registration
 - New unverified user making bookings within 7 days
 
 ```typescript
 // Example detection
 if (daysSinceRegistration < 1 && booking.amount > 500) {
-  return 'new_user_high_value' // HIGH severity
+  return 'new_user_high_value'; // HIGH severity
 }
 ```
 
 ### 2. Payment Risk Analysis
+
 **Purpose**: Detect payment-related fraud indicators
 **Triggers**:
+
 - Multiple payment declines (>2)
 - Multiple payment attempts (>3)
 - Card/billing country mismatch
@@ -65,65 +69,82 @@ if (daysSinceRegistration < 1 && booking.amount > 500) {
 ```typescript
 // Critical flag for payment issues
 if (payment.previousDeclines > 2) {
-  return 'multiple_payment_declines' // CRITICAL severity
+  return 'multiple_payment_declines'; // CRITICAL severity
 }
 ```
 
 ### 3. Booking Pattern Analysis
+
 **Purpose**: Identify unusual booking behaviors
 **Triggers**:
+
 - High-value single-night stays (>$1000 for 1 night)
 - Expensive bookings for single guests (>$500/guest)
 - High cancellation rate users (>50% with 3+ bookings)
 
 ### 4. Pricing Anomaly Detection
+
 **Purpose**: Flag suspicious pricing patterns
 **Triggers**:
+
 - Prices significantly above market rate (>3x average)
 - Suspicious round number pricing (exact hundreds for >$1000)
 
 ### 5. Time-based Risk Assessment
+
 **Purpose**: Detect time-related fraud patterns
 **Triggers**:
+
 - Immediate check-in (<2 hours)
 - Last-minute high-value bookings (>$2000)
 
 ### 6. Location Risk Analysis
+
 **Purpose**: Identify geographic fraud indicators
 **Triggers**:
+
 - VPN/Proxy usage
 - High-risk IP addresses
 - Geographic inconsistencies
 
 ### 7. Behavioral Risk Detection
+
 **Purpose**: Analyze user behavior patterns
 **Triggers**:
+
 - Disposable email addresses
 - First booking with high value (>$1500)
 - Suspicious account creation patterns
 
 ### 8. Host Risk Assessment
+
 **Purpose**: Evaluate host-related risks
 **Triggers**:
+
 - New hosts with poor metrics
 - Low-rated hosts with poor response rates
 
 ### 9. Velocity Risk Monitoring
+
 **Purpose**: Detect rapid booking patterns
 **Status**: Framework ready for implementation
 **Future Features**:
+
 - Multiple bookings in short timeframes
 - Cross-platform booking velocity
 
 ### 10. Device Risk Analysis
+
 **Purpose**: Identify device-based fraud indicators
 **Triggers**:
+
 - Suspicious device fingerprints
 - Device characteristic anomalies
 
 ## Risk Scoring
 
 ### Scoring System
+
 - **Range**: 0-100 (100 = highest risk)
 - **Calculation**: Cumulative severity scores from all triggered flags
 - **Severity Weights**:
@@ -133,22 +154,24 @@ if (payment.previousDeclines > 2) {
   - Critical: 60 points
 
 ### Risk Levels
+
 ```typescript
 const RISK_THRESHOLDS = {
-  LOW: 30,      // 0-29: Low risk
-  MEDIUM: 60,   // 30-59: Medium risk
-  HIGH: 80,     // 60-79: High risk
-  CRITICAL: 95  // 80-94: Critical risk, 95+: Reject
+  LOW: 30, // 0-29: Low risk
+  MEDIUM: 60, // 30-59: Medium risk
+  HIGH: 80, // 60-79: High risk
+  CRITICAL: 95, // 80-94: Critical risk, 95+: Reject
 };
 ```
 
 ### Recommendations
-| Risk Score | Risk Level | Recommendation | Action |
-|------------|------------|----------------|---------|
-| 0-29 | Low | Approve | Auto-approve booking |
-| 30-59 | Medium | Review | Manual review recommended |
-| 60-79 | High | Hold | Hold for detailed investigation |
-| 80+ | Critical | Reject | Auto-reject or intensive review |
+
+| Risk Score | Risk Level | Recommendation | Action                          |
+| ---------- | ---------- | -------------- | ------------------------------- |
+| 0-29       | Low        | Approve        | Auto-approve booking            |
+| 30-59      | Medium     | Review         | Manual review recommended       |
+| 60-79      | High       | Hold           | Hold for detailed investigation |
+| 80+        | Critical   | Reject         | Auto-reject or intensive review |
 
 ## Integration Guide
 
@@ -168,7 +191,7 @@ const bookingData: BookingData = {
 const analysis = fraudService.analyzeBooking(bookingData);
 
 // Handle result
-switch(analysis.recommendation) {
+switch (analysis.recommendation) {
   case 'approve':
     approveBooking();
     break;
@@ -213,28 +236,35 @@ if (analysis.riskScore >= autoFlagThreshold) {
 #### Methods
 
 ##### `analyzeBooking(data: BookingData): FraudAnalysis`
+
 Performs comprehensive fraud analysis on a booking.
 
 **Parameters**:
+
 - `data`: BookingData object containing all booking information
 
 **Returns**: FraudAnalysis object with risk score, flags, and recommendations
 
 ##### `trainModel(trainingData: TrainingData[]): void`
+
 Trains the ML model with historical fraud data.
 
 **Parameters**:
+
 - `trainingData`: Array of booking data with fraud labels
 
 ##### `monitorBookingInRealTime(bookingId: string): void`
+
 Sets up real-time monitoring for a specific booking.
 
 **Parameters**:
+
 - `bookingId`: Unique booking identifier
 
 ### Data Types
 
 #### BookingData
+
 ```typescript
 interface BookingData {
   id: string;
@@ -247,23 +277,25 @@ interface BookingData {
 ```
 
 #### FraudAnalysis
+
 ```typescript
 interface FraudAnalysis {
-  riskScore: number;           // 0-100
-  riskLevel: RiskLevel;        // 'low' | 'medium' | 'high' | 'critical'
-  flags: FraudFlag[];          // Array of detected fraud flags
-  recommendation: Action;       // 'approve' | 'review' | 'reject' | 'hold'
-  confidence: number;          // 0-1 confidence level
+  riskScore: number; // 0-100
+  riskLevel: RiskLevel; // 'low' | 'medium' | 'high' | 'critical'
+  flags: FraudFlag[]; // Array of detected fraud flags
+  recommendation: Action; // 'approve' | 'review' | 'reject' | 'hold'
+  confidence: number; // 0-1 confidence level
 }
 ```
 
 #### FraudFlag
+
 ```typescript
 interface FraudFlag {
-  type: string;                // Flag type identifier
-  severity: Severity;          // 'low' | 'medium' | 'high' | 'critical'
-  description: string;         // Human-readable description
-  evidence: any;               // Supporting evidence data
+  type: string; // Flag type identifier
+  severity: Severity; // 'low' | 'medium' | 'high' | 'critical'
+  description: string; // Human-readable description
+  evidence: any; // Supporting evidence data
 }
 ```
 
@@ -277,7 +309,7 @@ const customThresholds = {
   LOW: 25,
   MEDIUM: 55,
   HIGH: 75,
-  CRITICAL: 90
+  CRITICAL: 90,
 };
 ```
 
@@ -287,13 +319,13 @@ const customThresholds = {
 // Adjust detection sensitivity
 const sensitivityConfig = {
   newUserRisk: {
-    highValueThreshold: 750,      // Increase from $500
-    registrationDays: 2           // Increase from 1 day
+    highValueThreshold: 750, // Increase from $500
+    registrationDays: 2, // Increase from 1 day
   },
   paymentRisk: {
-    maxDeclines: 3,               // Increase from 2
-    maxAttempts: 4                // Increase from 3
-  }
+    maxDeclines: 3, // Increase from 2
+    maxAttempts: 4, // Increase from 3
+  },
 };
 ```
 
@@ -314,6 +346,7 @@ const suspiciousDomains = [
 ### Real-time Dashboard
 
 The FraudMonitor component provides:
+
 - **Risk Distribution**: Visual breakdown of risk levels
 - **Recent Alerts**: Live feed of fraud flags
 - **Quick Stats**: Key fraud metrics
@@ -335,39 +368,45 @@ const alertConfig = {
   notificationChannels: ['email', 'slack', 'dashboard'],
   escalationRules: {
     immediateReview: 90,
-    managerAlert: 95
-  }
+    managerAlert: 95,
+  },
 };
 ```
 
 ## Best Practices
 
 ### 1. Regular Model Training
+
 - Update ML models monthly with new fraud data
 - Validate model performance against known outcomes
 - A/B test new detection algorithms
 
 ### 2. Threshold Tuning
+
 - Monitor false positive/negative rates
 - Adjust thresholds based on business requirements
 - Consider seasonal patterns and market changes
 
 ### 3. Data Quality
+
 - Ensure complete booking data for accurate analysis
 - Validate input data before analysis
 - Handle missing data gracefully
 
 ### 4. Performance Optimization
+
 - Cache fraud analysis results
 - Use async processing for non-blocking operations
 - Implement rate limiting for API calls
 
 ### 5. Privacy and Compliance
+
 - Anonymize sensitive data in logs
 - Comply with data protection regulations
 - Implement audit trails for fraud decisions
 
 ### 6. Staff Training
+
 - Train staff on interpreting fraud scores
 - Provide guidelines for manual review processes
 - Regular updates on new fraud patterns
@@ -377,32 +416,35 @@ const alertConfig = {
 ### Common Issues
 
 #### High False Positive Rate
+
 ```typescript
 // Solution: Adjust thresholds or detection sensitivity
 const adjustedConfig = {
   riskThresholds: {
-    MEDIUM: 65,  // Increase from 60
-    HIGH: 85     // Increase from 80
-  }
+    MEDIUM: 65, // Increase from 60
+    HIGH: 85, // Increase from 80
+  },
 };
 ```
 
 #### Missing Fraud Flags
+
 ```typescript
 // Solution: Check data completeness
 const dataValidation = {
   requiredFields: ['guest.email', 'payment.attempts', 'booking.amount'],
-  validation: (data) => requiredFields.every(field => data[field] !== undefined)
+  validation: data => requiredFields.every(field => data[field] !== undefined),
 };
 ```
 
 #### Performance Issues
+
 ```typescript
 // Solution: Implement caching
 const cacheConfig = {
   analysisCache: new Map(),
   cacheTimeout: 300000, // 5 minutes
-  maxCacheSize: 1000
+  maxCacheSize: 1000,
 };
 ```
 
@@ -417,6 +459,7 @@ const cacheConfig = {
 ## Future Enhancements
 
 ### Planned Features
+
 1. **Machine Learning Integration**: Advanced ML models for pattern recognition
 2. **Velocity Monitoring**: Real-time booking velocity analysis
 3. **Social Network Analysis**: User connection and behavior patterns
@@ -424,6 +467,7 @@ const cacheConfig = {
 5. **Blockchain Integration**: Immutable fraud detection logs
 
 ### Integration Roadmap
+
 - Q1: Enhanced ML model deployment
 - Q2: Real-time velocity monitoring
 - Q3: Advanced device fingerprinting

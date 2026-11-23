@@ -93,9 +93,14 @@ export default function Login() {
           >
             <Box textAlign="center" mb={2}>
               <img
-                src="/logoType.png"
-                alt="Kottage Logo"
-                style={{ height: 60, width: 120, marginBottom: 16 }}
+                src="/bk_brand/bk-wordmark.png"
+                alt="Blue Kottage Logo"
+                style={{
+                  height: 60,
+                  width: 120,
+                  objectFit: 'contain',
+                  marginBottom: 16,
+                }}
               />
               <Text
                 variant="xxLarge"

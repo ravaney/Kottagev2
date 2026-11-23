@@ -110,8 +110,8 @@ export default function AdminLogin() {
             <Box textAlign="center" mb={4}>
               <Box
                 component="img"
-                src="/logoType.png"
-                alt="Yaad Admin Portal"
+                src="/bk_brand/bk-wordmark.png"
+                alt="Blue Kottage Admin Portal"
                 sx={{
                   height: 60,
                   mb: 2,
@@ -126,7 +126,7 @@ export default function AdminLogin() {
                 Admin Portal
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                Administrative access for Yaad platform management
+                Administrative access for Blue Kottage platform management
               </Typography>
               <Box
                 sx={{
@@ -242,4 +242,3 @@ export default function AdminLogin() {
     </Box>
   );
 }
-

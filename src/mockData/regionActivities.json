@@ -1,0 +1,46 @@
+{
+  "Montego Bay": [
+    {
+      "id": "1",
+      "name": "Doctor's Cave Beach",
+      "image": "/images/doctors-cave.png",
+      "description": "Crystal clear waters and white sand beach",
+      "type": "beach"
+    },
+    {
+      "id": "2",
+      "name": "Hip Strip",
+      "image": "/images/hip-strip.jpg",
+      "description": "Shopping and vibrant nightlife",
+      "type": "attraction"
+    },
+    {
+      "id": "3",
+      "name": "Scotchies",
+      "image": "/images/scotchies.jpg",
+      "description": "Famous authentic jerk chicken",
+      "type": "restaurant"
+    },
+    {
+      "id": "4",
+      "name": "Rose Hall",
+      "image": "/images/rose-hall.jpg",
+      "description": "Historic mansion with a haunting past",
+      "type": "attraction"
+    },
+    {
+      "id": "5",
+      "name": "Montego Bay Marine Park",
+      "image": "/images/marine-park.jpg",
+      "description": "Snorkeling and diving paradise",
+      "type": "activity"
+    },
+    {
+      "id": "6",
+      "name": "Martha Brae River Rafting",
+      "image": "/images/martha-brae.jpg",
+      "description": "Peaceful bamboo raft rides",
+      "type": "activity"
+    }
+  ]
+}

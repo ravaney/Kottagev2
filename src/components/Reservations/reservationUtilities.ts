@@ -8,10 +8,10 @@ import {
   Reservation,
   ReservationStatus,
   RoomType,
-} from '../../../hooks';
-import { database } from '../../../firebase';
-import { analyticsService } from '../../../services/analyticsService';
-import { blockDatesForReservation } from '../../../utils/blockingUtils';
+} from '../../hooks';
+import { database } from '../../firebase';
+import { analyticsService } from '../../services/analyticsService';
+import { blockDatesForReservation } from '../../utils/blockingUtils';
 import { ref, update } from 'firebase/database';
 
 export interface ConfirmPaymentParams {

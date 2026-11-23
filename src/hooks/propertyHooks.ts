@@ -16,7 +16,7 @@ import { IAddress } from '../../public/QuickType';
 import {
   getSeededPropertiesByOwnerId,
   getSeededPropertyById,
-} from '../data/seededProperties';
+} from '../mockData/seededProperties';
 
 export interface RoomPromotion {
   id: string;
