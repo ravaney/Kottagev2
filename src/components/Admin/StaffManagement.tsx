@@ -3,7 +3,6 @@ import {
   Box,
   Container,
   Typography,
-
   Paper,
   Button,
   Table,
@@ -29,7 +28,7 @@ import {
   ListItemText,
   Alert,
   Tabs,
-  Tab
+  Tab,
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import { Colors } from '../constants';
@@ -56,60 +55,60 @@ interface Staff {
 }
 
 const mockStaffData: Staff[] = [
-  { 
-    id: 1, 
-    name: 'John Smith', 
-    email: 'john@yaad.com', 
+  {
+    id: 1,
+    name: 'John Smith',
+    email: 'john@bluekottage.com',
     phone: '+1-876-123-4567',
-    role: 'Property Manager', 
+    role: 'Property Manager',
     status: 'Active',
     joinDate: '2023-01-15',
     lastActive: '2024-01-18',
-    assignments: ['Kingston', 'St. Andrew']
+    assignments: ['Kingston', 'St. Andrew'],
   },
-  { 
-    id: 2, 
-    name: 'Sarah Johnson', 
-    email: 'sarah@yaad.com', 
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    email: 'sarah@bluekottage.com',
     phone: '+1-876-234-5678',
-    role: 'Customer Support', 
+    role: 'Customer Support',
     status: 'Active',
     joinDate: '2023-03-22',
     lastActive: '2024-01-18',
-    assignments: ['Jamaica North Coast']
+    assignments: ['Jamaica North Coast'],
   },
-  { 
-    id: 3, 
-    name: 'Michael Brown', 
-    email: 'michael@yaad.com', 
+  {
+    id: 3,
+    name: 'Michael Brown',
+    email: 'michael@bluekottage.com',
     phone: '+1-876-345-6789',
-    role: 'Regional Supervisor', 
+    role: 'Regional Supervisor',
     status: 'Active',
     joinDate: '2022-11-10',
     lastActive: '2024-01-17',
-    assignments: ['Blue Mountains Region']
+    assignments: ['Blue Mountains Region'],
   },
-  { 
-    id: 4, 
-    name: 'Lisa Davis', 
-    email: 'lisa@yaad.com', 
+  {
+    id: 4,
+    name: 'Lisa Davis',
+    email: 'lisa@bluekottage.com',
     phone: '+1-876-456-7890',
-    role: 'Operations Manager', 
+    role: 'Operations Manager',
     status: 'Active',
     joinDate: '2023-05-08',
     lastActive: '2024-01-18',
-    assignments: ['St. James']
+    assignments: ['St. James'],
   },
-  { 
-    id: 5, 
-    name: 'Robert Wilson', 
-    email: 'robert@yaad.com', 
+  {
+    id: 5,
+    name: 'Robert Wilson',
+    email: 'robert@bluekottage.com',
     phone: '+1-876-567-8901',
-    role: 'Property Coordinator', 
+    role: 'Property Coordinator',
     status: 'Inactive',
     joinDate: '2023-07-12',
     lastActive: '2024-01-10',
-    assignments: []
+    assignments: [],
   },
 ];
 
@@ -121,7 +120,7 @@ const staffRoles = [
   'Property Coordinator',
   'Maintenance Supervisor',
   'Guest Relations',
-  'Financial Coordinator'
+  'Financial Coordinator',
 ];
 
 export default function StaffManagement() {
@@ -138,7 +137,7 @@ export default function StaffManagement() {
     email: '',
     phone: '',
     role: '',
-    status: 'Active' as Staff['status']
+    status: 'Active' as Staff['status'],
   });
 
   const handleAddStaff = () => {
@@ -148,7 +147,7 @@ export default function StaffManagement() {
       email: '',
       phone: '',
       role: '',
-      status: 'Active'
+      status: 'Active',
     });
     setDialogOpen(true);
   };
@@ -160,7 +159,7 @@ export default function StaffManagement() {
       email: staff.email,
       phone: staff.phone,
       role: staff.role,
-      status: staff.status
+      status: staff.status,
     });
     setDialogOpen(true);
   };
@@ -170,11 +169,11 @@ export default function StaffManagement() {
 
     if (selectedStaff) {
       // Edit existing staff
-      setStaffData(staffData.map(staff => 
-        staff.id === selectedStaff.id 
-          ? { ...staff, ...formData }
-          : staff
-      ));
+      setStaffData(
+        staffData.map(staff =>
+          staff.id === selectedStaff.id ? { ...staff, ...formData } : staff
+        )
+      );
     } else {
       // Add new staff
       const newStaff: Staff = {
@@ -182,7 +181,7 @@ export default function StaffManagement() {
         ...formData,
         joinDate: new Date().toISOString().split('T')[0],
         lastActive: new Date().toISOString().split('T')[0],
-        assignments: []
+        assignments: [],
       };
       setStaffData([...staffData, newStaff]);
     }
@@ -196,13 +195,16 @@ export default function StaffManagement() {
   };
 
   const handleStatusChange = (id: number, status: Staff['status']) => {
-    setStaffData(staffData.map(staff => 
-      staff.id === id ? { ...staff, status } : staff
-    ));
+    setStaffData(
+      staffData.map(staff => (staff.id === id ? { ...staff, status } : staff))
+    );
     handleCloseMenu();
   };
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, staffId: number) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLElement>,
+    staffId: number
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuStaffId(staffId);
   };
@@ -214,10 +216,14 @@ export default function StaffManagement() {
 
   const getStatusColor = (status: Staff['status']) => {
     switch (status) {
-      case 'Active': return 'success';
-      case 'Inactive': return 'default';
-      case 'Suspended': return 'error';
-      default: return 'default';
+      case 'Active':
+        return 'success';
+      case 'Inactive':
+        return 'default';
+      case 'Suspended':
+        return 'error';
+      default:
+        return 'default';
     }
   };
 
@@ -225,20 +231,30 @@ export default function StaffManagement() {
     return staffData.filter(staff => staff.status === status);
   };
 
-  const filteredStaff = tabValue === 0 ? staffData : 
-                      tabValue === 1 ? getStaffByStatus('Active') :
-                      tabValue === 2 ? getStaffByStatus('Inactive') :
-                      getStaffByStatus('Suspended');
+  const filteredStaff =
+    tabValue === 0
+      ? staffData
+      : tabValue === 1
+        ? getStaffByStatus('Active')
+        : tabValue === 2
+          ? getStaffByStatus('Inactive')
+          : getStaffByStatus('Suspended');
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight={700} color={Colors.cerulean} gutterBottom>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+          color={Colors.cerulean}
+          gutterBottom
+        >
           Staff Management
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Manage staff members, their roles, and access permissions across the platform.
+          Manage staff members, their roles, and access permissions across the
+          platform.
         </Typography>
       </Box>
 
@@ -290,7 +306,13 @@ export default function StaffManagement() {
       <Paper sx={{ borderRadius: 3 }}>
         {/* Header with Add Button */}
         <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Typography variant="h6" fontWeight={600}>
               Staff Directory
             </Typography>
@@ -300,7 +322,7 @@ export default function StaffManagement() {
               onClick={handleAddStaff}
               sx={{
                 backgroundColor: Colors.cerulean,
-                '&:hover': { backgroundColor: Colors.raspberry }
+                '&:hover': { backgroundColor: Colors.raspberry },
               }}
             >
               Add Staff Member
@@ -310,7 +332,10 @@ export default function StaffManagement() {
 
         {/* Tabs */}
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
+          <Tabs
+            value={tabValue}
+            onChange={(e, newValue) => setTabValue(newValue)}
+          >
             <Tab label="All Staff" />
             <Tab label="Active" />
             <Tab label="Inactive" />
@@ -323,22 +348,41 @@ export default function StaffManagement() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><strong>Staff Member</strong></TableCell>
-                <TableCell><strong>Role</strong></TableCell>
-                <TableCell><strong>Contact</strong></TableCell>
-                <TableCell><strong>Status</strong></TableCell>
-                <TableCell><strong>Assignments</strong></TableCell>
-                <TableCell><strong>Last Active</strong></TableCell>
-                <TableCell><strong>Actions</strong></TableCell>
+                <TableCell>
+                  <strong>Staff Member</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Role</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Contact</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Status</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Assignments</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Last Active</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Actions</strong>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredStaff.map((staff) => (
+              {filteredStaff.map(staff => (
                 <TableRow key={staff.id} hover>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Avatar sx={{ bgcolor: Colors.cerulean, width: 40, height: 40 }}>
-                        {staff.name.split(' ').map(n => n[0]).join('')}
+                      <Avatar
+                        sx={{ bgcolor: Colors.cerulean, width: 40, height: 40 }}
+                      >
+                        {staff.name
+                          .split(' ')
+                          .map(n => n[0])
+                          .join('')}
                       </Avatar>
                       <Box>
                         <Typography variant="subtitle2" fontWeight={600}>
@@ -351,28 +395,45 @@ export default function StaffManagement() {
                     </Box>
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={staff.role} 
-                      size="small" 
-                      sx={{ backgroundColor: '#e3f2fd', color: Colors.cerulean }}
+                    <Chip
+                      label={staff.role}
+                      size="small"
+                      sx={{
+                        backgroundColor: '#e3f2fd',
+                        color: Colors.cerulean,
+                      }}
                     />
                   </TableCell>
                   <TableCell>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <EmailIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                      }}
+                    >
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
+                        <EmailIcon
+                          sx={{ fontSize: 14, color: 'text.secondary' }}
+                        />
                         <Typography variant="body2">{staff.email}</Typography>
                       </Box>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <PhoneIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
+                        <PhoneIcon
+                          sx={{ fontSize: 14, color: 'text.secondary' }}
+                        />
                         <Typography variant="body2">{staff.phone}</Typography>
                       </Box>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={staff.status} 
-                      size="small" 
+                    <Chip
+                      label={staff.status}
+                      size="small"
                       color={getStatusColor(staff.status)}
                     />
                   </TableCell>
@@ -385,7 +446,11 @@ export default function StaffManagement() {
                           size="small"
                           variant="outlined"
                           sx={{ fontSize: '0.7rem' }}
-                          icon={<LocationOnIcon sx={{ fontSize: '12px !important' }} />}
+                          icon={
+                            <LocationOnIcon
+                              sx={{ fontSize: '12px !important' }}
+                            />
+                          }
                         />
                       ))}
                       {staff.assignments.length === 0 && (
@@ -411,7 +476,7 @@ export default function StaffManagement() {
                       </IconButton>
                       <IconButton
                         size="small"
-                        onClick={(e) => handleOpenMenu(e, staff.id)}
+                        onClick={e => handleOpenMenu(e, staff.id)}
                       >
                         <MoreVertIcon fontSize="small" />
                       </IconButton>
@@ -433,7 +498,12 @@ export default function StaffManagement() {
       </Paper>
 
       {/* Staff Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>
           {selectedStaff ? 'Edit Staff Member' : 'Add New Staff Member'}
         </DialogTitle>
@@ -444,7 +514,9 @@ export default function StaffManagement() {
                 fullWidth
                 label="Full Name"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={e =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 required
               />
             </Grid>
@@ -454,7 +526,9 @@ export default function StaffManagement() {
                 label="Email Address"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={e =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 required
               />
             </Grid>
@@ -463,7 +537,9 @@ export default function StaffManagement() {
                 fullWidth
                 label="Phone Number"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={e =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
                 placeholder="+1-876-XXX-XXXX"
               />
             </Grid>
@@ -472,10 +548,12 @@ export default function StaffManagement() {
                 <InputLabel>Role</InputLabel>
                 <Select
                   value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                  onChange={e =>
+                    setFormData({ ...formData, role: e.target.value })
+                  }
                   label="Role"
                 >
-                  {staffRoles.map((role) => (
+                  {staffRoles.map(role => (
                     <MenuItem key={role} value={role}>
                       {role}
                     </MenuItem>
@@ -488,7 +566,12 @@ export default function StaffManagement() {
                 <InputLabel>Status</InputLabel>
                 <Select
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as Staff['status'] })}
+                  onChange={e =>
+                    setFormData({
+                      ...formData,
+                      status: e.target.value as Staff['status'],
+                    })
+                  }
                   label="Status"
                 >
                   <MenuItem value="Active">Active</MenuItem>
@@ -501,7 +584,8 @@ export default function StaffManagement() {
 
           {!selectedStaff && (
             <Alert severity="info" sx={{ mt: 2 }}>
-              New staff members will receive an email invitation to set up their account and access the platform.
+              New staff members will receive an email invitation to set up their
+              account and access the platform.
             </Alert>
           )}
         </DialogContent>
@@ -512,7 +596,7 @@ export default function StaffManagement() {
             variant="contained"
             sx={{
               backgroundColor: Colors.cerulean,
-              '&:hover': { backgroundColor: Colors.raspberry }
+              '&:hover': { backgroundColor: Colors.raspberry },
             }}
           >
             {selectedStaff ? 'Update' : 'Add'} Staff
@@ -528,32 +612,38 @@ export default function StaffManagement() {
       >
         {menuStaffId && (
           <>
-            <MenuItem onClick={() => {
-              const staff = staffData.find(s => s.id === menuStaffId);
-              if (staff && staff.status !== 'Active') {
-                handleStatusChange(menuStaffId, 'Active');
-              }
-            }}>
+            <MenuItem
+              onClick={() => {
+                const staff = staffData.find(s => s.id === menuStaffId);
+                if (staff && staff.status !== 'Active') {
+                  handleStatusChange(menuStaffId, 'Active');
+                }
+              }}
+            >
               <ListItemIcon>
                 <CheckCircleIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Activate</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => {
-              if (menuStaffId) {
-                handleStatusChange(menuStaffId, 'Suspended');
-              }
-            }}>
+            <MenuItem
+              onClick={() => {
+                if (menuStaffId) {
+                  handleStatusChange(menuStaffId, 'Suspended');
+                }
+              }}
+            >
               <ListItemIcon>
                 <BlockIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Suspend</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => {
-              if (menuStaffId) {
-                handleDeleteStaff(menuStaffId);
-              }
-            }}>
+            <MenuItem
+              onClick={() => {
+                if (menuStaffId) {
+                  handleDeleteStaff(menuStaffId);
+                }
+              }}
+            >
               <ListItemIcon>
                 <DeleteIcon fontSize="small" />
               </ListItemIcon>
@@ -565,4 +655,3 @@ export default function StaffManagement() {
     </Container>
   );
 }
-

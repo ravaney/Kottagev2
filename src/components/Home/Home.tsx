@@ -553,7 +553,7 @@ export const Home = () => {
               color: '#333',
             }}
           >
-            How Yaad Works
+            How Blue Kottage Works
           </Typography>
 
           <Grid container spacing={4}>
@@ -626,7 +626,7 @@ export const Home = () => {
               </Typography>
               <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
                 Join thousands of travelers who have discovered their perfect
-                Jamaican getaway with Yaad.
+                Jamaican getaway with Blue Kottage.
               </Typography>
 
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -670,7 +670,7 @@ export const Home = () => {
                     }}
                   >
                     <Phone sx={{ fontSize: 20 }} />
-                    <Typography>+1-876-555-YAAD</Typography>
+                    <Typography>+1-876-555-0000</Typography>
                   </Box>
                   <Box
                     sx={{
@@ -681,7 +681,7 @@ export const Home = () => {
                     }}
                   >
                     <Email sx={{ fontSize: 20 }} />
-                    <Typography>hello@yaad.com</Typography>
+                    <Typography>hello@bluekottage.com</Typography>
                   </Box>
                   <Box
                     sx={{

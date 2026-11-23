@@ -24,9 +24,8 @@ import {
   PeopleAlt,
   Wifi,
 } from '@mui/icons-material';
-import { Colors } from '../../constants';
+import { Colors } from '../constants';
 import PromotionBanner from './PromotionBanner';
-import BookingInfo from '../BookingInfo';
 import RoomPromotion from './RoomPromotion';
 import {
   Kottage,
@@ -35,9 +34,9 @@ import {
   useAuth,
   useCreateReservation,
   useUpdateProperty,
-} from '../../../hooks';
-import { useBlockedDates } from '../../../hooks/useBlockedDates';
-import { calculatePromotionalPrice } from '../../../utils/promotionUtils';
+} from '../../hooks';
+import { useBlockedDates } from '../../hooks/useBlockedDates';
+import { calculatePromotionalPrice } from '../../utils/promotionUtils';
 import {
   calculateNights,
   hasBlockedDatesInRange,
@@ -49,7 +48,8 @@ import {
   NOMAD_PASS_PRICE,
   getNomadBookingPerks,
   getNomadPerkLabels,
-} from '../../../utils/nomadUtils';
+} from '../../utils/nomadUtils';
+import BookingInfo from '../Property/BookingInfo';
 
 const BookRoom = () => {
   const location = useLocation();
@@ -217,8 +217,8 @@ const BookRoom = () => {
           Back to Property
         </Button>
         <img
-          src="blue logo.png"
-          alt="Yaad Kottage"
+          src="/bk_brand/bk-wordmark.png"
+          alt="Blue Kottage"
           style={{
             height: '40px',
             objectFit: 'contain',
@@ -390,8 +390,8 @@ const BookRoom = () => {
             >
               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
                 <img
-                  src="blueyaad.png"
-                  alt="Yaad Kottage"
+                  src="/bk_brand/bk-wordmark.png"
+                  alt="Blue Kottage"
                   style={{
                     height: '30px',
                     objectFit: 'contain',
@@ -614,7 +614,11 @@ const BookRoom = () => {
                     <Box>
                       <Typography
                         variant="h6"
-                        sx={{ fontWeight: 700, color: Colors.cerulean, mb: 0.5 }}
+                        sx={{
+                          fontWeight: 700,
+                          color: Colors.cerulean,
+                          mb: 0.5,
+                        }}
                       >
                         Add Nomad Pass
                       </Typography>
@@ -801,4 +805,3 @@ const BookRoom = () => {
 };
 
 export default BookRoom;
-

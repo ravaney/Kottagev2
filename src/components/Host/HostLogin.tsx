@@ -92,8 +92,8 @@ export default function HostLogin() {
             <Box textAlign="center" mb={4}>
               <Box
                 component="img"
-                src="/logoType.png"
-                alt="Blu Kottage Host Portal"
+                src="/bk_brand/bk-wordmark.png"
+                alt="Blue Kottage Host Portal"
                 sx={{
                   height: 60,
                   mb: 2,

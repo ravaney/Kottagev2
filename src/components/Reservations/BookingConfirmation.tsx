@@ -12,13 +12,12 @@ import {
 import {
   CheckCircle,
   CalendarToday,
-  LocationOn,
   Person,
   Home,
   Receipt,
 } from '@mui/icons-material';
-import { Colors } from '../../constants';
-import { useUserClaims } from '../../../hooks/useUserClaims';
+import { Colors } from '../constants';
+import { useUserClaims } from '../../hooks/useUserClaims';
 
 interface BookingConfirmationData {
   reservationId: string;
@@ -230,4 +229,3 @@ const BookingConfirmation: React.FC = () => {
 };
 
 export default BookingConfirmation;
-

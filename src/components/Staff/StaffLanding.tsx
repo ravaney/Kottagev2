@@ -3,7 +3,6 @@ import {
   Box,
   Container,
   Typography,
-
   Paper,
   Button,
   Divider,
@@ -19,7 +18,7 @@ import {
   Toolbar,
   Menu,
   MenuItem,
-  Avatar
+  Avatar,
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import { Colors } from '../constants';
@@ -42,10 +41,34 @@ import { useSignOut } from '../../hooks/useSignOut';
 
 // Mock data for tasks
 const pendingTasks = [
-  { id: 1, title: 'Verify new property listing', property: 'Sunset Villa', priority: 'high', dueDate: 'Today' },
-  { id: 2, title: 'Review booking request', property: 'Mountain Cabin', priority: 'medium', dueDate: 'Tomorrow' },
-  { id: 3, title: 'Update property photos', property: 'Beach House', priority: 'low', dueDate: 'Next week' },
-  { id: 4, title: 'Respond to customer inquiry', property: 'City Loft', priority: 'high', dueDate: 'Today' },
+  {
+    id: 1,
+    title: 'Verify new property listing',
+    property: 'Sunset Villa',
+    priority: 'high',
+    dueDate: 'Today',
+  },
+  {
+    id: 2,
+    title: 'Review booking request',
+    property: 'Mountain Cabin',
+    priority: 'medium',
+    dueDate: 'Tomorrow',
+  },
+  {
+    id: 3,
+    title: 'Update property photos',
+    property: 'Beach House',
+    priority: 'low',
+    dueDate: 'Next week',
+  },
+  {
+    id: 4,
+    title: 'Respond to customer inquiry',
+    property: 'City Loft',
+    priority: 'high',
+    dueDate: 'Today',
+  },
 ];
 
 export default function StaffLanding() {
@@ -57,7 +80,7 @@ export default function StaffLanding() {
   const { claims } = useUserClaims();
   const signOutMutation = useSignOut();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -75,7 +98,7 @@ export default function StaffLanding() {
     }
     handleMenuClose();
   };
-  
+
   // Determine active module based on current path
   const getActiveModule = () => {
     const path = location.pathname;
@@ -89,19 +112,64 @@ export default function StaffLanding() {
     if (path.includes('/settings')) return 'settings';
     return 'dashboard';
   };
-  
+
   const activeModule = getActiveModule();
 
   const staffModules = [
-    { id: 'dashboard', name: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-    { id: 'properties', name: 'Properties', icon: <HomeWorkIcon />, path: '/properties' },
-    { id: 'bookings', name: 'Bookings', icon: <EventNoteIcon />, path: '/bookings' },
-    { id: 'reservations', name: 'Reservation Support', icon: <EventNoteIcon />, path: '/reservation-support' },
-    { id: 'guests', name: 'Guests/Hosts', icon: <PeopleIcon />, path: '/guests' },
-    { id: 'reviews', name: 'Review Moderation', icon: <RateReviewIcon />, path: '/review-moderation' },
-    { id: 'integrity', name: 'Platform Integrity', icon: <SecurityIcon />, path: '/platform-integrity' },
-    { id: 'payouts', name: 'Payout & Disputes', icon: <PaymentIcon />, path: '/payout-dispute' },
-    { id: 'settings', name: 'Settings', icon: <SettingsIcon />, path: '/settings' }
+    {
+      id: 'dashboard',
+      name: 'Dashboard',
+      icon: <DashboardIcon />,
+      path: '/dashboard',
+    },
+    {
+      id: 'properties',
+      name: 'Properties',
+      icon: <HomeWorkIcon />,
+      path: '/properties',
+    },
+    {
+      id: 'bookings',
+      name: 'Bookings',
+      icon: <EventNoteIcon />,
+      path: '/bookings',
+    },
+    {
+      id: 'reservations',
+      name: 'Reservation Support',
+      icon: <EventNoteIcon />,
+      path: '/reservation-support',
+    },
+    {
+      id: 'guests',
+      name: 'Guests/Hosts',
+      icon: <PeopleIcon />,
+      path: '/guests',
+    },
+    {
+      id: 'reviews',
+      name: 'Review Moderation',
+      icon: <RateReviewIcon />,
+      path: '/review-moderation',
+    },
+    {
+      id: 'integrity',
+      name: 'Platform Integrity',
+      icon: <SecurityIcon />,
+      path: '/platform-integrity',
+    },
+    {
+      id: 'payouts',
+      name: 'Payout & Disputes',
+      icon: <PaymentIcon />,
+      path: '/payout-dispute',
+    },
+    {
+      id: 'settings',
+      name: 'Settings',
+      icon: <SettingsIcon />,
+      path: '/settings',
+    },
   ];
 
   const handleModuleClick = (moduleId: string, path: string) => {
@@ -109,51 +177,63 @@ export default function StaffLanding() {
   };
 
   const getPriorityColor = (priority: string) => {
-    switch(priority) {
-      case 'high': return '#d32f2f';
-      case 'medium': return '#f57c00';
-      case 'low': return '#388e3c';
-      default: return '#1976d2';
+    switch (priority) {
+      case 'high':
+        return '#d32f2f';
+      case 'medium':
+        return '#f57c00';
+      case 'low':
+        return '#388e3c';
+      default:
+        return '#1976d2';
     }
   };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Left Navigation */}
-      <Box sx={{ 
-        width: 240, 
-        flexShrink: 0,
-        backgroundColor: '#2c3e50',
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRight: '1px solid #e0e0e0'
-      }}>
-        {/* Logo Area */}
-        <Box sx={{ 
-          p: 2, 
-          display: 'flex', 
+      <Box
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          backgroundColor: '#2c3e50',
+          color: 'white',
+          display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', 
-          borderBottom: '1px solid rgba(255,255,255,0.1)'
-        }}>
+          borderRight: '1px solid #e0e0e0',
+        }}
+      >
+        {/* Logo Area */}
+        <Box
+          sx={{
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
           <Box
             component="img"
-            src="/logoType.png"
-            alt="Yaad Staff"
+            src="/bk_brand/bk-wordmark.png"
+            alt="Blue Kottage Staff"
             sx={{
               height: 48,
-              mb: 1
+              mb: 1,
             }}
           />
-          <Typography variant="h6" fontWeight={600} sx={{ letterSpacing: '0.5px' }}>
+          <Typography
+            variant="h6"
+            fontWeight={600}
+            sx={{ letterSpacing: '0.5px' }}
+          >
             STAFF PORTAL
           </Typography>
         </Box>
 
         {/* Navigation Menu */}
         <Box sx={{ flexGrow: 1, overflow: 'auto', pt: 2 }}>
-          {staffModules.map((module) => (
+          {staffModules.map(module => (
             <Button
               key={module.id}
               fullWidth
@@ -163,15 +243,24 @@ export default function StaffLanding() {
                 justifyContent: 'flex-start',
                 py: 1.5,
                 px: 2,
-                color: activeModule === module.id ? 'white' : 'rgba(255,255,255,0.7)',
-                backgroundColor: activeModule === module.id ? 'rgba(255,255,255,0.1)' : 'transparent',
-                borderLeft: activeModule === module.id ? '4px solid white' : '4px solid transparent',
+                color:
+                  activeModule === module.id
+                    ? 'white'
+                    : 'rgba(255,255,255,0.7)',
+                backgroundColor:
+                  activeModule === module.id
+                    ? 'rgba(255,255,255,0.1)'
+                    : 'transparent',
+                borderLeft:
+                  activeModule === module.id
+                    ? '4px solid white'
+                    : '4px solid transparent',
                 borderRadius: 0,
                 '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.05)'
+                  backgroundColor: 'rgba(255,255,255,0.05)',
                 },
                 textTransform: 'none',
-                fontWeight: 500
+                fontWeight: 500,
               }}
             >
               {module.name}
@@ -180,10 +269,12 @@ export default function StaffLanding() {
         </Box>
 
         {/* User Info */}
-        <Box sx={{ 
-          p: 2, 
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-        }}>
+        <Box
+          sx={{
+            p: 2,
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
           <Button
             fullWidth
             onClick={handleMenuOpen}
@@ -195,17 +286,21 @@ export default function StaffLanding() {
               color: 'white',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.1)'
-              }
+                backgroundColor: 'rgba(255,255,255,0.1)',
+              },
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'rgba(255,255,255,0.2)' }}>
+              <Avatar
+                sx={{ width: 32, height: 32, bgcolor: 'rgba(255,255,255,0.2)' }}
+              >
                 <PersonIcon fontSize="small" />
               </Avatar>
               <Box sx={{ textAlign: 'left' }}>
                 <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  {appUser?.firstName ? `${appUser.firstName} ${appUser.lastName}` : firebaseUser?.email?.split('@')[0] || 'Staff User'}
+                  {appUser?.firstName
+                    ? `${appUser.firstName} ${appUser.lastName}`
+                    : firebaseUser?.email?.split('@')[0] || 'Staff User'}
                 </Typography>
                 <Typography variant="caption" sx={{ opacity: 0.8 }}>
                   {claims?.role || 'Staff'} • Online
@@ -214,7 +309,7 @@ export default function StaffLanding() {
             </Box>
             <ExpandMoreIcon fontSize="small" />
           </Button>
-          
+
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -239,7 +334,15 @@ export default function StaffLanding() {
       </Box>
 
       {/* Main Content */}
-      <Box sx={{ flexGrow: 1, overflow: 'auto', backgroundColor: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflow: 'auto',
+          backgroundColor: '#f5f5f5',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Content from child routes */}
         <Outlet />
       </Box>

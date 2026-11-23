@@ -17,15 +17,15 @@ export interface EventWalletRecord {
   ticketOrders: StoredEventTicketOrder[];
 }
 
-export const SAVED_EVENT_COUPON_STORAGE_KEY = 'yaad-saved-event-coupons';
-export const EVENT_TICKET_ORDER_STORAGE_KEY = 'yaad-ticket-orders';
+export const SAVED_EVENT_COUPON_STORAGE_KEY = 'bk-saved-event-coupons';
+export const EVENT_TICKET_ORDER_STORAGE_KEY = 'bk-ticket-orders';
 
 export const emptyEventWallet: EventWalletRecord = {
   savedCouponIds: [],
   ticketOrders: [],
 };
 
-const parseStoredArray = <T,>(value: string | null): T[] => {
+const parseStoredArray = <T>(value: string | null): T[] => {
   if (!value) {
     return [];
   }
@@ -51,13 +51,17 @@ const normalizeSavedCouponIds = (value: unknown): string[] => {
   }
 
   if (value && typeof value === 'object') {
-    return normalizeSavedCouponIds(Object.values(value as Record<string, unknown>));
+    return normalizeSavedCouponIds(
+      Object.values(value as Record<string, unknown>)
+    );
   }
 
   return [];
 };
 
-const normalizeTicketOrder = (value: unknown): StoredEventTicketOrder | null => {
+const normalizeTicketOrder = (
+  value: unknown
+): StoredEventTicketOrder | null => {
   if (!value || typeof value !== 'object') {
     return null;
   }
@@ -159,17 +163,18 @@ export const readLegacySavedEventCouponIds = (): string[] => {
   );
 };
 
-export const readLegacyStoredEventTicketOrders = (): StoredEventTicketOrder[] => {
-  if (typeof window === 'undefined') {
-    return [];
-  }
+export const readLegacyStoredEventTicketOrders =
+  (): StoredEventTicketOrder[] => {
+    if (typeof window === 'undefined') {
+      return [];
+    }
 
-  return normalizeTicketOrders(
-    parseStoredArray<StoredEventTicketOrder>(
-      window.localStorage.getItem(EVENT_TICKET_ORDER_STORAGE_KEY)
-    )
-  );
-};
+    return normalizeTicketOrders(
+      parseStoredArray<StoredEventTicketOrder>(
+        window.localStorage.getItem(EVENT_TICKET_ORDER_STORAGE_KEY)
+      )
+    );
+  };
 
 export const readLegacyEventWallet = (): EventWalletRecord => ({
   savedCouponIds: readLegacySavedEventCouponIds(),
@@ -179,7 +184,8 @@ export const readLegacyEventWallet = (): EventWalletRecord => ({
 export const hasLegacyEventWalletData = () => {
   const legacyWallet = readLegacyEventWallet();
   return (
-    legacyWallet.savedCouponIds.length > 0 || legacyWallet.ticketOrders.length > 0
+    legacyWallet.savedCouponIds.length > 0 ||
+    legacyWallet.ticketOrders.length > 0
   );
 };
 

@@ -122,8 +122,8 @@ export default function HostLayout() {
       <Box sx={{ p: 2, textAlign: 'center' }}>
         <Box
           component="img"
-          src="/logoType.png"
-          alt="Blu Kottage"
+          src="/bk_brand/bk-wordmark.png"
+          alt="Blue Kottage"
           sx={{ height: 40, mb: 1 }}
         />
       </Box>

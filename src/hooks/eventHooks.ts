@@ -207,7 +207,7 @@ const normalizeEvent = (
     status: (raw.status as EventStatus) || 'draft',
     featured: Boolean(raw.featured),
     badge: typeof raw.badge === 'string' ? raw.badge : undefined,
-    organizer: raw.organizer || 'Yaad Events',
+    organizer: raw.organizer || 'Blue Kottage Events',
     venue: {
       name: venue.name || 'Venue TBA',
       city: venue.city || 'Jamaica',

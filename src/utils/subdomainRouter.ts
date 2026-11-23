@@ -33,14 +33,22 @@ const getLocalDevSubdomainByPort = (port: string): ValidSubdomain | null => {
   return match ? (match[0] as ValidSubdomain) : null;
 };
 
+const WWW_LABEL = 'www';
+
+const isRoutingLabel = (label: string): boolean => {
+  return label === WWW_LABEL || isValidSubdomainValue(label);
+};
+
 const getBaseHostname = (hostname: string): string => {
   const parts = hostname.split('.');
 
-  if (parts.length > 2 && isValidSubdomainValue(parts[0])) {
-    return parts.slice(1).join('.');
+  // Strip portal labels and "www" so portals are always built on the apex domain
+  // (e.g. admin.www.bluekottage.com -> admin.bluekottage.com).
+  while (parts.length > 2 && isRoutingLabel(parts[0])) {
+    parts.shift();
   }
 
-  return hostname;
+  return parts.join('.');
 };
 
 /**
@@ -67,7 +75,7 @@ export const getSubdomain = (): string | null => {
 
   const parts = hostname.split('.');
 
-  if (parts.length > 2) {
+  if (parts.length > 2 && parts[0] !== WWW_LABEL) {
     return parts[0];
   }
 

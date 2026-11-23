@@ -491,8 +491,8 @@ export default function HostSignup() {
             <Box textAlign="center" mb={4}>
               <Box
                 component="img"
-                src="/logoType.png"
-                alt="Yaad Host Portal"
+                src="/bk_brand/bk-wordmark.png"
+                alt="Blue Kottage Host Portal"
                 sx={{
                   height: 60,
                   mb: 2,
@@ -644,4 +644,3 @@ export default function HostSignup() {
     </Box>
   );
 }
-

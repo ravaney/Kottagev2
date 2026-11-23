@@ -69,7 +69,7 @@ const HostLanding: React.FC = () => {
       property: 'Blue Mountain Villa',
       rating: 5,
       comment:
-        'Blu Kottage transformed my vacation rental business. Revenue increased 40% in 6 months!',
+        'Blue Kottage transformed my vacation rental business. Revenue increased 40% in 6 months!',
       avatar: '/bluemountain.jpg',
     },
     {
@@ -430,8 +430,8 @@ const HostLanding: React.FC = () => {
               <Box display="flex" alignItems="center" gap={2}>
                 <Box
                   component="img"
-                  src="/white logo.png"
-                  alt="Blu Kottage Logo"
+                  src="/bk_brand/bk_whitewordmarkV2.png"
+                  alt="Blue Kottage Logo"
                   sx={{ height: 40 }}
                 />
                 <Typography variant="h6" fontWeight={600}>
@@ -442,7 +442,7 @@ const HostLanding: React.FC = () => {
             <Grid item xs={12} md={6}>
               <Box textAlign={{ xs: 'center', md: 'right' }}>
                 <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                  © 2025 Blu Kottage. All rights reserved.
+                  © 2025 Blue Kottage. All rights reserved.
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.6 }}>
                   support@blukottage.com | +1-876-XXX-XXXX

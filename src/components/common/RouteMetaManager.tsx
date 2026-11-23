@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import routeMeta from '../../data/publicRouteMeta.json';
+import routeMeta from '../../mockData/publicRouteMeta.json';
 import { applyDocumentMeta } from '../../utils/documentMeta';
 
 type RouteMetaRecord = Record<
@@ -16,7 +16,8 @@ const publicRouteMeta = routeMeta as RouteMetaRecord;
 const defaultMeta = publicRouteMeta['/'];
 
 const resolveRouteMeta = (pathname: string) => {
-  const normalizedPath = pathname === '/' ? pathname : pathname.replace(/\/+$/, '');
+  const normalizedPath =
+    pathname === '/' ? pathname : pathname.replace(/\/+$/, '');
   const directMatch =
     publicRouteMeta[normalizedPath] ||
     publicRouteMeta[normalizedPath.toLowerCase()];

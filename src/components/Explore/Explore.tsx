@@ -6,11 +6,9 @@ import {
   Paper,
   Skeleton,
   Button,
-  Divider,
   useMediaQuery,
   useTheme,
   Fade,
-  Zoom,
   IconButton,
   Card,
   CardMedia,
@@ -21,7 +19,6 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import { useGetFeaturedRegionProperties } from '../../hooks/propertyListingHooks';
-import PropertyCard from '../PropertyCard';
 import { Colors } from '../constants';
 import ExploreIcon from '@mui/icons-material/Explore';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -33,101 +30,11 @@ import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import HotelIcon from '@mui/icons-material/Hotel';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import NightlifeIcon from '@mui/icons-material/Nightlife';
-import { PropertyCardFull } from './PropertyCardFull';
-import { KottageWithId } from '../../hooks/usePropertySearch';
-
-const featuredRegions = [
-  {
-    name: 'Kingston',
-    image: '/images/kingston.jpg',
-    tagline: 'The cultural heart of Jamaica',
-    description:
-      'Experience the vibrant capital city with its rich history, museums, and bustling markets.',
-    categories: ['Culture', 'History', 'Nightlife'],
-  },
-  {
-    name: 'Montego Bay',
-    image: '/images/mobay.png',
-    tagline: 'Where paradise meets luxury',
-    description:
-      "Discover pristine beaches, world-class resorts, and vibrant nightlife in Jamaica's tourism capital.",
-    categories: ['Beaches', 'Resorts', 'Shopping'],
-  },
-  {
-    name: 'Ocho Rios',
-    image: '/images/ocho-rios.jpg',
-    tagline: 'Adventure awaits in paradise',
-    description:
-      "Climb the famous Dunn's River Falls and explore lush rainforests in this adventure-filled destination.",
-    categories: ['Waterfalls', 'Adventure', 'Nature'],
-  },
-  {
-    name: 'Negril',
-    image: '/images/negril.jpg',
-    tagline: 'Seven miles of pure bliss',
-    description:
-      'Relax on the famous seven-mile beach and witness breathtaking sunsets at the iconic cliff resorts.',
-    categories: ['Beaches', 'Sunsets', 'Relaxation'],
-  },
-  {
-    name: 'Portland',
-    image: '/images/portland.png',
-    tagline: "Nature's untouched paradise",
-    description:
-      'Explore the lush landscapes, waterfalls, and pristine beaches of Portland.',
-    categories: ['Nature', 'Waterfalls', 'Beaches'],
-  },
-];
-
+import featuredRegions from '../../mockData/featuredRegions.json';
+import regionActivities from '../../mockData/regionActivities.json';
 // Activities for each region
-const regionActivities = {
-  'Montego Bay': [
-    {
-      id: '1',
-      name: "Doctor's Cave Beach",
-      image: '/images/doctors-cave.png',
-      description: 'Crystal clear waters and white sand beach',
-      type: 'beach',
-    },
-    {
-      id: '2',
-      name: 'Hip Strip',
-      image: '/images/hip-strip.jpg',
-      description: 'Shopping and vibrant nightlife',
-      type: 'attraction',
-    },
-    {
-      id: '3',
-      name: 'Scotchies',
-      image: '/images/scotchies.jpg',
-      description: 'Famous authentic jerk chicken',
-      type: 'restaurant',
-    },
-    {
-      id: '4',
-      name: 'Rose Hall',
-      image: '/images/rose-hall.jpg',
-      description: 'Historic mansion with a haunting past',
-      type: 'attraction',
-    },
-    {
-      id: '5',
-      name: 'Montego Bay Marine Park',
-      image: '/images/marine-park.jpg',
-      description: 'Snorkeling and diving paradise',
-      type: 'activity',
-    },
-    {
-      id: '6',
-      name: 'Martha Brae River Rafting',
-      image: '/images/martha-brae.jpg',
-      description: 'Peaceful bamboo raft rides',
-      type: 'activity',
-    },
-  ],
-};
 
-export default function Explore() {
+export const Explore = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -441,7 +348,9 @@ export default function Explore() {
                       : 'transparent',
                   borderColor: Colors.cerulean,
                   color:
-                    selectedRegion.name === region.name ? 'white' : Colors.cerulean,
+                    selectedRegion.name === region.name
+                      ? 'white'
+                      : Colors.cerulean,
                   '&:hover': {
                     backgroundColor:
                       selectedRegion.name === region.name
@@ -799,5 +708,4 @@ export default function Explore() {
       </Box>
     </Box>
   );
-}
-
+};

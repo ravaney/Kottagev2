@@ -138,7 +138,12 @@
       "parish": "St. James",
       "address": "Catherine Hall, Montego Bay"
     },
-    "tags": ["Jerk Festival", "Food & Drink", "Montego Bay", "Live Entertainment"],
+    "tags": [
+      "Jerk Festival",
+      "Food & Drink",
+      "Montego Bay",
+      "Live Entertainment"
+    ],
     "perks": [
       "Jerk food vendors",
       "Festival entertainment",
@@ -183,7 +188,7 @@
     "category": "Music",
     "status": "published",
     "featured": false,
-    "organizer": "Yaad Live",
+    "organizer": "Blue Kottage Live",
     "venue": {
       "name": "Skyline Terrace",
       "city": "Kingston",
@@ -191,7 +196,11 @@
       "address": "10 Trafalgar Road, New Kingston"
     },
     "tags": ["Live Music", "Rooftop", "Date Night"],
-    "perks": ["Fast entry lane", "Cocktail tasting credit", "VIP lounge option"],
+    "perks": [
+      "Fast entry lane",
+      "Cocktail tasting credit",
+      "VIP lounge option"
+    ],
     "lineup": ["DJ Solstice", "Riddim Theory", "Amara Blake"],
     "ticketTiers": [
       {
@@ -277,8 +286,16 @@
       "address": "Freeport Waterfront, Montego Bay"
     },
     "tags": ["Food Festival", "Rum Tasting", "Chef Demos"],
-    "perks": ["Unlimited tastings zone", "Rum masterclass option", "Chef meet-and-greet"],
-    "lineup": ["Chef Andre Fennell", "Saint Jago Rum House", "Mello Vibes Band"],
+    "perks": [
+      "Unlimited tastings zone",
+      "Rum masterclass option",
+      "Chef meet-and-greet"
+    ],
+    "lineup": [
+      "Chef Andre Fennell",
+      "Saint Jago Rum House",
+      "Mello Vibes Band"
+    ],
     "ticketTiers": [
       {
         "id": "festival-pass",
@@ -292,7 +309,11 @@
         "name": "Premium Pairing Pass",
         "price": 130,
         "remaining": 75,
-        "perks": ["Priority tasting line", "Reserved demo seating", "Premium pours"]
+        "perks": [
+          "Priority tasting line",
+          "Reserved demo seating",
+          "Premium pours"
+        ]
       }
     ],
     "createdAt": "2026-03-11T12:15:00.000Z",
