@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const routeMeta = require('../src/data/publicRouteMeta.json');
-const websiteContent = require('../src/data/publicWebsiteContent.json');
+const routeMeta = require('../src/mockData/publicRouteMeta.json');
+const websiteContent = require('../src/mockData/publicWebsiteContent.json');
 
 const buildDir = path.join(__dirname, '..', 'build');
 const indexPath = path.join(buildDir, 'index.html');
