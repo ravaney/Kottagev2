@@ -1,3 +1,4 @@
+import { AdminPageHeader, StaffPortalOnly } from '../Admin/AdminHeaderContext';
 import React, { useState } from 'react';
 import {
   Box,
@@ -398,7 +399,7 @@ export default function BookingManagement() {
   return (
     <>
       {/* Top AppBar */}
-      <AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+      <StaffPortalOnly><AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
@@ -429,19 +430,21 @@ export default function BookingManagement() {
             <NotificationsIcon />
           </IconButton>
         </Toolbar>
-      </AppBar>
+      </AppBar></StaffPortalOnly>
 
       {/* Page Content */}
       <Box sx={{ p: 3, flexGrow: 1, backgroundColor: '#f5f5f5' }}>
         {/* Page Header */}
-        <Box sx={{ mb: 3 }}>
+        <AdminPageHeader title="Booking Management & Analysis" description="Monitor, manage, and analyze all bookings. Handle payment issues, modifications, and suspicious activities." eyebrow="STAFF OPERATIONS / BOOKINGS" icon="bookings" actions={<IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>} fallback={<Box sx={{ mb: 3 }}>
           <Typography variant="h5" fontWeight={600} gutterBottom>
             Booking Management & Analysis
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Monitor, manage, and analyze all bookings. Handle payment issues, modifications, and suspicious activities.
           </Typography>
-        </Box>
+        </Box>}></AdminPageHeader>
 
         {/* Summary Cards */}
         <Grid container spacing={3} sx={{ mb: 3 }}>

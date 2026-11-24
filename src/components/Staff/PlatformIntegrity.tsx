@@ -1,3 +1,4 @@
+import { AdminPageHeader, StaffPortalOnly } from '../Admin/AdminHeaderContext';
 import React, { useState } from 'react';
 import {
   Box,
@@ -213,50 +214,7 @@ export default function PlatformIntegrity() {
     resolutionRate: Math.round((mockFlaggedItems.filter(item => item.status === 'resolved').length / mockFlaggedItems.length) * 100)
   };
 
-  return (
-    <>
-      {/* Top AppBar */}
-      <AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
-        <Toolbar>
-          <Box sx={{ flexGrow: 1 }}>
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-              <Button 
-                color="inherit" 
-                onClick={() => navigate('/dashboard')}
-                sx={{ textTransform: 'none', fontWeight: 400 }}
-              >
-                Dashboard
-              </Button>
-              <Typography color="text.primary" sx={{ display: 'flex', alignItems: 'center', fontWeight: 600 }}>
-                <SecurityIcon sx={{ mr: 0.5, fontSize: 18 }} />
-                Platform Integrity & Trust
-              </Typography>
-            </Breadcrumbs>
-          </Box>
-          <IconButton color="inherit" size="small">
-            <NotificationsIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
-      {/* Page Content */}
-      <Box sx={{ p: 3, flexGrow: 1 }}>
-        {/* Header */}
-        <Paper sx={{ 
-          p: 3, 
-          mb: 3, 
-          backgroundColor: 'white',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-        }}>
-          <Typography variant="h5" fontWeight={600} gutterBottom>
-            Platform Integrity & Trust
-          </Typography>
-          <Typography variant="body1" color="textSecondary" gutterBottom>
-            Monitor flagged users, properties, and investigate fraud to maintain platform trust
-          </Typography>
-          
-          {/* Stats Cards */}
-          <Grid container spacing={2} sx={{ mt: 2 }}>
+  const headerStats = (<Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={12} sm={6} md={3}>
               <Card sx={{ textAlign: 'center' }}>
                 <CardContent sx={{ py: 2 }}>
@@ -310,8 +268,55 @@ export default function PlatformIntegrity() {
                 </CardContent>
               </Card>
             </Grid>
-          </Grid>
-        </Paper>
+          </Grid>);
+
+  return (
+    <>
+      {/* Top AppBar */}
+      <StaffPortalOnly><AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+        <Toolbar>
+          <Box sx={{ flexGrow: 1 }}>
+            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+              <Button
+                color="inherit"
+                onClick={() => navigate('/dashboard')}
+                sx={{ textTransform: 'none', fontWeight: 400 }}
+              >
+                Dashboard
+              </Button>
+              <Typography color="text.primary" sx={{ display: 'flex', alignItems: 'center', fontWeight: 600 }}>
+                <SecurityIcon sx={{ mr: 0.5, fontSize: 18 }} />
+                Platform Integrity & Trust
+              </Typography>
+            </Breadcrumbs>
+          </Box>
+          <IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar></StaffPortalOnly>
+
+      {/* Page Content */}
+      <Box sx={{ p: 3, flexGrow: 1 }}>
+        {/* Header */}
+        <AdminPageHeader title="Platform Integrity & Trust" description="Monitor flagged users, properties, and investigate fraud to maintain platform trust." eyebrow="STAFF OPERATIONS / TRUST AND SAFETY" icon="platform-integrity" actions={<IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>} fallback={<Paper sx={{
+          p: 3,
+          mb: 3,
+          backgroundColor: 'white',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <Typography variant="h5" fontWeight={600} gutterBottom>
+            Platform Integrity & Trust
+          </Typography>
+          <Typography variant="body1" color="textSecondary" gutterBottom>
+            Monitor flagged users, properties, and investigate fraud to maintain platform trust
+          </Typography>
+
+          {/* Stats Cards */}
+          {headerStats}
+        </Paper>}><Box sx={{ mb: 3 }}>{headerStats}</Box></AdminPageHeader>
 
         {/* Investigation Tabs */}
         <Paper sx={{ 

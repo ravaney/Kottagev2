@@ -1,3 +1,4 @@
+import { AdminPanelProvider } from './AdminHeaderContext';
 import React, { useState } from 'react';
 import {
   Box,
@@ -176,7 +177,7 @@ export default function AdminLanding() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', height: location.pathname === '/regional-assignment' ? '100dvh' : '100vh', overflow: location.pathname === '/regional-assignment' ? 'hidden' : undefined }}>
       {/* Left Navigation */}
       <Box
         sx={{
@@ -409,14 +410,16 @@ export default function AdminLanding() {
       <Box
         sx={{
           flexGrow: 1,
-          overflow: 'auto',
+          minWidth: 0,
+          minHeight: 0,
+          overflow: location.pathname === '/regional-assignment' ? 'hidden' : 'auto',
           backgroundColor: '#f5f5f5',
           display: 'flex',
           flexDirection: 'column',
         }}
       >
         {/* Content from child routes */}
-        <Outlet />
+        <AdminPanelProvider><Outlet /></AdminPanelProvider>
       </Box>
     </Box>
   );

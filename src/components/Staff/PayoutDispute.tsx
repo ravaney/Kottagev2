@@ -1,3 +1,4 @@
+import { AdminPageHeader, StaffPortalOnly } from '../Admin/AdminHeaderContext';
 import React, { useState } from 'react';
 import {
   Box,
@@ -251,50 +252,7 @@ export default function PayoutDispute() {
     avgResolutionTime: '2.5 days'
   };
 
-  return (
-    <>
-      {/* Top AppBar */}
-      <AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
-        <Toolbar>
-          <Box sx={{ flexGrow: 1 }}>
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-              <Button 
-                color="inherit" 
-                onClick={() => navigate('/dashboard')}
-                sx={{ textTransform: 'none', fontWeight: 400 }}
-              >
-                Dashboard
-              </Button>
-              <Typography color="text.primary" sx={{ display: 'flex', alignItems: 'center', fontWeight: 600 }}>
-                <PaymentIcon sx={{ mr: 0.5, fontSize: 18 }} />
-                Payout & Dispute Handling
-              </Typography>
-            </Breadcrumbs>
-          </Box>
-          <IconButton color="inherit" size="small">
-            <NotificationsIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
-      {/* Page Content */}
-      <Box sx={{ p: 3, flexGrow: 1 }}>
-        {/* Header */}
-        <Paper sx={{ 
-          p: 3, 
-          mb: 3, 
-          backgroundColor: 'white',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-        }}>
-          <Typography variant="h5" fontWeight={600} gutterBottom>
-            Payout & Dispute Handling
-          </Typography>
-          <Typography variant="body1" color="textSecondary" gutterBottom>
-            Manage host payouts, resolve payment disputes, and handle chargebacks
-          </Typography>
-          
-          {/* Stats Cards */}
-          <Grid container spacing={2} sx={{ mt: 2 }}>
+  const headerStats = (<Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={12} sm={6} md={3}>
               <Card sx={{ textAlign: 'center' }}>
                 <CardContent sx={{ py: 2 }}>
@@ -343,8 +301,55 @@ export default function PayoutDispute() {
                 </CardContent>
               </Card>
             </Grid>
-          </Grid>
-        </Paper>
+          </Grid>);
+
+  return (
+    <>
+      {/* Top AppBar */}
+      <StaffPortalOnly><AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+        <Toolbar>
+          <Box sx={{ flexGrow: 1 }}>
+            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+              <Button
+                color="inherit"
+                onClick={() => navigate('/dashboard')}
+                sx={{ textTransform: 'none', fontWeight: 400 }}
+              >
+                Dashboard
+              </Button>
+              <Typography color="text.primary" sx={{ display: 'flex', alignItems: 'center', fontWeight: 600 }}>
+                <PaymentIcon sx={{ mr: 0.5, fontSize: 18 }} />
+                Payout & Dispute Handling
+              </Typography>
+            </Breadcrumbs>
+          </Box>
+          <IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar></StaffPortalOnly>
+
+      {/* Page Content */}
+      <Box sx={{ p: 3, flexGrow: 1 }}>
+        {/* Header */}
+        <AdminPageHeader title="Payout & Dispute Handling" description="Manage host payouts, resolve payment disputes, and handle chargebacks." eyebrow="STAFF OPERATIONS / PAYOUTS" icon="payout-disputes" actions={<IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>} fallback={<Paper sx={{
+          p: 3,
+          mb: 3,
+          backgroundColor: 'white',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <Typography variant="h5" fontWeight={600} gutterBottom>
+            Payout & Dispute Handling
+          </Typography>
+          <Typography variant="body1" color="textSecondary" gutterBottom>
+            Manage host payouts, resolve payment disputes, and handle chargebacks
+          </Typography>
+
+          {/* Stats Cards */}
+          {headerStats}
+        </Paper>}><Box sx={{ mb: 3 }}>{headerStats}</Box></AdminPageHeader>
 
         {/* Issue Tabs */}
         <Paper sx={{ 

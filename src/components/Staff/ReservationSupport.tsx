@@ -1,3 +1,4 @@
+import { AdminPageHeader, StaffPortalOnly } from '../Admin/AdminHeaderContext';
 import React, { useState } from 'react';
 import {
   Box,
@@ -274,7 +275,7 @@ export default function ReservationSupport() {
   return (
     <>
       {/* Top AppBar */}
-      <AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+      <StaffPortalOnly><AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
@@ -305,19 +306,21 @@ export default function ReservationSupport() {
             <NotificationsIcon />
           </IconButton>
         </Toolbar>
-      </AppBar>
+      </AppBar></StaffPortalOnly>
 
       {/* Page Content */}
       <Box sx={{ p: 3, flexGrow: 1, backgroundColor: '#f5f5f5' }}>
         {/* Page Header */}
-        <Box sx={{ mb: 3 }}>
+        <AdminPageHeader title="Reservation Support & Oversight" description="View and manage all bookings across the platform. Assist guests and hosts with booking issues." eyebrow="STAFF OPERATIONS / RESERVATIONS" icon="reservation-support" actions={<IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>} fallback={<Box sx={{ mb: 3 }}>
           <Typography variant="h5" fontWeight={600} gutterBottom>
             Reservation Support & Oversight
           </Typography>
           <Typography variant="body2" color="textSecondary">
             View and manage all bookings across the platform. Assist guests and hosts with booking issues.
           </Typography>
-        </Box>
+        </Box>}></AdminPageHeader>
 
         {/* Support Actions */}
         <Paper sx={{ mb: 3, backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>

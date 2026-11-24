@@ -1,3 +1,4 @@
+import { AdminPageHeader, StaffPortalOnly } from '../Admin/AdminHeaderContext';
 import React, { useState } from 'react';
 import {
   Box,
@@ -175,7 +176,7 @@ export default function ReviewModeration() {
   return (
     <>
       {/* Top AppBar */}
-      <AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+      <StaffPortalOnly><AppBar position="static" color="default" elevation={0} sx={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
@@ -196,14 +197,16 @@ export default function ReviewModeration() {
             <NotificationsIcon />
           </IconButton>
         </Toolbar>
-      </AppBar>
+      </AppBar></StaffPortalOnly>
 
       {/* Page Content */}
       <Box sx={{ p: 3, flexGrow: 1 }}>
         {/* Header */}
-        <Paper sx={{ 
-          p: 3, 
-          mb: 3, 
+        <AdminPageHeader title="Review Moderation" description="Monitor and moderate guest and host reviews to maintain platform integrity." eyebrow="STAFF OPERATIONS / REVIEWS" icon="review-moderation" actions={<IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>} fallback={<Paper sx={{
+          p: 3,
+          mb: 3,
           backgroundColor: 'white',
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
         }}>
@@ -213,7 +216,7 @@ export default function ReviewModeration() {
           <Typography variant="body1" color="textSecondary">
             Monitor and moderate guest and host reviews to maintain platform integrity
           </Typography>
-        </Paper>
+        </Paper>}></AdminPageHeader>
 
         {/* Review Tabs */}
         <Paper sx={{ 

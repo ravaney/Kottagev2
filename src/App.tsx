@@ -1,3 +1,4 @@
+import AdminSettings from './components/Admin/AdminSettings';
 import React, { useEffect } from 'react';
 import './App.css';
 import Layout from './components/Nav/Layout';
@@ -269,7 +270,7 @@ function App() {
             },
             {
               path: 'settings',
-              element: <div>Settings (Coming Soon)</div>,
+              element: <AdminSettings />,
             },
             {
               path: '*',

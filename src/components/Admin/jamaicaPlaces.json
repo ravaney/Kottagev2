@@ -1,0 +1,222 @@
+[
+  {
+    "id": "geonames-3489854",
+    "label": "Kingston",
+    "featureId": "JM03",
+    "category": "capital",
+    "coordinates": [
+      -76.7936,
+      17.9712
+    ],
+    "geonamesId": 3489854
+  },
+  {
+    "id": "geonames-3490165",
+    "label": "Half Way Tree",
+    "featureId": "JM06",
+    "category": "capital",
+    "coordinates": [
+      -76.79928,
+      18.01248
+    ],
+    "geonamesId": 3490165
+  },
+  {
+    "id": "geonames-3488465",
+    "label": "Spanish Town",
+    "featureId": "JM08",
+    "category": "capital",
+    "coordinates": [
+      -76.95742,
+      17.99107
+    ],
+    "geonamesId": 3488465
+  },
+  {
+    "id": "geonames-3489523",
+    "label": "May Pen",
+    "featureId": "JM01",
+    "category": "capital",
+    "coordinates": [
+      -77.24515,
+      17.96454
+    ],
+    "geonamesId": 3489523
+  },
+  {
+    "id": "geonames-3489577",
+    "label": "Mandeville",
+    "featureId": "JM04",
+    "category": "capital",
+    "coordinates": [
+      -77.50714,
+      18.04168
+    ],
+    "geonamesId": 3489577
+  },
+  {
+    "id": "geonames-3491355",
+    "label": "Black River",
+    "featureId": "JM09",
+    "category": "capital",
+    "coordinates": [
+      -77.84873,
+      18.02636
+    ],
+    "geonamesId": 3491355
+  },
+  {
+    "id": "geonames-3488613",
+    "label": "Savanna-la-Mar",
+    "featureId": "JM14",
+    "category": "capital",
+    "coordinates": [
+      -78.1332,
+      18.21895
+    ],
+    "geonamesId": 3488613
+  },
+  {
+    "id": "geonames-3489657",
+    "label": "Lucea",
+    "featureId": "JM02",
+    "category": "capital",
+    "coordinates": [
+      -78.17356,
+      18.45095
+    ],
+    "geonamesId": 3489657
+  },
+  {
+    "id": "geonames-3489460",
+    "label": "Montego Bay",
+    "featureId": "JM10",
+    "category": "capital",
+    "coordinates": [
+      -77.91883,
+      18.47116
+    ],
+    "geonamesId": 3489460
+  },
+  {
+    "id": "geonames-3490520",
+    "label": "Falmouth",
+    "featureId": "JM13",
+    "category": "capital",
+    "coordinates": [
+      -77.65587,
+      18.49358
+    ],
+    "geonamesId": 3490520
+  },
+  {
+    "id": "geonames-3488713",
+    "label": "St. Ann's Bay",
+    "featureId": "JM07",
+    "category": "capital",
+    "coordinates": [
+      -77.20098,
+      18.43581
+    ],
+    "geonamesId": 3488713
+  },
+  {
+    "id": "geonames-3488985",
+    "label": "Port Maria",
+    "featureId": "JM11",
+    "category": "capital",
+    "coordinates": [
+      -76.88946,
+      18.36849
+    ],
+    "geonamesId": 3488985
+  },
+  {
+    "id": "geonames-3489005",
+    "label": "Port Antonio",
+    "featureId": "JM05",
+    "category": "capital",
+    "coordinates": [
+      -76.45215,
+      18.17889
+    ],
+    "geonamesId": 3489005
+  },
+  {
+    "id": "geonames-3489440",
+    "label": "Morant Bay",
+    "featureId": "JM12",
+    "category": "capital",
+    "coordinates": [
+      -76.40927,
+      17.88145
+    ],
+    "geonamesId": 3489440
+  },
+  {
+    "id": "geonames-3488981",
+    "label": "Portmore",
+    "featureId": "JM08",
+    "category": "town",
+    "coordinates": [
+      -76.88691,
+      17.97102
+    ],
+    "geonamesId": 3488981
+  },
+  {
+    "id": "geonames-3489239",
+    "label": "Ocho Rios",
+    "featureId": "JM07",
+    "category": "town",
+    "coordinates": [
+      -77.10312,
+      18.4076
+    ],
+    "geonamesId": 3489239
+  },
+  {
+    "id": "geonames-3489331",
+    "label": "Negril",
+    "featureId": "JM14",
+    "category": "town",
+    "coordinates": [
+      -78.3481,
+      18.26844
+    ],
+    "geonamesId": 3489331
+  },
+  {
+    "id": "geonames-3489760",
+    "label": "Linstead",
+    "featureId": "JM08",
+    "category": "town",
+    "coordinates": [
+      -77.03171,
+      18.13683
+    ],
+    "geonamesId": 3489760
+  },
+  {
+    "id": "geonames-3489227",
+    "label": "Old Harbour",
+    "featureId": "JM08",
+    "category": "town",
+    "coordinates": [
+      -77.10898,
+      17.94144
+    ],
+    "geonamesId": 3489227
+  },
+  {
+    "id": "geonames-3488620",
+    "label": "Santa Cruz",
+    "featureId": "JM09",
+    "category": "town",
+    "coordinates": [
+      -77.69836,
+      18.05336
+    ],
+    "geonamesId": 3488620
+  }
+]

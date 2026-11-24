@@ -1,3 +1,4 @@
+import AdminSectionHeader from './AdminSectionHeader';
 import React from 'react';
 import {
   Alert,
@@ -937,48 +938,7 @@ export default function EventManagement() {
       }}
     >
       <Box sx={{ maxWidth: 1440, mx: 'auto' }}>
-        <Box
-          sx={{
-            mb: 4,
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'flex-start', md: 'flex-end' },
-            gap: 2,
-          }}
-        >
-          <Box>
-            <Typography
-              sx={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: '#64748b',
-              }}
-            >
-              Admin / Events
-            </Typography>
-            <Typography
-              sx={{
-                mt: 1,
-                fontSize: { xs: '2.2rem', md: '3rem' },
-                fontWeight: 900,
-                letterSpacing: '-0.04em',
-                color: '#020617',
-              }}
-            >
-              Event management
-            </Typography>
-            <Typography
-              sx={{ mt: 1.5, maxWidth: 760, color: '#475569', lineHeight: 1.9 }}
-            >
-              Manage listings, publishing, featured placement, and ticket
-              readiness from one operational dashboard.
-            </Typography>
-          </Box>
-
-          <Stack direction="row" spacing={1.5} useFlexGap flexWrap="wrap">
+        <AdminSectionHeader title="Event management" description="Manage listings, publishing, featured placement, and ticket readiness from one operational dashboard." eyebrow="ADMINISTRATION / EVENTS" icon="events" actions={<Stack direction="row" spacing={1.5} useFlexGap flexWrap="wrap">
             <PillButton>Export CSV</PillButton>
             <PillButton
               variant="contained"
@@ -997,8 +957,7 @@ export default function EventManagement() {
             >
               Create Event
             </PillButton>
-          </Stack>
-        </Box>
+          </Stack>} />
 
         {feedback ? (
           <Alert

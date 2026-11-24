@@ -1,3 +1,4 @@
+import AdminSectionHeader from './AdminSectionHeader';
 import React from 'react';
 import {
   Box,
@@ -93,14 +94,7 @@ export default function AdminDashboard() {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Welcome Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight={700} color={Colors.cerulean} gutterBottom>
-          Admin Dashboard
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Welcome back! Here's what's happening with your platform today.
-        </Typography>
-      </Box>
+      <AdminSectionHeader title="Admin Dashboard" description="Welcome back! Here's what's happening with your platform today." eyebrow="ADMINISTRATION / OVERVIEW" icon="dashboard" />
 
       {/* Stats Grid */}
       <Grid container spacing={3} sx={{ mb: 4 }}>

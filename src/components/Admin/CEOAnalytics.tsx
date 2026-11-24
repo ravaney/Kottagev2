@@ -1,3 +1,4 @@
+import AdminSectionHeader from './AdminSectionHeader';
 import React, { useState } from 'react';
 import {
   Box,
@@ -303,28 +304,7 @@ const CEOAnalytics = () => {
   return (
     <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
       {/* Header */}
-      <Box
-        sx={{
-          mb: 4,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h4"
-            fontWeight={700}
-            color="primary"
-            gutterBottom
-          >
-            Analytics Dashboard
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Executive insights and key performance indicators
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+      <AdminSectionHeader title="Analytics Dashboard" description="Executive insights and key performance indicators." eyebrow="ADMINISTRATION / ANALYTICS" icon="analytics" actions={<Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Time Range</InputLabel>
             <Select
@@ -342,8 +322,7 @@ const CEOAnalytics = () => {
           <Button variant="contained" startIcon={<ReportIcon />}>
             Export Report
           </Button>
-        </Box>
-      </Box>
+        </Box>} />
 
       {/* KPI Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>

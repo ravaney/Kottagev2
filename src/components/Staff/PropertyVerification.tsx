@@ -1,3 +1,4 @@
+import { AdminPageHeader } from '../Admin/AdminHeaderContext';
 import React, { useState, useMemo } from 'react';
 import {
   Box,
@@ -321,7 +322,13 @@ export default function PropertyVerification() {
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <AppBar position="static" color="transparent" elevation={0} sx={{ mb: 3 }}>
+      <AdminPageHeader title="Property Verification" description="Review and verify property listings submitted by hosts." eyebrow="STAFF OPERATIONS / PROPERTIES" icon="properties" actions={<Button
+            variant="outlined"
+            startIcon={<NotificationsIcon />}
+            sx={{ ml: 2 }}
+          >
+            View Notifications
+          </Button>} fallback={<AppBar position="static" color="transparent" elevation={0} sx={{ mb: 3 }}>
         <Toolbar sx={{ px: 0 }}>
           <Box sx={{ flexGrow: 1 }}>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
@@ -354,7 +361,7 @@ export default function PropertyVerification() {
             View Notifications
           </Button>
         </Toolbar>
-      </AppBar>
+      </AppBar>}></AdminPageHeader>
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
