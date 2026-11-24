@@ -1,3 +1,4 @@
+import AdminSectionHeader from './AdminSectionHeader';
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -905,16 +906,7 @@ const EmployeeManagement = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Employee Management
-          </Typography>
-          <Typography variant="body1" color="textSecondary">
-            Manage all employees, their roles, permissions, and departmental assignments
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+      <AdminSectionHeader title="Employee Management" description="Manage all employees, their roles, permissions, and departmental assignments." eyebrow="STAFF MANAGEMENT / EMPLOYEES" icon="employee-management" actions={<Box sx={{ display: 'flex', gap: 2 }}>
           {selectedEmployees.length > 0 && (
             <Button
               variant="outlined"
@@ -932,8 +924,7 @@ const EmployeeManagement = () => {
           >
             Add New Employee
           </Button>
-        </Box>
-      </Box>
+        </Box>} />
 
       {/* Stats Overview */}
       <StatsCards />

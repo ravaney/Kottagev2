@@ -1,0 +1,11 @@
+{
+  "source": "GeoNames Jamaica gazetteer",
+  "url": "https://download.geonames.org/export/dump/JM.zip",
+  "retrievedOn": "2026-11-23",
+  "license": "CC BY 4.0",
+  "attribution": "GeoNames",
+  "capitalReference": "https://jis.gov.jm/information/parish-profiles/",
+  "selection": "14 parish capitals and six curated major towns; no automatic village or community imports.",
+  "coordinateNotes": "Kingston uses the existing project downtown point (17.9712, -76.7936), rather than the GeoNames metropolitan-city center outside Kingston parish. Other coordinates are unchanged GeoNames populated-place points.",
+  "count": 20
+}

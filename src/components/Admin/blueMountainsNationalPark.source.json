@@ -1,0 +1,15 @@
+{
+  "title": "Blue and John Crow Mountains National Park",
+  "retrievedOn": "2026-11-23",
+  "sourceLayer": "https://services6.arcgis.com/3R3y1KXaPJ9BFnsU/arcgis/rest/services/Jamaica_Protected_Areas/FeatureServer/7",
+  "query": "where=1=1; outSR=4326; f=geojson",
+  "publishedAreaSquareKilometers": 412.950176309,
+  "attribution": "JCDT, NEPA, FD, JNHT",
+  "parishes": [
+    "Portland",
+    "St. Andrew",
+    "St. Mary",
+    "St. Thomas"
+  ],
+  "processing": "Original returned GeoJSON retained. No simplification or estimated border bands."
+}

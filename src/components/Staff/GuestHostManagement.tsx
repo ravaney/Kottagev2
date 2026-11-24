@@ -1,3 +1,4 @@
+import { AdminPageHeader, StaffPortalOnly } from '../Admin/AdminHeaderContext';
 import React, { useState, useMemo } from 'react';
 import {
   Box,
@@ -332,7 +333,7 @@ export default function GuestHostManagement() {
   return (
     <>
       {/* Top AppBar */}
-      <AppBar
+      <StaffPortalOnly><AppBar
         position="static"
         color="default"
         elevation={0}
@@ -374,12 +375,14 @@ export default function GuestHostManagement() {
             <NotificationsIcon />
           </IconButton>
         </Toolbar>
-      </AppBar>
+      </AppBar></StaffPortalOnly>
 
       {/* Page Content */}
       <Box sx={{ p: 3, flexGrow: 1, backgroundColor: '#f5f5f5' }}>
         {/* Page Header */}
-        <Box sx={{ mb: 3 }}>
+        <AdminPageHeader title="Guest & Host Management" description="Manage user profiles, handle support requests, and assist with verification issues." eyebrow="STAFF OPERATIONS / GUESTS AND HOSTS" icon="guests-hosts" actions={<IconButton color="inherit" size="small">
+            <NotificationsIcon />
+          </IconButton>} fallback={<Box sx={{ mb: 3 }}>
           <Typography variant="h5" fontWeight={600} gutterBottom>
             Guest & Host Management
           </Typography>
@@ -387,7 +390,7 @@ export default function GuestHostManagement() {
             Manage user profiles, handle support requests, and assist with
             verification issues.
           </Typography>
-        </Box>
+        </Box>}></AdminPageHeader>
 
         {/* Quick Actions */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
